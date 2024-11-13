@@ -21,7 +21,7 @@ public class Account {
 
     @Column(name = "email", length = 100)
     private String email;
-    @Size(min = 5, message = "Password must be at least 5 characters")
+    @Size(message = "Password must be at least 5 characters")
     @Column(name = "name", length = 100)
     private String name;
 
