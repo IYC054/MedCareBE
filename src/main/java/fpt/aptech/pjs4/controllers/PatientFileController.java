@@ -67,14 +67,12 @@ public class PatientFileController {
 
                 filesImagesService.createFilesImage(fileImage);
             }
-
             return ResponseEntity.status(201).body(createdPatientFile);
-
         } catch (Exception e) {
             throw new RuntimeException("Error while creating patient file", e);
         }
     }
-
+  
     @GetMapping("/{id}")
     public ResponseEntity<PatientFile> getPatientFileById(@PathVariable int id) {
         PatientFile patientFile = patientFilesService.getPatientFileById(id);
