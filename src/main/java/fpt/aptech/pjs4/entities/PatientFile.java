@@ -1,6 +1,7 @@
 package fpt.aptech.pjs4.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "patient_file")
+@Table(name = "patient_files")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -25,10 +26,11 @@ public class PatientFile {
 
     @Column(name = "total_price", precision = 15, scale = 2)
     private BigDecimal totalPrice;
+
+    @NotNull
     @ManyToOne(cascade = CascadeType.ALL, targetEntity = Patient.class)
     @JoinColumn(name = "patients_id")
     private Patient patients;
 
-    public PatientFile(Integer id) {
-    }
+
 }

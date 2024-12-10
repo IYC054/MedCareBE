@@ -1,5 +1,6 @@
 package fpt.aptech.pjs4.controllers;
 
+import fpt.aptech.pjs4.DTOs.PatientFileDTO;
 import fpt.aptech.pjs4.entities.FilesImage;
 import fpt.aptech.pjs4.entities.Patient;
 import fpt.aptech.pjs4.entities.PatientFile;
@@ -86,9 +87,35 @@ public class PatientFileController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PatientFile> updatePatientFile(@PathVariable int id, @RequestBody PatientFile patientFile) {
-        PatientFile updatedPatientFile = patientFilesService.updatePatientFile(id, patientFile);
-        return ResponseEntity.ok(updatedPatientFile);
+    public ResponseEntity<?> updatePatientFile(@PathVariable int id, @RequestBody PatientFileDTO patientFileDTO) {
+        System.out.println("Received ID: " + id);
+        try {
+            // Lấy PatientFile từ cơ sở dữ liệu
+            PatientFile existingPatientFile = patientFilesService.getPatientFileById(id);
+            if (existingPatientFile == null) {
+                System.out.println("PatientFile with ID " + id + " not found");
+                return ResponseEntity.status(404).body("PatientFile with ID " + id + " not found");
+            }
+
+            // Lấy Patient từ DTO
+            Patient patient = patientsService.getPatientById(patientFileDTO.getPatientId());
+            if (patient == null) {
+                System.out.println("Patient with ID " + patientFileDTO.getPatientId() + " not found");
+                return ResponseEntity.badRequest().body("Patient with ID " + patientFileDTO.getPatientId() + " not found");
+            }
+
+            // Cập nhật thông tin
+            existingPatientFile.setPrescription(patientFileDTO.getPrescription());
+            existingPatientFile.setTotalPrice(patientFileDTO.getTotalPrice());
+            existingPatientFile.setPatients(patient);
+
+            // Lưu vào cơ sở dữ liệu
+            PatientFile updatedPatientFile = patientFilesService.updatePatientFile(id, existingPatientFile);
+            return ResponseEntity.ok(updatedPatientFile);
+        } catch (Exception e) {
+            System.err.println("An error occurred: " + e.getMessage());
+            return ResponseEntity.status(500).body("Internal server error: " + e.getMessage());
+        }
     }
 
     @DeleteMapping("/{id}")

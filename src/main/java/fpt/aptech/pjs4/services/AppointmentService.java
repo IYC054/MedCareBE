@@ -14,4 +14,7 @@ public interface AppointmentService {
     Appointment updateAppointment(int id, Appointment appointment);
 
     void deleteAppointment(int id);
+
+    interface PaymentService {
+    }
 }

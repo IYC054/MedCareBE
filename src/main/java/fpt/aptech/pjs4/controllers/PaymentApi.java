@@ -1,26 +1,27 @@
 package fpt.aptech.pjs4.controllers;
 
 import fpt.aptech.pjs4.DTOs.PaymentRequest;
+import fpt.aptech.pjs4.configs.Config;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.math.BigDecimal;
-import java.nio.Buffer;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/payment")
-public class MomoApi {
+public class PaymentApi {
+    RestTemplate restTemplate = new RestTemplate();
 
     @PostMapping("/momo")
     public ResponseEntity<?> payWithMomo(@RequestBody PaymentRequest paymentRequest) {
@@ -28,8 +29,8 @@ public class MomoApi {
         String secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
         String partnerCode = "MOMO";
         String orderInfo = paymentRequest.getOrderInfo();
-        String redirectUrl = "https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b";
-        String ipnUrl = "https://webhook.site/b3088a6a-2d17-4f8d-a383-71389a6c600b";
+        String redirectUrl = "http://localhost:5173/";
+        String ipnUrl = "http://localhost:5173/";
         String requestType = "payWithMethod";
         BigDecimal amount = paymentRequest.getAmount();
         String orderId = partnerCode + System.currentTimeMillis();
@@ -96,7 +97,6 @@ public class MomoApi {
             requestBody.put("signature", signature);
 
             // Call MoMo API
-            RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
             headers.set("Content-Type", "application/json");
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
@@ -110,4 +110,5 @@ public class MomoApi {
             return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
     }
+
 }

@@ -20,7 +20,7 @@ public class PatientFileServiceImpl implements PatientFileService {
 
     @Override
     public PatientFile getPatientFileById(int id) {
-        return patientFileRepository.findById(id).orElse(null);
+        return patientFileRepository.findPatientFileById(id);
     }
 
     @Override
