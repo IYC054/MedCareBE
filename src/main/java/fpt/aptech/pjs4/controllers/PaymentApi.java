@@ -1,11 +1,8 @@
 package fpt.aptech.pjs4.controllers;
 
 import fpt.aptech.pjs4.DTOs.PaymentRequest;
-import fpt.aptech.pjs4.configs.Config;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -13,11 +10,9 @@ import org.springframework.web.client.RestTemplate;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 import java.math.BigDecimal;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
 import java.util.*;
-
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/payment")
 public class PaymentApi {
@@ -25,15 +20,15 @@ public class PaymentApi {
 
     @PostMapping("/momo")
     public ResponseEntity<?> payWithMomo(@RequestBody PaymentRequest paymentRequest) {
-        String accessKey = "F8BBA842ECF85";
-        String secretKey = "K951B6PE1waDMi640xX08PD3vg6EkVlz";
-        String partnerCode = "MOMO";
+        String accessKey = "IYUmI2q16VW7Kqx0";
+        String secretKey = "qJ0MLqtwl1rTFBM0a9TRDBvm0w8jHIgK";
+        String partnerCode = "MOMO7E8E20241209";
         String orderInfo = paymentRequest.getOrderInfo();
-        String redirectUrl = "http://localhost:5173/";
-        String ipnUrl = "http://localhost:5173/";
-        String requestType = "payWithMethod";
+        String redirectUrl = "http://localhost:5173/confirm-payment";
+        String ipnUrl = "http://localhost:5173/confirm-payment";
+        String requestType = "captureWallet";
         BigDecimal amount = paymentRequest.getAmount();
-        String orderId = partnerCode + System.currentTimeMillis();
+        String orderId = String.valueOf(System.currentTimeMillis());
         String requestId = orderId;
         String extraData = "";
         String orderGroupId = "";
@@ -42,27 +37,16 @@ public class PaymentApi {
 
         try {
             // Build rawSignature
-            var rawSignature =
-                    "accessKey=" +
-                            accessKey +
-                            "&amount=" +
-                            amount +
-                            "&extraData=" +
-                            extraData +
-                            "&ipnUrl=" +
-                            ipnUrl +
-                            "&orderId=" +
-                            orderId +
-                            "&orderInfo=" +
-                            orderInfo +
-                            "&partnerCode=" +
-                            partnerCode +
-                            "&redirectUrl=" +
-                            redirectUrl +
-                            "&requestId=" +
-                            requestId +
-                            "&requestType=" +
-                            requestType;
+            String rawSignature = "accessKey=" + accessKey +
+                    "&amount=" + amount +
+                    "&extraData=" + extraData +
+                    "&ipnUrl=" + ipnUrl +
+                    "&orderId=" + orderId +
+                    "&orderInfo=" + orderInfo +
+                    "&partnerCode=" + partnerCode +
+                    "&redirectUrl=" + redirectUrl +
+                    "&requestId=" + requestId +
+                    "&requestType=" + requestType;
 
             System.out.println("rawSignature" + rawSignature);
             // Create HMAC SHA256 signature
@@ -101,7 +85,7 @@ public class PaymentApi {
             headers.set("Content-Type", "application/json");
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
-            String momoApiUrl = "https://test-payment.momo.vn/v2/gateway/api/create";
+            String momoApiUrl = "https://payment.momo.vn/v2/gateway/api/create";
             ResponseEntity<Map> response = restTemplate.postForEntity(momoApiUrl, entity, Map.class);
 
             return ResponseEntity.ok(response.getBody());
