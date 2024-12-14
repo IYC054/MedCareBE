@@ -1,32 +1,57 @@
 package fpt.aptech.pjs4.controllers;
 
 import fpt.aptech.pjs4.DTOs.APIResponse;
+import fpt.aptech.pjs4.DTOs.AccountDTO;
 import fpt.aptech.pjs4.DTOs.AuthLoginToken;
 import fpt.aptech.pjs4.DTOs.Introspect;
 import fpt.aptech.pjs4.entities.Account;
 import fpt.aptech.pjs4.services.AccountService;
+import jakarta.validation.Path;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("api/account")
 public class AccountController {
+    @Value("src/main/resources/static/image/")
+    private String fileUpload;
     @Autowired
     private AccountService accountService;
     @PostMapping
-    public APIResponse<Account> createAccount(@RequestBody @Valid Account account) {
+    public APIResponse<Account> createAccount(@ModelAttribute AccountDTO accountDTO, @RequestParam("avatar") MultipartFile files) {
         try {
             APIResponse<Account> apiResponse = new APIResponse<>();
+            String fileName = files.getOriginalFilename();
+            FileCopyUtils.copy(files.getBytes(), new File(fileUpload + fileName));
+            Account account = new Account();
+            account.setEmail(accountDTO.getEmail());
+            account.setName(accountDTO.getName());
+            account.setPassword(accountDTO.getPassword());
+            account.setPhone(accountDTO.getPhone());
+            account.setGender(accountDTO.getGender());
+            account.setBirthdate(accountDTO.getBirthdate());
+            account.setRole(accountDTO.getRole());
+            account.setAvatar(fileName);
             apiResponse.setResult(accountService.createAccount(account));
             apiResponse.setMessage("Account created successfully!");
             return apiResponse;
-        } catch (Exception e) {
+        }catch (IOException e){
+            throw new RuntimeException("Failed to upload avatar", e);
+        }
+        catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -53,9 +78,53 @@ public class AccountController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Account> updateAccount(@PathVariable int id, @RequestBody Account account) {
-        Account updatedAccount = accountService.updateAccount(id, account);
-        return ResponseEntity.ok(updatedAccount);
+    public APIResponse<Account> updateAccount(@PathVariable int id,
+                                              @ModelAttribute AccountDTO accountDTO,
+                                              @RequestParam("avatar") MultipartFile files) {
+        try {
+            APIResponse<Account> apiResponse = new APIResponse<>();
+
+            Account existingAccount = accountService.getAccountById(id);
+            if (existingAccount == null) {
+                apiResponse.setMessage("Account not found");
+                return apiResponse;
+            }
+
+            String oldAvatar = existingAccount.getAvatar();
+            if (oldAvatar != null && !oldAvatar.isEmpty()) {
+                File oldFile = new File(fileUpload + oldAvatar);
+                if (oldFile.exists()) {
+                    boolean deleted = oldFile.delete();
+                    if (!deleted) {
+                        throw new RuntimeException("Failed to delete old avatar");
+                    }
+                }
+            }
+
+            String fileName = files.getOriginalFilename();
+            FileCopyUtils.copy(files.getBytes(), new File(fileUpload + fileName));
+
+            existingAccount.setEmail(accountDTO.getEmail());
+            existingAccount.setName(accountDTO.getName());
+            existingAccount.setPassword(accountDTO.getPassword());
+            existingAccount.setPhone(accountDTO.getPhone());
+            existingAccount.setGender(accountDTO.getGender());
+            existingAccount.setBirthdate(accountDTO.getBirthdate());
+            existingAccount.setRole(accountDTO.getRole());
+
+            existingAccount.setAvatar(fileName);
+
+            Account updatedAccount = accountService.updateAccount(id, existingAccount);
+
+            apiResponse.setResult(updatedAccount);
+            apiResponse.setMessage("Account updated successfully!");
+
+            return apiResponse;
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload avatar", e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @DeleteMapping("/{id}")

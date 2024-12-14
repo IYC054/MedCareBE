@@ -40,4 +40,9 @@ public class Account {
     @Column(name = "role", length = 20)
     private String role;
 
+
+    @Size(max = 100)
+    @Column(name = "avatar", length = 100)
+    private String avatar;
+
 }

@@ -6,8 +6,10 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Nationalized;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 
 @Getter
@@ -35,10 +37,6 @@ public class Payment {
     @Column(name = "payment_method", nullable = false, length = 50)
     private String paymentMethod;
 
-    @Size(max = 50)
-    @NotNull
-    @Column(name = "Bank_Transfer", nullable = false, length = 50)
-    private String bankTransfer;
 
     @Size(max = 20)
     @NotNull
@@ -49,5 +47,13 @@ public class Payment {
     @ManyToOne(cascade = CascadeType.ALL, optional = false, targetEntity = Appointment.class)
     @JoinColumn(name = "appointment_id", nullable = false)
     private Appointment appointment;
+
+    @Column(name = "transaction_date")
+    private Instant transactionDate;
+
+    @Size(max = 250)
+    @Nationalized
+    @Column(name = "transaction_description", length = 250)
+    private String transactionDescription;
 
 }
