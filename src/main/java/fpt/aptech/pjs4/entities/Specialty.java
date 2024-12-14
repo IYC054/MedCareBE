@@ -20,7 +20,7 @@ public class Specialty {
     @Lob
     @Column(name = "description")
     private String description;
-    @ManyToOne(cascade = CascadeType.ALL, targetEntity = Doctor.class)
+    @ManyToOne(targetEntity = Doctor.class)
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
 

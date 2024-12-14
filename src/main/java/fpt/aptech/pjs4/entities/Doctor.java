@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "doctors")
 @Getter
@@ -23,11 +25,14 @@ public class Doctor {
 
     @Column(name = "status", length = 20)
     private String status;
+
+    // Liên kết với tài khoản người dùng
     @ManyToOne(cascade = CascadeType.ALL, targetEntity = Account.class)
     @JoinColumn(name = "account_id")
     private Account account;
 
-    @Column(name = "specialty_id")
-    private Integer specialtyId;
+    // Liên kết với chuyên khoa
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Specialty> specialties;
 
 }

@@ -26,11 +26,6 @@ public class Payment {
     @Column(name = "amount", nullable = false, precision = 15, scale = 2)
     private BigDecimal amount;
 
-    @ColumnDefault("getdate()")
-    @Column(name = "payment_date")
-    private LocalDate paymentDate;
-
-
 
     @Size(max = 50)
     @NotNull
@@ -44,7 +39,7 @@ public class Payment {
     private String status;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.ALL, optional = false, targetEntity = Appointment.class)
+    @ManyToOne(optional = false, targetEntity = Appointment.class)
     @JoinColumn(name = "appointment_id", nullable = false)
     private Appointment appointment;
 

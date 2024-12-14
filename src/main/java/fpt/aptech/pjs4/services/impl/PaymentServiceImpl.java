@@ -22,6 +22,11 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    public Payment getPaymentbyDescription(String description) {
+        return paymentRepository.findPaymentByTransactionDescription(description);
+    }
+
+    @Override
     public Payment updatePayment(int id,Payment payment) {
         if (paymentRepository.existsById(id)) {
             payment.setId(id);
@@ -32,8 +37,13 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     public void deletePayment(int id) {
-        paymentRepository.deleteById(id);
-    }
+        Payment payment = paymentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Payment not found"));
+
+
+
+        // Sau đó xóa bản ghi Payment
+        paymentRepository.deleteById(id);    }
 
     @Override
     public List<Payment> getAllPayments() {

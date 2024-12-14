@@ -31,7 +31,7 @@ public class Hospital {
 
     @Column(name = "description", length = 250)
     private String description;
-    @ManyToOne(targetEntity = Specialty.class, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = Specialty.class)
     @JoinColumn(name = "specialties_id")
     private Specialty specialties;
 

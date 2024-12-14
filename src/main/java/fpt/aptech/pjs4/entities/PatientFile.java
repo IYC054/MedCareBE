@@ -28,7 +28,7 @@ public class PatientFile {
     private BigDecimal totalPrice;
 
     @NotNull
-    @ManyToOne(cascade = CascadeType.ALL, targetEntity = Patient.class)
+    @ManyToOne( targetEntity = Patient.class)
     @JoinColumn(name = "patients_id")
     private Patient patients;
 

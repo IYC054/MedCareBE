@@ -17,7 +17,7 @@ public class FilesImage {
 
     @Column(name = "url_image", length = 50)
     private String urlImage;
-    @ManyToOne(cascade = CascadeType.ALL,targetEntity = PatientFile.class)
+    @ManyToOne(targetEntity = PatientFile.class)
     @JoinColumn(name = "patients_files_id")
     private PatientFile patientsFiles;
 

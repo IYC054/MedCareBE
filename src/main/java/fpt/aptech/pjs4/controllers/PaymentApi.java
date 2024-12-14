@@ -1,6 +1,9 @@
 package fpt.aptech.pjs4.controllers;
 
 import fpt.aptech.pjs4.DTOs.PaymentRequest;
+import fpt.aptech.pjs4.entities.Payment;
+import fpt.aptech.pjs4.services.PaymentService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
@@ -17,15 +20,16 @@ import java.util.*;
 @RequestMapping("/api/payment")
 public class PaymentApi {
     RestTemplate restTemplate = new RestTemplate();
-
+    @Autowired
+    private PaymentService paymentService;
     @PostMapping("/momo")
     public ResponseEntity<?> payWithMomo(@RequestBody PaymentRequest paymentRequest) {
-        String accessKey = "IYUmI2q16VW7Kqx0";
-        String secretKey = "qJ0MLqtwl1rTFBM0a9TRDBvm0w8jHIgK";
-        String partnerCode = "MOMO7E8E20241209";
+        String accessKey = "LAUsmdNYCswc4xt3";
+        String secretKey = "v4mYTJVM8M7pSUemgFTTqon3PopWekkD";
+        String partnerCode = "MOMOEXFT20240911";
         String orderInfo = paymentRequest.getOrderInfo();
-        String redirectUrl = "http://localhost:5173/confirm-payment";
-        String ipnUrl = "http://localhost:5173/confirm-payment";
+        String redirectUrl = "http://localhost:5173/payment-success";
+        String ipnUrl = "http://localhost:5173/payment-success";
         String requestType = "captureWallet";
         BigDecimal amount = paymentRequest.getAmount();
         String orderId = String.valueOf(System.currentTimeMillis());
@@ -34,7 +38,10 @@ public class PaymentApi {
         String orderGroupId = "";
         boolean autoCapture = true;
         String lang = "vi";
-
+        Payment paymenttrans = paymentService.getPaymentbyDescription(paymentRequest.getOrderInfo());
+        if (paymenttrans != null) {
+            return ResponseEntity.status(400).body("Payment already exists");
+        }
         try {
             // Build rawSignature
             String rawSignature = "accessKey=" + accessKey +
@@ -79,6 +86,7 @@ public class PaymentApi {
             requestBody.put("extraData", extraData);
             requestBody.put("orderGroupId", orderGroupId);
             requestBody.put("signature", signature);
+            requestBody.put("appointmentid", 1);
 
             // Call MoMo API
             HttpHeaders headers = new HttpHeaders();
@@ -87,7 +95,7 @@ public class PaymentApi {
 
             String momoApiUrl = "https://payment.momo.vn/v2/gateway/api/create";
             ResponseEntity<Map> response = restTemplate.postForEntity(momoApiUrl, entity, Map.class);
-
+            System.out.println(response);
             return ResponseEntity.ok(response.getBody());
         } catch (Exception e) {
             e.printStackTrace();

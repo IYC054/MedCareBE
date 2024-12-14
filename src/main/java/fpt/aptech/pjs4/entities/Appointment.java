@@ -18,11 +18,11 @@ public class Appointment {
     @Column(name = "appointment_id", nullable = false)
     private Integer id;
 
-    @ManyToOne(targetEntity = Patient.class, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = Patient.class)
     @JoinColumn(name = "patient_id")
     private Patient patient;
 
-    @ManyToOne(targetEntity = Doctor.class, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = Doctor.class)
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
 

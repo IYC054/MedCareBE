@@ -9,7 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/payments")
@@ -20,13 +25,46 @@ public class PaymentController {
 
     @Autowired
     private AppointmentService appointmentService;
+    @PostMapping("/confirm-payment")
+    public ResponseEntity<?> confirmPayment(
+            @RequestParam int resultCode,
+            @RequestParam String amount,
+            @RequestParam String orderInfo) {
+
+        try {
+            BigDecimal amountDecimal = new BigDecimal(amount); // Chuyển đổi String sang BigDecimal
+            System.out.println("Received params: resultCode=" + resultCode + ", amount=" + amountDecimal + ", orderInfo=" + orderInfo);
+            Appointment appointment = appointmentService.getAppointmentById(1);
+            Instant now = Instant.now();
+            ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
+            LocalDateTime localDateTime = LocalDateTime.ofInstant(now, zoneId);
+            Instant transactionDate = localDateTime.atZone(zoneId).toInstant();
+            if (resultCode == 0) {
+                // Xử lý thanh toán thành công
+                Payment payment = new Payment();
+                payment.setAmount(amountDecimal);
+                payment.setPaymentMethod("Momo");
+                payment.setTransactionDate(transactionDate);
+                payment.setAppointment(appointment);
+                payment.setStatus("Dang hold");
+                payment.setTransactionDescription(orderInfo);
+                paymentService.createPayment(payment);
+                return ResponseEntity.ok("Payment confirmed successfully.");
+            } else {
+                return ResponseEntity.status(400).body("Payment failed");
+            }
+
+        } catch (NumberFormatException e) {
+            return ResponseEntity.status(400).body("Invalid amount format");
+        }
+    }
 
     // Create Payment
     @PostMapping
     public ResponseEntity<Payment> createPayment(@RequestBody PaymentDTO paymentDTO) {
         Appointment appointment = appointmentService.getAppointmentById(paymentDTO.getAppointmentId());
         if (appointment == null) {
-            return ResponseEntity.status(404).body(null); // Appointment không tồn tại
+            return ResponseEntity.status(404).body(null);
         }
 
         Payment payment = new Payment();
@@ -34,6 +72,7 @@ public class PaymentController {
         payment.setPaymentMethod(paymentDTO.getPaymentMethod());
         payment.setStatus(paymentDTO.getStatus());
         payment.setTransactionDescription(paymentDTO.getTransactionDescription());
+        payment.setTransactionDate(paymentDTO.getTransactionDate());
         payment.setAppointment(appointment);
 
         Payment createdPayment = paymentService.createPayment(payment);
@@ -45,7 +84,7 @@ public class PaymentController {
     public ResponseEntity<Payment> getPaymentById(@PathVariable int id) {
         Payment payment = paymentService.getPayment(id);
         if (payment == null) {
-            return ResponseEntity.status(404).body(null); // Nếu không tìm thấy Payment
+            return ResponseEntity.status(404).body(null);
         }
         return ResponseEntity.ok(payment);
     }
@@ -62,12 +101,12 @@ public class PaymentController {
     public ResponseEntity<Payment> updatePayment(@PathVariable int id, @RequestBody PaymentDTO paymentDTO) {
         Payment existingPayment = paymentService.getPayment(id);
         if (existingPayment == null) {
-            return ResponseEntity.status(404).body(null); // Nếu không tìm thấy Payment
+            return ResponseEntity.status(404).body(null);
         }
 
         Appointment appointment = appointmentService.getAppointmentById(paymentDTO.getAppointmentId());
         if (appointment == null) {
-            return ResponseEntity.status(404).body(null); // Nếu không tìm thấy Appointment
+            return ResponseEntity.status(404).body(null);
         }
 
         existingPayment.setAmount(paymentDTO.getAmount());

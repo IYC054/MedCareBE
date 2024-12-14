@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -12,5 +13,6 @@ public class PaymentDTO {
     private String paymentMethod;
     private String status;
     private Integer appointmentId;
+    private Instant transactionDate;
     private String transactionDescription;
 }
