@@ -1,5 +1,7 @@
 package fpt.aptech.pjs4.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -39,10 +41,14 @@ public class Payment {
     private String status;
 
     @NotNull
-    @ManyToOne(optional = false, targetEntity = Appointment.class)
+    @ManyToOne(optional = false)
+    @JsonIgnore
     @JoinColumn(name = "appointment_id", nullable = false)
     private Appointment appointment;
-
+    @JsonProperty("appointment_id")
+    public Integer getAppointmentId() {
+        return appointment != null ? appointment.getId() : null;
+    }
     @Column(name = "transaction_date")
     private Instant transactionDate;
 

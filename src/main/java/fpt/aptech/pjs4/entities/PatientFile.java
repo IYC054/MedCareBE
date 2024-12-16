@@ -1,5 +1,7 @@
 package fpt.aptech.pjs4.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -28,9 +30,13 @@ public class PatientFile {
     private BigDecimal totalPrice;
 
     @NotNull
-    @ManyToOne( targetEntity = Patient.class)
+    @ManyToOne(optional = false)
+    @JsonIgnore
     @JoinColumn(name = "patients_id")
     private Patient patients;
-
+    @JsonProperty("patients_id")
+    public Integer getPatientsId() {
+        return patients != null ? patients.getId() : null;
+    }
 
 }

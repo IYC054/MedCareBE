@@ -1,4 +1,6 @@
 package fpt.aptech.pjs4.entities;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,8 +22,12 @@ public class Specialty {
     @Lob
     @Column(name = "description")
     private String description;
-    @ManyToOne(targetEntity = Doctor.class)
+    @JsonIgnore
+    @ManyToOne(optional = false)
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
-
+    @JsonProperty("doctor_id")
+    public Integer getAppointmentId() {
+        return doctor != null ? doctor.getId() : null;
+    }
 }

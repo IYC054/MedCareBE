@@ -1,5 +1,6 @@
 package fpt.aptech.pjs4.controllers;
 
+import fpt.aptech.pjs4.DTOs.PaymentDataDTO;
 import fpt.aptech.pjs4.DTOs.PaymentRequest;
 import fpt.aptech.pjs4.entities.Payment;
 import fpt.aptech.pjs4.services.PaymentService;
@@ -24,9 +25,9 @@ public class PaymentApi {
     private PaymentService paymentService;
     @PostMapping("/momo")
     public ResponseEntity<?> payWithMomo(@RequestBody PaymentRequest paymentRequest) {
-        String accessKey = "LAUsmdNYCswc4xt3";
-        String secretKey = "v4mYTJVM8M7pSUemgFTTqon3PopWekkD";
-        String partnerCode = "MOMOEXFT20240911";
+        String accessKey = "mukihs6i0gwJ7hsq";
+        String secretKey = "yKncdYiiEfUPOUjLLe339ePqrYbHV4Kf";
+        String partnerCode = "MOMOELHN20241211";
         String orderInfo = paymentRequest.getOrderInfo();
         String redirectUrl = "http://localhost:5173/payment-success";
         String ipnUrl = "http://localhost:5173/payment-success";
@@ -101,6 +102,20 @@ public class PaymentApi {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
+    }
+    public PaymentDataDTO convertToDTO(Payment payment) {
+        PaymentDataDTO dto = new PaymentDataDTO();
+        dto.setId(payment.getId());
+        dto.setAmount(payment.getAmount());
+        dto.setPaymentMethod(payment.getPaymentMethod());
+        dto.setStatus(payment.getStatus());
+        dto.setTransactionDate(payment.getTransactionDate() != null ?
+                payment.getTransactionDate().atZone(java.time.ZoneId.systemDefault()).toLocalDate() : null);
+        dto.setTransactionDescription(payment.getTransactionDescription());
+        dto.setAppointmentId(payment.getAppointment().getId());
+        dto.setPatientName(payment.getAppointment().getPatient().getAccount().getName());
+        dto.setDoctorName(payment.getAppointment().getDoctor().getAccount().getName());
+        return dto;
     }
 
 }

@@ -1,5 +1,6 @@
 package fpt.aptech.pjs4.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,7 +18,8 @@ public class FilesImage {
 
     @Column(name = "url_image", length = 50)
     private String urlImage;
-    @ManyToOne(targetEntity = PatientFile.class)
+    @ManyToOne(optional = false)
+    @JsonIgnore
     @JoinColumn(name = "patients_files_id")
     private PatientFile patientsFiles;
 

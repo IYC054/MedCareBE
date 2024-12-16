@@ -1,4 +1,6 @@
 package fpt.aptech.pjs4.entities;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import jakarta.persistence.*;
 
@@ -16,11 +18,20 @@ public class Patient {
 
     @Column(name = "descriptions", length = 250)
     private String descriptions;
-    @ManyToOne(targetEntity = Account.class)
+    @ManyToOne(optional = false)
+    @JsonIgnore
     @JoinColumn(name = "account_id")
     private Account account;
-    @ManyToOne(targetEntity = Doctor.class)
+    @ManyToOne(optional = false)
+    @JsonIgnore
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
-
+    @JsonProperty("doctor_id")
+    public Integer getDoctorId() {
+        return doctor != null ? doctor.getId() : null;
+    }
+    @JsonProperty("account_id")
+    public Integer getPatientId() {
+        return account != null ? account.getId() : null;
+    }
 }
