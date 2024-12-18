@@ -34,6 +34,15 @@ public class Payment {
     @Column(name = "payment_method", nullable = false, length = 50)
     private String paymentMethod;
 
+    @Size(max = 50)
+    @NotNull
+    @Column(name = "payer", nullable = false, length = 50)
+    private String payer;
+
+    @Size(max = 50)
+    @NotNull
+    @Column(name = "phone", nullable = false, length = 50)
+    private String phone;
 
     @Size(max = 20)
     @NotNull
