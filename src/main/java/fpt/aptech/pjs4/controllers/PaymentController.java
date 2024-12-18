@@ -76,6 +76,9 @@ public class PaymentController {
         Payment payment = new Payment();
         payment.setAmount(paymentDTO.getAmount());
         payment.setPaymentMethod(paymentDTO.getPaymentMethod());
+        payment.setPayer(paymentDTO.getPayer());
+        payment.setPhone(paymentDTO.getPhone());
+        payment.setStatus(paymentDTO.getStatus());
         payment.setStatus("Đang Hold");
         payment.setTransactionDescription(paymentDTO.getTransactionDescription());
         payment.setTransactionDate(transactionDate);
