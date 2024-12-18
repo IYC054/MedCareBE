@@ -19,8 +19,8 @@ public class Specialty {
     @Column(name = "name", length = 100)
     private String name;
 
-    @Lob
-    @Column(name = "description")
+
+    @Column(name = "description", length = 200)
     private String description;
     @JsonIgnore
     @ManyToOne(optional = false)
