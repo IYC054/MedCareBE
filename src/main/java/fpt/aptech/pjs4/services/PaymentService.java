@@ -2,6 +2,8 @@ package fpt.aptech.pjs4.services;
 
 import fpt.aptech.pjs4.entities.Payment;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface PaymentService {
@@ -12,4 +14,7 @@ public interface PaymentService {
     Payment updatePayment(int id,Payment payment);
     void deletePayment(int id);
     List<Payment> getAllPayments();
+
+    public List<Payment> filterPayments(LocalDate startDate, LocalDate endDate,
+                                        String paymentId, String status);
 }
