@@ -6,11 +6,13 @@ import fpt.aptech.pjs4.entities.Payment;
 import fpt.aptech.pjs4.services.AppointmentService;
 import fpt.aptech.pjs4.services.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -124,5 +126,21 @@ public class PaymentController {
     public ResponseEntity<Void> deletePayment(@PathVariable int id) {
         paymentService.deletePayment(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/filter")
+    public List<Payment> filterPaymentWithParams(
+            @RequestParam(required = false)
+            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+
+            @RequestParam(required = false)
+            @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+
+            @RequestParam(required = false) String paymentId,
+
+            @RequestParam(required = false) String status) {
+
+
+        return paymentService.filterPayments(startDate, endDate, paymentId, status);
     }
 }
