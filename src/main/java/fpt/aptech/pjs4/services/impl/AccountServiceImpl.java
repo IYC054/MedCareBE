@@ -9,6 +9,8 @@ import com.nimbusds.jwt.SignedJWT;
 import fpt.aptech.pjs4.DTOs.AuthLoginToken;
 import fpt.aptech.pjs4.DTOs.Introspect;
 import fpt.aptech.pjs4.entities.Account;
+import fpt.aptech.pjs4.exceptions.AppException;
+import fpt.aptech.pjs4.exceptions.ErrorCode;
 import fpt.aptech.pjs4.repositories.AccountRepository;
 import fpt.aptech.pjs4.services.AccountService;
 import lombok.extern.slf4j.Slf4j;
@@ -56,6 +58,12 @@ public class AccountServiceImpl implements AccountService {
         if (account.getPassword() == null || account.getPassword().isEmpty()) {
             throw new RuntimeException("Password cannot be empty");
         }
+        if(accountRepository.existsAccountByEmail(account.getEmail())) {
+            throw new AppException(ErrorCode.CHECK_EMAIL);
+        }
+        if(accountRepository.existsAccountByPhone(account.getPhone())) {
+            throw new AppException(ErrorCode.CHECK_PHONE);
+        }
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         return accountRepository.save(account);
@@ -74,8 +82,13 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public Account updateAccount(int id, Account account) {
+        Account account1 = getAccountById(id);
         if (accountRepository.existsById(id)) {
             account.setId(id);
+            if(account1.getPassword().equals(account.getPassword())) {
+                throw new AppException(ErrorCode.CHECK_UPDATEPASS);
+            }
+
             return accountRepository.save(account);
         }
         return null;

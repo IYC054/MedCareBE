@@ -15,6 +15,7 @@ public class GlobalExecptionHandler {
         apiRespone.setCode(401);
         return ResponseEntity.badRequest().body(apiRespone);
     }
+
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     ResponseEntity<APIResponse> methodArgumentNotValidExceptionHandler(MethodArgumentNotValidException ex) {
         APIResponse apiRespone = new APIResponse();
@@ -22,5 +23,13 @@ public class GlobalExecptionHandler {
         apiRespone.setCode(401);
         return ResponseEntity.badRequest().body(apiRespone);
 
+    }
+    @ExceptionHandler(value = AppException.class)
+    ResponseEntity<APIResponse> handlingAppException(AppException exception){
+        ErrorCode errorCode = exception.getErrorCode();
+        APIResponse apiResponse = new APIResponse();
+        apiResponse.setCode(errorCode.getCode());
+        apiResponse.setMessage(errorCode.getMessage());
+        return ResponseEntity.badRequest().body(apiResponse);
     }
 }

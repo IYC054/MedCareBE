@@ -7,5 +7,7 @@ import java.util.Optional;
 
 public interface AccountRepository extends JpaRepository<Account, Integer> {
     Optional<Account> findAccountByEmail(String email);
+    boolean existsAccountByEmail(String email);
+    boolean existsAccountByPhone(String phone);
     Account findAccountByPassword(String password);
 }
