@@ -76,13 +76,10 @@ public class PaymentController {
         Payment payment = new Payment();
         payment.setAmount(paymentDTO.getAmount());
         payment.setPaymentMethod(paymentDTO.getPaymentMethod());
-<<<<<<< HEAD
         payment.setPayer(paymentDTO.getPayer());
         payment.setPhone(paymentDTO.getPhone());
         payment.setStatus(paymentDTO.getStatus());
-=======
         payment.setStatus("Đang Hold");
->>>>>>> 8a79ee9a291ad68f51c00b317bb364c32c0be9d3
         payment.setTransactionDescription(paymentDTO.getTransactionDescription());
         payment.setTransactionDate(transactionDate);
         payment.setAppointment(appointment);
