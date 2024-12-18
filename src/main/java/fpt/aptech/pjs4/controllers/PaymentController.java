@@ -8,6 +8,7 @@ import fpt.aptech.pjs4.services.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -34,7 +35,7 @@ public class PaymentController {
             @RequestParam String orderInfo) {
 
         try {
-            BigDecimal amountDecimal = new BigDecimal(amount); // Chuyển đổi String sang BigDecimal
+            BigDecimal amountDecimal = new BigDecimal(amount);
             System.out.println("Received params: resultCode=" + resultCode + ", amount=" + amountDecimal + ", orderInfo=" + orderInfo);
             Appointment appointment = appointmentService.getAppointmentById(1);
             Instant now = Instant.now();
@@ -63,26 +64,58 @@ public class PaymentController {
 
     // Create Payment
     @PostMapping
-    public ResponseEntity<Payment> createPayment(@RequestBody PaymentDTO paymentDTO) {
+    public ResponseEntity<?> createPayment(@RequestBody PaymentDTO paymentDTO) {
         Appointment appointment = appointmentService.getAppointmentById(paymentDTO.getAppointmentId());
         if (appointment == null) {
-            return ResponseEntity.status(404).body(null);
+            return ResponseEntity.status(404).body("Không tồn tại giao dịch này");
         }
-
+        Instant now = Instant.now();
+        ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(now, zoneId);
+        Instant transactionDate = localDateTime.atZone(zoneId).toInstant();
         Payment payment = new Payment();
         payment.setAmount(paymentDTO.getAmount());
         payment.setPaymentMethod(paymentDTO.getPaymentMethod());
+<<<<<<< HEAD
         payment.setPayer(paymentDTO.getPayer());
         payment.setPhone(paymentDTO.getPhone());
         payment.setStatus(paymentDTO.getStatus());
+=======
+        payment.setStatus("Đang Hold");
+>>>>>>> 8a79ee9a291ad68f51c00b317bb364c32c0be9d3
         payment.setTransactionDescription(paymentDTO.getTransactionDescription());
-        payment.setTransactionDate(paymentDTO.getTransactionDate());
+        payment.setTransactionDate(transactionDate);
         payment.setAppointment(appointment);
 
         Payment createdPayment = paymentService.createPayment(payment);
         return ResponseEntity.status(201).body(createdPayment);
     }
-
+    @PutMapping("/cancel/{id}")
+    public ResponseEntity<?> cancelPayment(@PathVariable int id) {
+        try {
+            Payment payment = paymentService.getPayment(id);
+            System.out.println(payment.getStatus());
+            if(payment == null) {
+                return ResponseEntity.status(404).body("Không tồn tại giao dịch này");
+            }
+            payment.setStatus("Đang chờ xử lý hoàn tiền");
+            paymentService.updatePayment(id, payment);
+            return ResponseEntity.status(200).body(payment);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Lỗi khi xử lý giao dịch: " + e.getMessage());
+        }
+    }
+    @Scheduled(cron = "0 0 23 * * *")
+    public void runAt11PM() {
+        List<Payment> payments = paymentService.getPaymentsByCurrentDate();
+        for (Payment payment : payments) {
+            if(payment.getStatus().contentEquals("Đang Hold")) {
+                payment.setStatus("Thanh toán thành công");
+                paymentService.updatePayment(payment.getId(), payment);
+            }
+        }
+        System.out.println("Đã chạy vào lúc 11h tối: " + java.time.LocalDateTime.now());
+    }
     // Get Payment by ID
     @GetMapping("/{id}")
     public ResponseEntity<Payment> getPaymentById(@PathVariable int id) {

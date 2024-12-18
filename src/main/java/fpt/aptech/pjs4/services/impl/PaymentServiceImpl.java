@@ -5,6 +5,7 @@ import fpt.aptech.pjs4.repositories.PaymentRepository;
 import fpt.aptech.pjs4.services.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 @Service
+@Transactional
 public class PaymentServiceImpl implements PaymentService {
     @Autowired
     private PaymentRepository paymentRepository;
@@ -28,6 +30,11 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public Payment getPaymentbyDescription(String description) {
         return paymentRepository.findPaymentByTransactionDescription(description);
+    }
+
+    @Override
+    public List<Payment> getPaymentsByCurrentDate() {
+        return paymentRepository.findPaymentsByCurrentDate();
     }
 
     @Override

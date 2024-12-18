@@ -1,6 +1,5 @@
 package fpt.aptech.pjs4.controllers;
 
-import fpt.aptech.pjs4.DTOs.PaymentDataDTO;
 import fpt.aptech.pjs4.DTOs.PaymentRequest;
 import fpt.aptech.pjs4.entities.Payment;
 import fpt.aptech.pjs4.services.PaymentService;
@@ -8,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -103,19 +103,6 @@ public class PaymentApi {
             return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
     }
-    public PaymentDataDTO convertToDTO(Payment payment) {
-        PaymentDataDTO dto = new PaymentDataDTO();
-        dto.setId(payment.getId());
-        dto.setAmount(payment.getAmount());
-        dto.setPaymentMethod(payment.getPaymentMethod());
-        dto.setStatus(payment.getStatus());
-        dto.setTransactionDate(payment.getTransactionDate() != null ?
-                payment.getTransactionDate().atZone(java.time.ZoneId.systemDefault()).toLocalDate() : null);
-        dto.setTransactionDescription(payment.getTransactionDescription());
-        dto.setAppointmentId(payment.getAppointment().getId());
-        dto.setPatientName(payment.getAppointment().getPatient().getAccount().getName());
-        dto.setDoctorName(payment.getAppointment().getDoctor().getAccount().getName());
-        return dto;
-    }
+
 
 }

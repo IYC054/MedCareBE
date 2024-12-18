@@ -10,7 +10,7 @@ public interface PaymentService {
     Payment createPayment(Payment payment);
     Payment getPayment(int id);
     Payment getPaymentbyDescription(String description);
-
+    List<Payment> getPaymentsByCurrentDate();
     Payment updatePayment(int id,Payment payment);
     void deletePayment(int id);
     List<Payment> getAllPayments();

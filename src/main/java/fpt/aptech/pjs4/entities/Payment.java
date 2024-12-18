@@ -44,9 +44,9 @@ public class Payment {
     @Column(name = "phone", nullable = false, length = 50)
     private String phone;
 
-    @Size(max = 20)
+    @Size(max = 60)
     @NotNull
-    @Column(name = "status", nullable = false, length = 20)
+    @Column(name = "status", nullable = false, length = 60)
     private String status;
 
     @NotNull
