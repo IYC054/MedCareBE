@@ -54,6 +54,12 @@ public class Payment {
     @JsonIgnore
     @JoinColumn(name = "appointment_id", nullable = false)
     private Appointment appointment;
+
+    @Size(max = 50)
+    @NotNull
+    @Column(name = "transaction_code", nullable = false, length = 50)
+    private String transactionCode;
+
     @JsonProperty("appointment_id")
     public Integer getAppointmentId() {
         return appointment != null ? appointment.getId() : null;

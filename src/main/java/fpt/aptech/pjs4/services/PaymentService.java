@@ -14,7 +14,7 @@ public interface PaymentService {
     Payment updatePayment(int id,Payment payment);
     void deletePayment(int id);
     List<Payment> getAllPayments();
-
+    public List<Payment> findPaymentByTransactionCode(String transcode);
     public List<Payment> filterPayments(LocalDate startDate, LocalDate endDate,
                                         String paymentId, String status);
 }

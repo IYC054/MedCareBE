@@ -32,7 +32,10 @@ public class PaymentController {
     public ResponseEntity<?> confirmPayment(
             @RequestParam int resultCode,
             @RequestParam String amount,
-            @RequestParam String orderInfo) {
+            @RequestParam String orderInfo,
+            @RequestParam String payer,
+            @RequestParam String phone,
+            @RequestParam String trans_code) {
 
         try {
             BigDecimal amountDecimal = new BigDecimal(amount);
@@ -49,6 +52,9 @@ public class PaymentController {
                 payment.setPaymentMethod("Momo");
                 payment.setTransactionDate(transactionDate);
                 payment.setAppointment(appointment);
+                payment.setPayer(payer);
+                payment.setPhone(phone);
+                payment.setTransactionCode(trans_code);
                 payment.setStatus("Dang hold");
                 payment.setTransactionDescription(orderInfo);
                 paymentService.createPayment(payment);
@@ -79,6 +85,7 @@ public class PaymentController {
         payment.setPayer(paymentDTO.getPayer());
         payment.setPhone(paymentDTO.getPhone());
         payment.setStatus(paymentDTO.getStatus());
+        payment.setTransactionCode(paymentDTO.getTransactionCode());
         payment.setStatus("Đang Hold");
         payment.setTransactionDescription(paymentDTO.getTransactionDescription());
         payment.setTransactionDate(transactionDate);
@@ -159,7 +166,11 @@ public class PaymentController {
         paymentService.deletePayment(id);
         return ResponseEntity.noContent().build();
     }
-
+        @GetMapping("/transcode/{code}")
+    public ResponseEntity<List<Payment>> getAllPayments(@PathVariable String code) {
+        List<Payment> paymentcode = paymentService.findPaymentByTransactionCode(code);
+        return ResponseEntity.ok(paymentcode);
+    }
     @GetMapping("/filter")
     public List<Payment> filterPaymentWithParams(
             @RequestParam(required = false)

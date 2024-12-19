@@ -62,6 +62,11 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
+    public List<Payment> findPaymentByTransactionCode(String transcode) {
+        return paymentRepository.findPaymentByTransactionCode(transcode);
+    }
+
+    @Override
     public List<Payment> filterPayments(LocalDate startDate, LocalDate endDate, String paymentId, String status) {
         // Chuyển LocalDate sang Instant với múi giờ UTC
         Instant startInstant = (startDate != null) ? startDate.atStartOfDay(ZoneId.systemDefault()).toInstant() : null;
