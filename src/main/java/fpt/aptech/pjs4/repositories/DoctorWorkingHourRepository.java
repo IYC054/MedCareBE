@@ -1,8 +1,8 @@
 package fpt.aptech.pjs4.repositories;
 
-import fpt.aptech.pjs4.entities.DoctorWorking;
+import fpt.aptech.pjs4.entities.Doctorworking;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface DoctorWorkingHourRepository extends JpaRepository<DoctorWorking, Integer> {
+public interface DoctorWorkingHourRepository extends JpaRepository<Doctorworking, Integer> {
 
 }

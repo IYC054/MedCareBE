@@ -1,13 +1,13 @@
 package fpt.aptech.pjs4.services;
 
-import fpt.aptech.pjs4.entities.DoctorWorking;
+import fpt.aptech.pjs4.entities.Doctorworking;
 
 import java.util.List;
 
 public interface DoctorWorkingHourService {
-    List<DoctorWorking> getAllWorkingHours();
-    DoctorWorking getWorkingHour(int id);
-    DoctorWorking addWorkingHour(DoctorWorking workingHour);
-    DoctorWorking updateWorkingHour(DoctorWorking workingHour);
+    List<Doctorworking> getAllWorkingHours();
+    Doctorworking getWorkingHour(int id);
+    Doctorworking addWorkingHour(Doctorworking workingHour);
+    Doctorworking updateWorkingHour(Doctorworking workingHour);
     void deleteWorkingHour(int id);
 }

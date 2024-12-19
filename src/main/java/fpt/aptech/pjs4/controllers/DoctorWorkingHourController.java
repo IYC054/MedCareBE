@@ -1,6 +1,6 @@
 package fpt.aptech.pjs4.controllers;
 
-import fpt.aptech.pjs4.entities.DoctorWorking;
+import fpt.aptech.pjs4.entities.Doctorworking;
 import fpt.aptech.pjs4.services.DoctorWorkingHourService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,8 +16,8 @@ public class DoctorWorkingHourController {
     @Autowired
     private DoctorWorkingHourService workingHourService;
     @GetMapping()
-    public ResponseEntity<List<DoctorWorking>> getWorkingHours() {
-        List<DoctorWorking> doctorWorkingHours = workingHourService.getAllWorkingHours();
+    public ResponseEntity<List<Doctorworking>> getWorkingHours() {
+        List<Doctorworking> doctorWorkingHours = workingHourService.getAllWorkingHours();
         return ResponseEntity.ok(doctorWorkingHours);
     }
 }

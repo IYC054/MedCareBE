@@ -1,5 +1,7 @@
 package fpt.aptech.pjs4.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,16 +12,20 @@ import java.time.LocalTime;
 @Getter
 @Setter
 @Entity
-public class DoctorWorking {
+public class Doctorworking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
-
+    @JsonProperty("doctor_idg")
+    public Integer getPatientsId() {
+        return doctor != null ? doctor.getId() : null;
+    }
     @Column(name = "work_date")
     private LocalDate workDate;
 
