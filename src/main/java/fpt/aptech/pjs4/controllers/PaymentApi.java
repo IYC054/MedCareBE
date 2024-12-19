@@ -25,9 +25,9 @@ public class PaymentApi {
     private PaymentService paymentService;
     @PostMapping("/momo")
     public ResponseEntity<?> payWithMomo(@RequestBody PaymentRequest paymentRequest) {
-        String accessKey = "mukihs6i0gwJ7hsq";
-        String secretKey = "yKncdYiiEfUPOUjLLe339ePqrYbHV4Kf";
-        String partnerCode = "MOMOELHN20241211";
+        String accessKey = "LAUsmdNYCswc4xt3";
+        String secretKey = "v4mYTJVM8M7pSUemgFTTqon3PopWekkD";
+        String partnerCode = "MOMOEXFT20240911";
         String orderInfo = paymentRequest.getOrderInfo();
         String redirectUrl = "http://localhost:5173/payment-success";
         String ipnUrl = "http://localhost:5173/payment-success";
@@ -39,10 +39,12 @@ public class PaymentApi {
         String orderGroupId = "";
         boolean autoCapture = true;
         String lang = "vi";
+
         Payment paymenttrans = paymentService.getPaymentbyDescription(paymentRequest.getOrderInfo());
         if (paymenttrans != null) {
             return ResponseEntity.status(400).body("Payment already exists");
         }
+
         try {
             // Build rawSignature
             String rawSignature = "accessKey=" + accessKey +
@@ -56,7 +58,6 @@ public class PaymentApi {
                     "&requestId=" + requestId +
                     "&requestType=" + requestType;
 
-            System.out.println("rawSignature" + rawSignature);
             // Create HMAC SHA256 signature
             Mac mac = Mac.getInstance("HmacSHA256");
             SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
@@ -69,7 +70,7 @@ public class PaymentApi {
                 hexHash.append(hex);
             }
             String signature = hexHash.toString();
-            System.out.println("Signature: " + signature);
+
             // Create request body
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("partnerCode", partnerCode);
@@ -87,22 +88,25 @@ public class PaymentApi {
             requestBody.put("extraData", extraData);
             requestBody.put("orderGroupId", orderGroupId);
             requestBody.put("signature", signature);
-            requestBody.put("appointmentid", 1);
+            requestBody.put("appointmentid", 1); // Kiểm tra xem có thêm `appointmentid` vào body đúng không
 
-            // Call MoMo API
+            System.out.println("Request body: " + requestBody); // Log requestBody
+
+            // Send the request to MoMo API
             HttpHeaders headers = new HttpHeaders();
             headers.set("Content-Type", "application/json");
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
             String momoApiUrl = "https://payment.momo.vn/v2/gateway/api/create";
             ResponseEntity<Map> response = restTemplate.postForEntity(momoApiUrl, entity, Map.class);
-            System.out.println(response);
+            System.out.println("Response from MoMo API: " + response.getBody());
             return ResponseEntity.ok(response.getBody());
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
     }
+
 
 
 }
