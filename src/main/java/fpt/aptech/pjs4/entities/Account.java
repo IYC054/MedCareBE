@@ -1,10 +1,13 @@
 package fpt.aptech.pjs4.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 
 @Entity
@@ -45,4 +48,11 @@ public class Account {
     @Column(name = "avatar", length = 100)
     private String avatar;
 
+
+    @Column(name = "last_feedback_time", nullable = true)
+    private LocalDateTime lastFeedbackTime;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Feedback> feedbacks;
 }
