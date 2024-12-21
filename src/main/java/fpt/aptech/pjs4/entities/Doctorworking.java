@@ -22,7 +22,7 @@ public class Doctorworking {
     @JsonIgnore
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
-    @JsonProperty("doctor_idg")
+    @JsonProperty("doctor_id")
     public Integer getPatientsId() {
         return doctor != null ? doctor.getId() : null;
     }

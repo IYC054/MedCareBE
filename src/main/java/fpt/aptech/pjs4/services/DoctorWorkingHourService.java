@@ -10,4 +10,5 @@ public interface DoctorWorkingHourService {
     Doctorworking addWorkingHour(Doctorworking workingHour);
     Doctorworking updateWorkingHour(Doctorworking workingHour);
     void deleteWorkingHour(int id);
+    List<Doctorworking> getWorkingHoursByDoctor(int id);
 }

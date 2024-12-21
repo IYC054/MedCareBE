@@ -7,10 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class DoctorWorkingHourServicesImpl implements DoctorWorkingHourService {
+
     @Autowired
     private DoctorWorkingHourRepository doctorWorkingHourRepository;
+
     @Override
     public List<Doctorworking> getAllWorkingHours() {
         return doctorWorkingHourRepository.findAll();
@@ -18,21 +22,33 @@ public class DoctorWorkingHourServicesImpl implements DoctorWorkingHourService {
 
     @Override
     public Doctorworking getWorkingHour(int id) {
-        return null;
+        Optional<Doctorworking> workingHour = doctorWorkingHourRepository.findById(id);
+        return workingHour.orElse(null); // Trả về null nếu không tìm thấy
     }
 
     @Override
     public Doctorworking addWorkingHour(Doctorworking workingHour) {
-        return null;
+        return doctorWorkingHourRepository.save(workingHour); // Lưu mới
     }
 
     @Override
     public Doctorworking updateWorkingHour(Doctorworking workingHour) {
-        return null;
+        if (doctorWorkingHourRepository.existsById(workingHour.getId())) {
+            return doctorWorkingHourRepository.save(workingHour); // Cập nhật nếu tồn tại
+        } else {
+            return null; // Trả về null nếu không tìm thấy
+        }
     }
 
     @Override
     public void deleteWorkingHour(int id) {
+        if (doctorWorkingHourRepository.existsById(id)) {
+            doctorWorkingHourRepository.deleteById(id); // Xóa nếu tồn tại
+        }
+    }
 
+    @Override
+    public List<Doctorworking> getWorkingHoursByDoctor(int id) {
+        return doctorWorkingHourRepository.findByDoctor_Id(id);
     }
 }

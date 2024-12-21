@@ -43,4 +43,9 @@ public class SpecialtyController {
         specialtyService.deleteSpecialty(id);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/doctor/{doctorId}")
+    public ResponseEntity<List<Specialty>> getSpecialtiesByDoctorId(@PathVariable Integer doctorId) {
+        List<Specialty> specialties = specialtyService.getSpecialtiesByDoctorId(doctorId);
+        return ResponseEntity.ok(specialties);
+    }
 }

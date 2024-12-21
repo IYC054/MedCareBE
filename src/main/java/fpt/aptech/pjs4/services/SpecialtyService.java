@@ -14,4 +14,5 @@ public interface SpecialtyService {
     Specialty updateSpecialty(int id, Specialty specialty);
 
     void deleteSpecialty(int id);
+    List<Specialty> getSpecialtiesByDoctorId(Integer doctorId);
 }
