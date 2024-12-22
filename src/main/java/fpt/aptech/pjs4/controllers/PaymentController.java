@@ -33,8 +33,6 @@ public class PaymentController {
             @RequestParam int resultCode,
             @RequestParam String amount,
             @RequestParam String orderInfo,
-            @RequestParam String payer,
-            @RequestParam String phone,
             @RequestParam String trans_code) {
 
         try {
@@ -52,8 +50,6 @@ public class PaymentController {
                 payment.setPaymentMethod("Momo");
                 payment.setTransactionDate(transactionDate);
                 payment.setAppointment(appointment);
-                payment.setPayer(payer);
-                payment.setPhone(phone);
                 payment.setTransactionCode(trans_code);
                 payment.setStatus("Dang hold");
                 payment.setTransactionDescription(orderInfo);
@@ -82,8 +78,6 @@ public class PaymentController {
         Payment payment = new Payment();
         payment.setAmount(paymentDTO.getAmount());
         payment.setPaymentMethod(paymentDTO.getPaymentMethod());
-        payment.setPayer(paymentDTO.getPayer());
-        payment.setPhone(paymentDTO.getPhone());
         payment.setStatus(paymentDTO.getStatus());
         payment.setTransactionCode(paymentDTO.getTransactionCode());
         payment.setStatus("Đang Hold");

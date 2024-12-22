@@ -11,8 +11,6 @@ import java.time.Instant;
 public class PaymentDTO {
     private BigDecimal amount;
     private String paymentMethod;
-    private String payer;
-    private String phone;
     private String status;
     private String transactionCode;
     private Integer appointmentId;
