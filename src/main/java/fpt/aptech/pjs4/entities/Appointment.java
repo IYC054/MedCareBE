@@ -26,12 +26,6 @@ public class Appointment {
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
 
-    @Column(name = "\"date\"")
-    private LocalDate date;
-
-    @Column(name = "\"time\"")
-    private LocalTime time;
-
     @Size(max = 50)
     @Column(name = "type", length = 50)
     private String type;
@@ -42,5 +36,9 @@ public class Appointment {
 
     @Column(name = "amount", precision = 15, scale = 2)
     private BigDecimal amount;
+
+    @ManyToOne(targetEntity = Doctorworking.class)
+    @JoinColumn(name = "worktime_id")
+    private Doctorworking worktime;
 
 }

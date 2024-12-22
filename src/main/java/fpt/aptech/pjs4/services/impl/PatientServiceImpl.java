@@ -20,7 +20,7 @@ public class PatientServiceImpl implements PatientService {
 
     @Override
     public Patient getPatientById(int id) {
-        return patientRepository.findById(id).orElse(null);
+        return patientRepository.findById(id).get();
     }
 
     @Override
