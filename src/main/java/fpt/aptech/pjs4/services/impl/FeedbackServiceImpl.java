@@ -63,10 +63,6 @@ public class FeedbackServiceImpl implements FeedbackService {
         return feedbackRepository.findByAccountId(accountId);
     }
 
-    @Override
-    public Feedback getFeedbackById(Integer feedbackId) {
-        return feedbackRepository.findById(feedbackId).get();
-    }
 
     @Override
     public List<Feedback> getAllFeedbacks() {

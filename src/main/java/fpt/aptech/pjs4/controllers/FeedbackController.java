@@ -35,10 +35,5 @@ public class FeedbackController {
         List<Feedback> feedbacks = feedbackService.getAllFeedbacks();
         return ResponseEntity.ok(feedbacks);
     }
-    // get Id
-    @GetMapping("/")
-    public ResponseEntity<Feedback> getFeedbackById(@PathVariable Integer accountId) {
-        Feedback feedback = feedbackService.getFeedbackById(accountId);
-        return ResponseEntity.ok(feedback);
-    }
+
 }
