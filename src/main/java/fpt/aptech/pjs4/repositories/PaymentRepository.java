@@ -17,12 +17,12 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
     @Query("SELECT p FROM Payment p " +
             "WHERE (:startDate IS NULL OR p.transactionDate >= :startDate) " +
             "AND (:endDate IS NULL OR p.transactionDate <= :endDate) " +
-            "AND (:paymentId IS NULL OR p.id = :paymentId) " +
+            "AND (:transactionCode IS NULL OR p.transactionCode = :transactionCode) " +
             "AND (:status IS NULL OR p.status = :status)")
     List<Payment> findFilteredPayments(
             @Param("startDate") Instant startTime,
             @Param("endDate") Instant endTime,
-            @Param("paymentId") String transactionCode,
+            @Param("transactionCode") String transactionCode,
             @Param("status") String status
     );
     @Query("SELECT p FROM Payment p WHERE p.transactionCode = :transcode")

@@ -67,11 +67,11 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public List<Payment> filterPayments(LocalDate startDate, LocalDate endDate, String paymentId, String status) {
+    public List<Payment> filterPayments(LocalDate startDate, LocalDate endDate, String transactionCode, String status) {
         // Chuyển LocalDate sang Instant với múi giờ UTC
         Instant startInstant = (startDate != null) ? startDate.atStartOfDay(ZoneId.systemDefault()).toInstant() : null;
         Instant endInstant = (endDate != null) ? endDate.atTime(23, 59, 59).atZone(ZoneId.systemDefault()).toInstant() : null;
 
-        return paymentRepository.findFilteredPayments(startInstant, endInstant, paymentId, status);
+        return paymentRepository.findFilteredPayments(startInstant, endInstant, transactionCode, status);
     }
 }
