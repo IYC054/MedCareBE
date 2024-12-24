@@ -35,4 +35,5 @@ public class FeedbackController {
         List<Feedback> feedbacks = feedbackService.getAllFeedbacks();
         return ResponseEntity.ok(feedbacks);
     }
+
 }

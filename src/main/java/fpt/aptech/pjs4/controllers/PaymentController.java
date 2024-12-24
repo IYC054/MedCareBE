@@ -173,11 +173,11 @@ public class PaymentController {
             @RequestParam(required = false)
             @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
 
-            @RequestParam(required = false) String paymentId,
+            @RequestParam(required = false) String transactionCode,
 
             @RequestParam(required = false) String status) {
 
 
-        return paymentService.filterPayments(startDate, endDate, paymentId, status);
+        return paymentService.filterPayments(startDate, endDate, transactionCode, status);
     }
 }
