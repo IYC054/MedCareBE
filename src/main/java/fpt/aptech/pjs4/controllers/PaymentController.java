@@ -51,7 +51,7 @@ public class PaymentController {
                 payment.setTransactionDate(transactionDate);
                 payment.setAppointment(appointment);
                 payment.setTransactionCode(trans_code);
-                payment.setStatus("Dang hold");
+                payment.setStatus("Chờ xử lý");
                 payment.setTransactionDescription(orderInfo);
                 paymentService.createPayment(payment);
                 return ResponseEntity.ok("Payment confirmed successfully.");
@@ -80,7 +80,7 @@ public class PaymentController {
         payment.setPaymentMethod(paymentDTO.getPaymentMethod());
         payment.setStatus(paymentDTO.getStatus());
         payment.setTransactionCode(paymentDTO.getTransactionCode());
-        payment.setStatus("Đang Hold");
+        payment.setStatus("Chờ xử lý");
         payment.setTransactionDescription(paymentDTO.getTransactionDescription());
         payment.setTransactionDate(transactionDate);
         payment.setAppointment(appointment);
