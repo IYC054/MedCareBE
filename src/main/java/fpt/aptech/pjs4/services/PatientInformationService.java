@@ -11,5 +11,6 @@ public interface PatientInformationService {
     PatientsInformation updatePatientInformation(int id,PatientsInformation patientsInformation);
     void deletePatientInformation(int id);
     PatientsInformation addPatientInformation(PatientsInformation patientsInformation);
+    List<PatientsInformation> findPatientsByAccountId(Integer accountId);
 
 }
