@@ -18,7 +18,8 @@ public class AccountDTO {
     private String phone;
     private String gender;
     private LocalDate birthdate;
-    private String role;
+    //set mặc định khi create Account lun
+   // private String role;
     private MultipartFile avatar;
 
 }

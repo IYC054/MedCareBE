@@ -1,58 +1,65 @@
 package fpt.aptech.pjs4.configs;
 
+import fpt.aptech.pjs4.enums.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
-
+import javax.crypto.spec.SecretKeySpec;
 @Configuration
-
+@EnableWebSecurity
 public class SecurityConfig {
+    protected static  final String SIGNER_KEY="5e3b6f9e67e9f1e3b6ad775d9a1c9078c9078b72ad34d3e4e745fb6b64367861";
+    private  final String[] PUBLIC_ENPOINT={
+            "/api/account/token",
+            "/api/account"
+    };
     @Bean
-    public CorsFilter corsFilter(){
-        CorsConfiguration config = new CorsConfiguration();
-        config.addAllowedOrigin("*");
-        config.addAllowedMethod("*");
-        config.addAllowedHeader("*");
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-
-        return new CorsFilter(source);
-    }
-
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http
-//
-//                .authorizeRequests()
-//                .anyRequest().permitAll();
-
-//                .anyRequest().authenticated()
-//                .and()
-//                .formLogin(AbstractHttpConfigurer::disable);
+        httpSecurity
+                .authorizeHttpRequests(requests ->
+                                // cấu hình cho bất kì ai cũng có thể truy cập đc
+                        requests.requestMatchers(HttpMethod.POST, PUBLIC_ENPOINT).permitAll()
+                                //  chặn cho roles Ad mới có thể truy cập
+                                .requestMatchers(HttpMethod.GET,"/api/account").hasRole(Role.ADMIN.name())
+                                .anyRequest().authenticated());
 
 
-       // return http.build();
-        http
-        .csrf(csrf -> csrf.disable()) // Tắt CSRF cho REST API
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/swagger-ui/**", // Đường dẫn Swagger UI mới
-                                "/v3/api-docs/**", // API docs của Swagger OpenAPI 3
-                                "/swagger-resources/**", // Các tài nguyên Swagger
-                                "/webjars/**", // Các thư viện của Swagger
-                                "/api/**"
-                        ).permitAll() // Cho phép truy cập mà không cần xác thực
-                        .anyRequest().authenticated() // Bắt buộc xác thực cho các endpoint khác
+        // cấu hình khi có JWT đúng thì trả về respon
+        httpSecurity.oauth2ResourceServer(oauth2 ->
+                oauth2.jwt(
+                        jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
+                                .jwtAuthenticationConverter(jwtAuthenticationConverter())
                 )
-                .formLogin(AbstractHttpConfigurer::disable); // Định nghĩa cơ chế xác thực cho các API khác
-        return http.build();
+        );
+        // tắt cors
+        httpSecurity.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable());
+        return httpSecurity.build();
     }
+    @Bean
+    JwtAuthenticationConverter jwtAuthenticationConverter(){
+        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+        jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
+        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+        converter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
+        return converter;
+    }
+    @Bean
+    JwtDecoder jwtDecoder(){
+        SecretKeySpec secretKeySpec = new SecretKeySpec(SIGNER_KEY.getBytes(), "HS512");
+        return  NimbusJwtDecoder
+                .withSecretKey(secretKeySpec)
+                .macAlgorithm(MacAlgorithm.HS512)
+                .build();
+    }
+
 }
+

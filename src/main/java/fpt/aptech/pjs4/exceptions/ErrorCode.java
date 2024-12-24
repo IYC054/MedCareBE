@@ -7,6 +7,7 @@ public enum ErrorCode {
     CHECK_PHONE(1003,"Sdt da ton tai"),
     CHECK_UPDATEPASS(1004,"Pass mới không giống pass cũ"),
     ENUM_KEYISWRONG(1006,"Enumkey da sai"),
+    CHECK_LOGIN(1007,"Login that bai")
 
     ;
     private int code;

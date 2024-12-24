@@ -8,6 +8,7 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 
 @Entity
@@ -40,8 +41,9 @@ public class Account {
     @Column(name = "birthdate")
     private LocalDate birthdate;
 
-    @Column(name = "role", length = 20)
-    private String role;
+    @Column(name = "role", length = 100)
+    //private String role;
+    private Set<String> role;
 
 
     @Size(max = 100)

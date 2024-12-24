@@ -1,9 +1,15 @@
 package fpt.aptech.pjs4.services;
 
+import com.nimbusds.jose.JOSEException;
 import fpt.aptech.pjs4.DTOs.AuthLoginToken;
 import fpt.aptech.pjs4.DTOs.Introspect;
+import fpt.aptech.pjs4.DTOs.request.AuthencicationRequest;
+import fpt.aptech.pjs4.DTOs.request.IntrospecRequest;
+import fpt.aptech.pjs4.DTOs.response.AuthencicationResponse;
+import fpt.aptech.pjs4.DTOs.response.IntrospecResponse;
 import fpt.aptech.pjs4.entities.Account;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 
@@ -18,9 +24,7 @@ public interface AccountService {
 
     void deleteAccount(int id);
 
-    AuthLoginToken AuthLogin(String email, String password);
+    public AuthencicationResponse authenticate(AuthencicationRequest request);
 
-    Introspect introspect(Introspect request);
-
-    Map<String, Object> getClaimsFromToken(String token);
+    public IntrospecResponse introspec (IntrospecRequest request) throws JOSEException, ParseException;
 }
