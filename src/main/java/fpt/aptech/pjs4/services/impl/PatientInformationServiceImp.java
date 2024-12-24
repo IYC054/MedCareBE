@@ -40,4 +40,9 @@ public class PatientInformationServiceImp implements PatientInformationService {
     public PatientsInformation addPatientInformation(PatientsInformation patientsInformation) {
         return patientsInformationRepository.save(patientsInformation);
     }
+
+    @Override
+    public List<PatientsInformation> findPatientsByAccountId(Integer accountId) {
+        return patientsInformationRepository.findByAccountId(accountId);
+    }
 }
