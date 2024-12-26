@@ -43,6 +43,7 @@ public class Account {
 
     @Column(name = "role", length = 100)
     //private String role;
+    @SuppressWarnings("all")
     private Set<String> role;
 
 

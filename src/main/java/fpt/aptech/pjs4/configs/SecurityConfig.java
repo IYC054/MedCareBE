@@ -13,6 +13,8 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import javax.crypto.spec.SecretKeySpec;
+import java.util.List;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -23,27 +25,29 @@ public class SecurityConfig {
     };
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-
         httpSecurity
+                .cors(corsConfigurer -> corsConfigurer.configurationSource(request -> {
+                    var cors = new org.springframework.web.cors.CorsConfiguration();
+                    cors.setAllowedOrigins(List.of("http://localhost:5173"));
+                    cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+                    cors.setAllowedHeaders(List.of("*"));
+                    cors.setExposedHeaders(List.of("Authorization"));
+                    return cors;
+                }))
                 .authorizeHttpRequests(requests ->
-                                // cấu hình cho bất kì ai cũng có thể truy cập đc
                         requests.requestMatchers(HttpMethod.POST, PUBLIC_ENPOINT).permitAll()
-                                //  chặn cho roles Ad mới có thể truy cập
-                                .requestMatchers(HttpMethod.GET,"/api/account").hasRole(Role.ADMIN.name())
-                                .anyRequest().authenticated());
-
-
-        // cấu hình khi có JWT đúng thì trả về respon
-        httpSecurity.oauth2ResourceServer(oauth2 ->
-                oauth2.jwt(
-                        jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
-                                .jwtAuthenticationConverter(jwtAuthenticationConverter())
+                                .requestMatchers(HttpMethod.GET, "/api/account").hasRole(Role.ADMIN.name())
+                                .anyRequest().authenticated())
+                .oauth2ResourceServer(oauth2 ->
+                        oauth2.jwt(
+                                jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
+                                        .jwtAuthenticationConverter(jwtAuthenticationConverter())
+                        )
                 )
-        );
-        // tắt cors
-        httpSecurity.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable());
+                .csrf(csrfConfigurer -> csrfConfigurer.disable());
         return httpSecurity.build();
     }
+
     @Bean
     JwtAuthenticationConverter jwtAuthenticationConverter(){
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();

@@ -1,12 +1,13 @@
 package fpt.aptech.pjs4.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fpt.aptech.pjs4.DTOs.APIResponse;
 import fpt.aptech.pjs4.DTOs.PaymentRequest;
 import fpt.aptech.pjs4.entities.Payment;
 import fpt.aptech.pjs4.services.PaymentService;
+import io.swagger.v3.oas.models.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -18,11 +19,16 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.*;
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/payment")
 public class PaymentApi {
+
+    private final String url_mbbank = "https://online.mbbank.com.vn/api/retail-transactionms/transactionms/get-account-transaction-history";
+
+
     RestTemplate restTemplate = new RestTemplate();
     @Autowired
     private PaymentService paymentService;
@@ -110,4 +116,50 @@ public class PaymentApi {
         }
     }
 
+    @GetMapping("/transaction-history")
+    public ResponseEntity<APIResponse<?>> getTransactionHistory(@RequestParam String account, @RequestParam String sessionId) {
+        APIResponse<Object> apiResponse = new APIResponse<>();
+        RestTemplate restTemplate = new RestTemplate();
+        String accountno = account;
+        String refno = accountno + "-202412237590493-88678";
+        Date datenow = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        System.out.println(dateFormat.format(datenow));
+
+        // Payload cơ bản
+        Map<String, Object> payload = new HashMap<>();
+        payload.put("accountNo", "0933315633");
+        payload.put("fromDate", "16/12/2024");
+        payload.put("toDate", dateFormat.format(datenow));
+        payload.put("sessionId", sessionId);
+        payload.put("refNo", refno);
+        payload.put("deviceIdCommon", "rgfgfmrr-mbib-0000-0000-2024122008495838");
+
+        // Header
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("User-Agent", "Mozilla/5.0");
+        headers.set("refno", refno);
+        headers.set("deviceid", "rgfgfmrr-mbib-0000-0000-2024122008495838");
+        headers.set("authorization", "Basic RU1CUkVUQUlMV0VCOlNEMjM0ZGZnMzQlI0BGR0AzNHNmc2RmNDU4NDNm");
+
+        HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
+
+        try {
+            ResponseEntity<String> response = restTemplate.postForEntity(url_mbbank, request, String.class);
+            ObjectMapper objectMapper = new ObjectMapper();
+            Map<String, Object> responseBody = objectMapper.readValue(response.getBody(), Map.class);
+            // Xử lý kết quả thành công
+            apiResponse.setCode(200);
+            apiResponse.setMessage("Lấy data thành công.");
+            apiResponse.setResult(responseBody);
+            return ResponseEntity.ok(apiResponse);
+        } catch (Exception e) {
+            // Xử lý lỗi
+            apiResponse.setCode(500);
+            apiResponse.setMessage("Có lỗi xảy ra: " + e.getMessage());
+            apiResponse.setResult(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
+        }
+    }
 }

@@ -28,7 +28,7 @@ import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
-
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("api/account")
 public class AccountController {
