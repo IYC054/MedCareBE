@@ -18,13 +18,12 @@ public class Chatbotapi {
     private final RestTemplate restTemplate = new RestTemplate();
     private static final String API_URL = "https://api.openai.com/v1/completions"; // Thay thế bằng URL API của tôi
 
-    private static final String api_key = "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";
     @PostMapping("/ask")
     public ResponseEntity<String> askQuestion(@RequestBody QuestionRequest request) {
         // Thiết lập Header
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setBearerAuth(api_key);
+        headers.setBearerAuth("ABCDE");
 
         // Tạo body cho request
         Map<String, Object> body = new HashMap<>();
