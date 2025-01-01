@@ -1,14 +1,8 @@
 package fpt.aptech.pjs4.controllers;
 
 import fpt.aptech.pjs4.DTOs.AppointmentDTO;
-import fpt.aptech.pjs4.entities.Appointment;
-import fpt.aptech.pjs4.entities.Doctor;
-import fpt.aptech.pjs4.entities.Doctorworking;
-import fpt.aptech.pjs4.entities.Patient;
-import fpt.aptech.pjs4.services.AppointmentService;
-import fpt.aptech.pjs4.services.DoctorService;
-import fpt.aptech.pjs4.services.DoctorWorkingHourService;
-import fpt.aptech.pjs4.services.PatientService;
+import fpt.aptech.pjs4.entities.*;
+import fpt.aptech.pjs4.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,11 +20,14 @@ public class AppointmentController {
     private DoctorService doctorService;
     @Autowired
     private DoctorWorkingHourService doctorWorkingHourService;
+    @Autowired
+    private PatientInformationService patientInformationService;
     @PostMapping
     public ResponseEntity<Appointment> createAppointment(@RequestBody AppointmentDTO appointmentrequest) {
         Patient patient = patientService.getPatientById(appointmentrequest.getPatientId());
         Doctor doctor = doctorService.getDoctorById(appointmentrequest.getDoctorId());
         Doctorworking worktime = doctorWorkingHourService.getWorkingHour(appointmentrequest.getWorktimeId());
+        PatientsInformation patientsInformation = patientInformationService.getPatientsInformationById(appointmentrequest.getPatientProfileId());
         Appointment appointment = new Appointment();
         appointment.setPatient(patient);
         appointment.setDoctor(doctor);
@@ -38,6 +35,7 @@ public class AppointmentController {
         appointment.setStatus(appointmentrequest.getStatus());
         appointment.setAmount(appointmentrequest.getAmount());
         appointment.setWorktime(worktime);
+        appointment.setPatientprofile(patientsInformation);
         Appointment createdAppointment = appointmentService.createAppointment(appointment);
         return ResponseEntity.status(201).body(createdAppointment);
     }

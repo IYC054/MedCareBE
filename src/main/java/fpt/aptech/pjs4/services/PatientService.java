@@ -13,4 +13,6 @@ public interface PatientService {
     Patient updatePatient(int id, Patient patient);
 
     void deletePatient(int id);
+
+    List<Patient> getPatientsByAccountId(Integer accountId);
 }

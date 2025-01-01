@@ -33,12 +33,13 @@ public class PaymentController {
             @RequestParam int resultCode,
             @RequestParam String amount,
             @RequestParam String orderInfo,
-            @RequestParam String trans_code) {
+            @RequestParam String trans_code,
+            @RequestParam int appointment_id) {
 
         try {
             BigDecimal amountDecimal = new BigDecimal(amount);
             System.out.println("Received params: resultCode=" + resultCode + ", amount=" + amountDecimal + ", orderInfo=" + orderInfo);
-            Appointment appointment = appointmentService.getAppointmentById(1);
+            Appointment appointment = appointmentService.getAppointmentById(appointment_id);
             Instant now = Instant.now();
             ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
             LocalDateTime localDateTime = LocalDateTime.ofInstant(now, zoneId);
@@ -107,7 +108,7 @@ public class PaymentController {
     public void runAt11PM() {
         List<Payment> payments = paymentService.getPaymentsByCurrentDate();
         for (Payment payment : payments) {
-            if(payment.getStatus().contentEquals("Đang Hold")) {
+            if(payment.getStatus().contentEquals("Chờ xử lý")) {
                 payment.setStatus("Thanh toán thành công");
                 paymentService.updatePayment(payment.getId(), payment);
             }

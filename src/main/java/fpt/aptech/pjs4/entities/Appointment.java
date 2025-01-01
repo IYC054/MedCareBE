@@ -41,4 +41,8 @@ public class Appointment {
     @JoinColumn(name = "worktime_id")
     private Doctorworking worktime;
 
+    @ManyToOne(targetEntity = PatientsInformation.class)
+    @JoinColumn(name = "patientprofile_id")
+    private PatientsInformation patientprofile;
+
 }

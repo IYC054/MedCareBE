@@ -41,4 +41,10 @@ public class PatientServiceImpl implements PatientService {
     public void deletePatient(int id) {
         patientRepository.deleteById(id);
     }
+
+    @Override
+    public List<Patient> getPatientsByAccountId(Integer accountId) {
+        return patientRepository.findByAccount_Id(accountId);
+
+    }
 }

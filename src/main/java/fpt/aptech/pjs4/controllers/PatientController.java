@@ -43,4 +43,9 @@ public class PatientController {
         patientService.deletePatient(id);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/account/{accountId}")
+    public ResponseEntity<List<Patient>> getPatientsByAccount(@PathVariable Integer accountId) {
+        List<Patient> patients = patientService.getPatientsByAccountId(accountId);
+        return ResponseEntity.ok(patients);
+    }
 }

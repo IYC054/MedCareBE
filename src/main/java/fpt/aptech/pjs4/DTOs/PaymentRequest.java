@@ -8,6 +8,9 @@ import java.math.BigDecimal;
 public class PaymentRequest {
     private BigDecimal amount;
     private String orderInfo;
-
+    private int doctorId;
+    private int workId;
+    private int profileId;
+    private int specialtyId;
 
 }

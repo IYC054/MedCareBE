@@ -11,6 +11,7 @@ public class AppointmentDTO {
     private String status;
     private BigDecimal amount;
     private Integer worktimeId;
+    private Integer patientProfileId;
 
     // Getters and setters
 }

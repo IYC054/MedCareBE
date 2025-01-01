@@ -23,7 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
-@RequestMapping("/api/payment")
+@RequestMapping("/api/payments")
 public class PaymentApi {
 
     private final String url_mbbank = "https://online.mbbank.com.vn/api/retail-transactionms/transactionms/get-account-transaction-history";
@@ -38,8 +38,8 @@ public class PaymentApi {
         String secretKey = "v4mYTJVM8M7pSUemgFTTqon3PopWekkD";
         String partnerCode = "MOMOEXFT20240911";
         String orderInfo = paymentRequest.getOrderInfo();
-        String redirectUrl = "http://localhost:5173/payment-success";
-        String ipnUrl = "http://localhost:5173/payment-success";
+        String redirectUrl = "http://localhost:5173/payment-success?doctor="+paymentRequest.getDoctorId() + "&work="+ paymentRequest.getWorkId() +"&specialty="+ paymentRequest.getSpecialtyId() +"&profile=" +paymentRequest.getProfileId();
+        String ipnUrl = "http://localhost:5173/payment-success?doctor="+paymentRequest.getDoctorId() + "&work="+ paymentRequest.getWorkId() +"&specialty="+ paymentRequest.getSpecialtyId() +"&profile=" +paymentRequest.getProfileId();
         String requestType = "captureWallet";
         BigDecimal amount = paymentRequest.getAmount();
         String orderId = String.valueOf(System.currentTimeMillis());
@@ -97,7 +97,6 @@ public class PaymentApi {
             requestBody.put("extraData", extraData);
             requestBody.put("orderGroupId", orderGroupId);
             requestBody.put("signature", signature);
-            requestBody.put("appointmentid", 1); // Kiểm tra xem có thêm `appointmentid` vào body đúng không
 
             System.out.println("Request body: " + requestBody); // Log requestBody
 
@@ -124,12 +123,14 @@ public class PaymentApi {
         String refno = accountno + "-202412237590493-88678";
         Date datenow = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        System.out.println(dateFormat.format(datenow));
-
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(datenow);
+        calendar.add(Calendar.DATE, -1);
+        Date fromDate = calendar.getTime();
         // Payload cơ bản
         Map<String, Object> payload = new HashMap<>();
         payload.put("accountNo", "0933315633");
-        payload.put("fromDate", "16/12/2024");
+        payload.put("fromDate", dateFormat.format(fromDate));
         payload.put("toDate", dateFormat.format(datenow));
         payload.put("sessionId", sessionId);
         payload.put("refNo", refno);
