@@ -15,6 +15,5 @@ public interface AppointmentService {
 
     void deleteAppointment(int id);
 
-    interface PaymentService {
-    }
+    List<Appointment> getAllAppointmentsByPatient(int patientId);
 }

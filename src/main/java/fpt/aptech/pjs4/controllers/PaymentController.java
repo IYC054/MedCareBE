@@ -131,7 +131,11 @@ public class PaymentController {
         List<Payment> paymentList = paymentService.getAllPayments();
         return ResponseEntity.ok(paymentList);
     }
-
+    @GetMapping("/appointment/{id}")
+    public ResponseEntity<List<Payment>> getAllpaymentByAppoint(@PathVariable int id) {
+        List<Payment> paymentList = paymentService.findPaymentByAppointmentId(id);
+        return ResponseEntity.ok(paymentList);
+    }
     // Update Payment
     @PutMapping("/{id}")
     public ResponseEntity<Payment> updatePayment(@PathVariable int id, @RequestBody PaymentDTO paymentDTO) {

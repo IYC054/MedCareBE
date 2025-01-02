@@ -17,4 +17,5 @@ public interface PaymentService {
     public List<Payment> findPaymentByTransactionCode(String transcode);
     public List<Payment> filterPayments(LocalDate startDate, LocalDate endDate,
                                         String transactionCode, String status);
+    List<Payment> findPaymentByAppointmentId(Integer appointmentId);
 }

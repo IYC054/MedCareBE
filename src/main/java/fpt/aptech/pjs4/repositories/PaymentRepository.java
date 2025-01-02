@@ -27,4 +27,6 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
     );
     @Query("SELECT p FROM Payment p WHERE p.transactionCode = :transcode")
     public List<Payment> findPaymentByTransactionCode(String transcode);
+
+    public List<Payment> findPaymentByAppointment_Id(int appointmentId);
 }
