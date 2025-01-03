@@ -116,10 +116,11 @@ public class PaymentApi {
     }
 
     @GetMapping("/transaction-history")
-    public ResponseEntity<APIResponse<?>> getTransactionHistory(@RequestParam String account, @RequestParam String sessionId) {
+    public ResponseEntity<APIResponse<?>> getTransactionHistory() {
         APIResponse<Object> apiResponse = new APIResponse<>();
         RestTemplate restTemplate = new RestTemplate();
-        String accountno = account;
+        String accountno = "0933315633";
+        String sessionId = "";
         String refno = accountno + "-202412237590493-88678";
         Date datenow = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
