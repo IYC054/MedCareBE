@@ -27,12 +27,16 @@ public class Doctor {
     private String status;
 
     // Liên kết với tài khoản người dùng
-    @ManyToOne(cascade = CascadeType.ALL, targetEntity = Account.class)
+    @OneToOne(cascade = CascadeType.ALL, targetEntity = Account.class)
     @JoinColumn(name = "account_id")
     private Account account;
 
-    // Liên kết với chuyên khoa
-    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany
+    @JoinTable(
+            name = "Doctors_Specialties",
+            joinColumns = @JoinColumn(name = "doctor_id"),
+            inverseJoinColumns = @JoinColumn(name = "specialty_id")
+    )
     private List<Specialty> specialties;
 
 }

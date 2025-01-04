@@ -20,7 +20,7 @@ public class SpecialtyServiceImpl implements SpecialtyService {
 
     @Override
     public Specialty getSpecialtyById(int id) {
-        return specialtyRepository.findById(id).orElse(null);
+        return specialtyRepository.findSpecialtyById(id);
     }
 
     @Override

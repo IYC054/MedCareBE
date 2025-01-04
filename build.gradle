@@ -40,6 +40,7 @@ dependencies {
 //    testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'com.nimbusds:nimbus-jose-jwt:9.41.2'
+    implementation "org.jetbrains.kotlin:kotlin-reflect:1.9.0"
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
     implementation 'com.microsoft.sqlserver:mssql-jdbc:10.2.0.jre8'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"

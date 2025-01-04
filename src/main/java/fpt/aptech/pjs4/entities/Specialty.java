@@ -1,33 +1,41 @@
 package fpt.aptech.pjs4.entities;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
-import lombok.*;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.Nationalized;
 
-@Entity
-@Table(name = "specialties")
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Entity
+@Table(name = "Specialties")
 public class Specialty {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "specialty_id", nullable = false)
+    @Column(name = "id", nullable = false)
     private Integer id;
 
+    @Size(max = 100)
+    @Nationalized
     @Column(name = "name", length = 100)
     private String name;
 
-
+    @Size(max = 200)
+    @Nationalized
     @Column(name = "description", length = 200)
     private String description;
+
     @JsonIgnore
     @ManyToOne(optional = false)
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
     @JsonProperty("doctor_id")
-    public Integer getAppointmentId() {
+    public Integer getDoctorId() {
         return doctor != null ? doctor.getId() : null;
     }
+
+
 }
