@@ -165,9 +165,9 @@ public class PaymentController {
         paymentService.deletePayment(id);
         return ResponseEntity.noContent().build();
     }
-        @GetMapping("/transcode/{code}")
-    public ResponseEntity<List<Payment>> getAllPayments(@PathVariable String code) {
-        List<Payment> paymentcode = paymentService.findPaymentByTransactionCode(code);
+    @GetMapping("/transcode/{code}")
+    public ResponseEntity<Payment> getAllPayments(@PathVariable String code) {
+        Payment paymentcode = paymentService.findPaymentByTransactionCode(code);
         return ResponseEntity.ok(paymentcode);
     }
     @GetMapping("/filter")

@@ -62,7 +62,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public List<Payment> findPaymentByTransactionCode(String transcode) {
+    public Payment findPaymentByTransactionCode(String transcode) {
         return paymentRepository.findPaymentByTransactionCode(transcode);
     }
 

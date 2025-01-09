@@ -116,11 +116,11 @@ public class PaymentApi {
     }
 
     @GetMapping("/transaction-history")
-    public ResponseEntity<APIResponse<?>> getTransactionHistory() {
+    public ResponseEntity<APIResponse<?>> getTransactionHistory(@RequestParam String accountphone) {
         APIResponse<Object> apiResponse = new APIResponse<>();
         RestTemplate restTemplate = new RestTemplate();
         String accountno = "0933315633";
-        String sessionId = "";
+        String sessionId = "88c3de63-2b1c-4f61-a3fa-60d4357c6b2c";
         String refno = accountno + "-202412237590493-88678";
         Date datenow = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -128,9 +128,10 @@ public class PaymentApi {
         calendar.setTime(datenow);
         calendar.add(Calendar.DATE, -1);
         Date fromDate = calendar.getTime();
+
         // Payload cơ bản
         Map<String, Object> payload = new HashMap<>();
-        payload.put("accountNo", "0933315633");
+        payload.put("accountNo", accountno);
         payload.put("fromDate", dateFormat.format(fromDate));
         payload.put("toDate", dateFormat.format(datenow));
         payload.put("sessionId", sessionId);
@@ -151,11 +152,36 @@ public class PaymentApi {
             ResponseEntity<String> response = restTemplate.postForEntity(url_mbbank, request, String.class);
             ObjectMapper objectMapper = new ObjectMapper();
             Map<String, Object> responseBody = objectMapper.readValue(response.getBody(), Map.class);
-            // Xử lý kết quả thành công
-            apiResponse.setCode(200);
-            apiResponse.setMessage("Lấy data thành công.");
-            apiResponse.setResult(responseBody);
+
+            // Lấy transactionHistoryList từ body
+            List<Map<String, Object>> transactionHistoryList = (List<Map<String, Object>>) responseBody.get("transactionHistoryList");
+            List<Map<String, Object>> matchingTransactions = new ArrayList<>();
+
+            if (transactionHistoryList != null) {
+                for (Map<String, Object> transaction : transactionHistoryList) {
+                    // Lấy description từ transaction
+                    String description = (String) transaction.get("description");
+
+                    // Kiểm tra nếu description không rỗng và chứa số điện thoại
+                    if (description.contains(accountphone)) {
+                        matchingTransactions.add(transaction);
+                    }
+                }
+            }
+
+            if (!matchingTransactions.isEmpty()) {
+                // Nếu có giao dịch chứa số điện thoại trong description
+                apiResponse.setCode(200);
+                apiResponse.setMessage("Các giao dịch chứa số điện thoại được tìm thấy.");
+                apiResponse.setResult(matchingTransactions);
+            } else {
+                // Nếu không có giao dịch chứa số điện thoại trong description
+                apiResponse.setCode(404);
+                apiResponse.setMessage("Không tìm thấy giao dịch chứa số điện thoại.");
+            }
+
             return ResponseEntity.ok(apiResponse);
+
         } catch (Exception e) {
             // Xử lý lỗi
             apiResponse.setCode(500);
@@ -164,4 +190,54 @@ public class PaymentApi {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
         }
     }
+//    @GetMapping("/transaction-history")
+//    public ResponseEntity<APIResponse<?>> getTransactionHistory() {
+//            APIResponse<Object> apiResponse = new APIResponse<>();
+//            RestTemplate restTemplate = new RestTemplate();
+//            String accountno = "0933315633";
+//            String sessionId = "";
+//            String refno = accountno + "-202412237590493-88678";
+//            Date datenow = new Date();
+//            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+//            Calendar calendar = Calendar.getInstance();
+//            calendar.setTime(datenow);
+//            calendar.add(Calendar.DATE, -1);
+//            Date fromDate = calendar.getTime();
+//            // Payload cơ bản
+//            Map<String, Object> payload = new HashMap<>();
+//            payload.put("accountNo", "0933315633");
+//            payload.put("fromDate", dateFormat.format(fromDate));
+//            payload.put("toDate", dateFormat.format(datenow));
+//            payload.put("sessionId", sessionId);
+//            payload.put("refNo", refno);
+//            payload.put("deviceIdCommon", "rgfgfmrr-mbib-0000-0000-2024122008495838");
+//
+//            // Header
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_JSON);
+//            headers.set("User-Agent", "Mozilla/5.0");
+//            headers.set("refno", refno);
+//            headers.set("deviceid", "rgfgfmrr-mbib-0000-0000-2024122008495838");
+//            headers.set("authorization", "Basic RU1CUkVUQUlMV0VCOlNEMjM0ZGZnMzQlI0BGR0AzNHNmc2RmNDU4NDNm");
+//
+//            HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
+//
+//            try {
+//                ResponseEntity<String> response = restTemplate.postForEntity(url_mbbank, request, String.class);
+//                ObjectMapper objectMapper = new ObjectMapper();
+//                Map<String, Object> responseBody = objectMapper.readValue(response.getBody(), Map.class);
+//                // Xử lý kết quả thành công
+//                apiResponse.setCode(200);
+//                apiResponse.setMessage("Lấy data thành công.");
+//                apiResponse.setResult(responseBody);
+//                return ResponseEntity.ok(apiResponse);
+//            } catch (Exception e) {
+//                // Xử lý lỗi
+//                apiResponse.setCode(500);
+//                apiResponse.setMessage("Có lỗi xảy ra: " + e.getMessage());
+//                apiResponse.setResult(null);
+//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
+//            }
+//        }
+
 }
