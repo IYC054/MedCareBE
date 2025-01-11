@@ -2,13 +2,16 @@ package fpt.aptech.pjs4.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fpt.aptech.pjs4.DTOs.APIResponse;
+import fpt.aptech.pjs4.DTOs.OcrResult;
 import fpt.aptech.pjs4.DTOs.PaymentDTO;
 import fpt.aptech.pjs4.DTOs.PaymentRequest;
 import fpt.aptech.pjs4.entities.Appointment;
 import fpt.aptech.pjs4.entities.Payment;
 import fpt.aptech.pjs4.services.AppointmentService;
 import fpt.aptech.pjs4.services.PaymentService;
+import fpt.aptech.pjs4.services.impl.OcrService;
 import io.swagger.v3.oas.models.responses.ApiResponse;
+import net.sourceforge.tess4j.TesseractException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -33,7 +36,8 @@ import java.util.*;
 public class PaymentApi {
     @Autowired
     private AppointmentService appointmentService;
-
+    @Autowired
+    private OcrService ocrService;
     private final String url_mbbank = "https://online.mbbank.com.vn/api/retail-transactionms/transactionms/get-account-transaction-history";
 
 
@@ -121,6 +125,10 @@ public class PaymentApi {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
+    }
+    @PostMapping("/upload")
+    public ResponseEntity<OcrResult> upload(@RequestParam("imageString") String imageString) throws IOException, TesseractException {
+        return ResponseEntity.ok(ocrService.ocr(imageString));
     }
 
     @GetMapping("/transaction-history")
