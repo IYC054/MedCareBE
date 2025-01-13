@@ -27,6 +27,11 @@ public class Specialty {
     @Nationalized
     @Column(name = "description", length = 200)
     private String description;
+    @Size(max = 200)
+
+    @Nationalized
+    @Column(name = "image", length = 200)
+    private String image;
 
     @JsonIgnore
     @ManyToOne(optional = false)

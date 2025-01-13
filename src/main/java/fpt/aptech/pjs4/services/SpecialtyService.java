@@ -5,6 +5,7 @@ import fpt.aptech.pjs4.entities.Specialty;
 import java.util.List;
 
 public interface SpecialtyService {
+
     Specialty createSpecialty(Specialty specialty);
 
     Specialty getSpecialtyById(int id);
