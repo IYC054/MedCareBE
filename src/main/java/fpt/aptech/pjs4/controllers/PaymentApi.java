@@ -2,10 +2,16 @@ package fpt.aptech.pjs4.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fpt.aptech.pjs4.DTOs.APIResponse;
+import fpt.aptech.pjs4.DTOs.OcrResult;
+import fpt.aptech.pjs4.DTOs.PaymentDTO;
 import fpt.aptech.pjs4.DTOs.PaymentRequest;
+import fpt.aptech.pjs4.entities.Appointment;
 import fpt.aptech.pjs4.entities.Payment;
+import fpt.aptech.pjs4.services.AppointmentService;
 import fpt.aptech.pjs4.services.PaymentService;
+import fpt.aptech.pjs4.services.impl.OcrService;
 import io.swagger.v3.oas.models.responses.ApiResponse;
+import net.sourceforge.tess4j.TesseractException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,12 +26,18 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/payments")
 public class PaymentApi {
-
+    @Autowired
+    private AppointmentService appointmentService;
+    @Autowired
+    private OcrService ocrService;
     private final String url_mbbank = "https://online.mbbank.com.vn/api/retail-transactionms/transactionms/get-account-transaction-history";
 
 
@@ -114,19 +126,23 @@ public class PaymentApi {
             return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
     }
+    @PostMapping("/upload")
+    public ResponseEntity<OcrResult> upload(@RequestParam("imageString") String imageString) throws IOException, TesseractException {
+        return ResponseEntity.ok(ocrService.ocr(imageString));
+    }
 
     @GetMapping("/transaction-history")
-    public ResponseEntity<APIResponse<?>> getTransactionHistory(@RequestParam String accountphone) {
+    public ResponseEntity<APIResponse<?>> getTransactionHistory(@RequestParam String accountphone, @RequestParam(required = false) Integer appointid) {
         APIResponse<Object> apiResponse = new APIResponse<>();
         RestTemplate restTemplate = new RestTemplate();
         String accountno = "0933315633";
-        String sessionId = "88c3de63-2b1c-4f61-a3fa-60d4357c6b2c";
+        String sessionId = "2a146a83-ae93-43e0-89cb-c45515815ad3";
         String refno = accountno + "-202412237590493-88678";
         Date datenow = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(datenow);
-        calendar.add(Calendar.DATE, -1);
+        calendar.add(Calendar.DATE, -4);
         Date fromDate = calendar.getTime();
 
         // Payload cơ bản
@@ -156,7 +172,7 @@ public class PaymentApi {
             // Lấy transactionHistoryList từ body
             List<Map<String, Object>> transactionHistoryList = (List<Map<String, Object>>) responseBody.get("transactionHistoryList");
             List<Map<String, Object>> matchingTransactions = new ArrayList<>();
-
+            BigDecimal amount;
             if (transactionHistoryList != null) {
                 for (Map<String, Object> transaction : transactionHistoryList) {
                     // Lấy description từ transaction
@@ -166,18 +182,37 @@ public class PaymentApi {
                     if (description.contains(accountphone)) {
                         matchingTransactions.add(transaction);
                     }
+                    String refNoinTransaction = (String) transaction.get("refNo");
+                    Payment checkrefno = paymentService.findPaymentByTransactionCode(refNoinTransaction);
+                    if (checkrefno == null) {
+                        System.out.println("giao dich chua ton tai trong db " + refNoinTransaction);
+                        String creditAmountStr = (String) transaction.get("creditAmount");
+                        amount = creditAmountStr != null ? new BigDecimal(creditAmountStr) : BigDecimal.ZERO;
+                        String paymethod = "Ngân hàng";
+                        String transactioncode = (String) transaction.get("refNo");
+                        String transactiondescription = (String) transaction.get("description");
+                        apiResponse.setMessage("giao dich chua xu ly " + transactioncode);
+                        apiResponse.setResult(false);
+                        if(appointid != null){
+                            createPayment(appointid,amount, paymethod, transactioncode, transactiondescription);
+                        }
+                    }else{
+                        apiResponse.setMessage("Chưa có giao dịch mới");
+                        apiResponse.setResult(true);
+
+                    }
                 }
             }
 
             if (!matchingTransactions.isEmpty()) {
                 // Nếu có giao dịch chứa số điện thoại trong description
                 apiResponse.setCode(200);
-                apiResponse.setMessage("Các giao dịch chứa số điện thoại được tìm thấy.");
-                apiResponse.setResult(matchingTransactions);
+//                apiResponse.setMessage("Các giao dịch chứa số điện thoại được tìm thấy.");
+//                apiResponse.setResult(matchingTransactions);
             } else {
                 // Nếu không có giao dịch chứa số điện thoại trong description
                 apiResponse.setCode(404);
-                apiResponse.setMessage("Không tìm thấy giao dịch chứa số điện thoại.");
+//                apiResponse.setMessage("Không tìm thấy giao dịch chứa số điện thoại.");
             }
 
             return ResponseEntity.ok(apiResponse);
@@ -239,5 +274,30 @@ public class PaymentApi {
 //                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
 //            }
 //        }
+public boolean createPayment(Integer appointmentid,BigDecimal amount, String paymentMethod, String transactioncode, String transactiondescription) {
+    try {
+        Appointment appointment = appointmentService.getAppointmentById(appointmentid);
+        if (appointment == null) {
+            return false;
+        }
+        Instant now = Instant.now();
+        ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
+        LocalDateTime localDateTime = LocalDateTime.ofInstant(now, zoneId);
+        Instant transactionDate = localDateTime.atZone(zoneId).toInstant();
+        Payment payment = new Payment();
+        payment.setAmount(amount);
+        payment.setPaymentMethod(paymentMethod);
+        payment.setTransactionCode(transactioncode);
+        payment.setStatus("Chờ xử lý");
+        payment.setTransactionDescription(transactiondescription);
+        payment.setTransactionDate(transactionDate);
+        payment.setAppointment(appointment);
+
+        paymentService.createPayment(payment);
+        return true;
+    } catch (Exception e) {
+        throw new RuntimeException(e);
+    }
+}
 
 }
