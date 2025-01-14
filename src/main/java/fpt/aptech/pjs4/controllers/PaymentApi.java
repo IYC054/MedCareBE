@@ -12,6 +12,7 @@ import fpt.aptech.pjs4.services.PaymentService;
 import fpt.aptech.pjs4.services.impl.OcrService;
 import io.swagger.v3.oas.models.responses.ApiResponse;
 import net.sourceforge.tess4j.TesseractException;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -25,6 +26,8 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -126,10 +129,88 @@ public class PaymentApi {
             return ResponseEntity.status(500).body("Error: " + e.getMessage());
         }
     }
-    @PostMapping("/upload")
-    public ResponseEntity<OcrResult> upload(@RequestParam("imageString") String imageString) throws IOException, TesseractException {
-        return ResponseEntity.ok(ocrService.ocr(imageString));
-    }
+//    @PostMapping("/upload")
+//    public ResponseEntity<APIResponse<?>> upload() throws IOException, TesseractException {
+//        APIResponse apiResponse = new APIResponse();
+//        String url_getimage = "https://online.mbbank.com.vn/api/retail-web-internetbankingms/getCaptchaImage";
+//        String url_login = "https://online.mbbank.com.vn/api/retail_web/internetbanking/v2.0/doLogin";
+//        String deviceIdCommon = "rgfgfmrr-mbib-0000-0000-2024122008495838";
+//        String refno = "0933315633-202412237590493-88678";
+//
+//        // Tạo payload cho bước 1
+//        Map<String, Object> payload = new HashMap<>();
+//        payload.put("refNo", refno);
+//        payload.put("deviceIdCommon", deviceIdCommon);
+//        payload.put("sessionId", "");
+//
+//        // Header
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//        headers.set("User-Agent", "Mozilla/5.0");
+//        headers.set("refno", refno);
+//        headers.set("deviceid", deviceIdCommon);
+//        headers.set("authorization", "Basic RU1CUkVUQUlMV0VCOlNEMjM0ZGZnMzQlI0BGR0AzNHNmc2RmNDU4NDNm");
+//
+//        HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
+//
+//        try {
+//            // Gửi yêu cầu để lấy captcha
+//            ResponseEntity<String> response = restTemplate.postForEntity(url_getimage, request, String.class);
+//            ObjectMapper objectMapper = new ObjectMapper();
+//            Map<String, Object> responseBody = objectMapper.readValue(response.getBody(), Map.class);
+//            String description = (String) responseBody.get("imageString");
+//
+//            // OCR xử lý captcha
+//            OcrResult ocrResult = ocrService.ocr(description);
+//            String resultCaptcha = ocrResult.getResult();
+//            System.out.println("Captcha giải đc " + resultCaptcha);
+//            // Tạo requestData để mã hóa
+//            Map<String, Object> requestData = new HashMap<>();
+//            requestData.put("userId", "0933315633");
+//            requestData.put("password", hashPassword("Minhduy@01"));
+//            requestData.put("captcha", resultCaptcha);
+//            requestData.put("ibAuthen2faString", "c7a1beebb9400375bb187daa33de9659");
+//            requestData.put("sessionId", null);
+//            requestData.put("refNo", refno);
+//            requestData.put("deviceIdCommon", deviceIdCommon);
+//            requestData.put("dataEnc", "3/ywqPD2MVvb6jfSBhz7flNpkhPDOBEGqj0K4/F9Jk+LDlboMGZJm15XG7LoWHZ0HqUf7BN7S0wmjy+cf6eABnqb6cmXn4bLqiPEksDMtrurUHnY60ZhX4nluBuskp3CLUFqVWtW11G7eY8ocuy7yKAZJ0uNz4jKRtuFRP+BRs3HPwz5RO0YaxXcC2tLya72+geChqrh98qP3+lNRN/z0+PUORyjVTkm5zjZ8iFjK63qTkF0plXfnR8Yo2UkjxpcsVWE7aAoPYLHROlozB4N3i65xSrWdd7loIbjmO1FoWLi26DJP1lGSXqx9EUBEEdAAuJKBv4/HLKejV9ZK0lXZ/I7wMgpt+ueJcLQTdWsO8WI6ybdi+CYHa6w+wpKhudFUU41tSGPYlkj6ywa0h6E6WppO6jaoQi+wO6hiOsRPeoKM3ezfMGs5fw79J6JFcIR");
+//
+//
+//            HttpHeaders loginHeaders = new HttpHeaders();
+//            loginHeaders.setContentType(MediaType.APPLICATION_JSON);
+//            loginHeaders.set("User-Agent", "MMozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36");
+//            loginHeaders.set("refno", refno);
+//            loginHeaders.set("deviceid", deviceIdCommon);
+//            loginHeaders.set("authorization", "Basic RU1CUkVUQUlMV0VCOlNEMjM0ZGZnMzQlI0BGR0AzNHNmc2RmNDU4NDNm");
+//            loginHeaders.set("Origin", "https://online.mbbank.com.vn");
+//            loginHeaders.set("Referer", "https://online.mbbank.com.vn/");
+//            loginHeaders.set("x-request-id", refno);
+//            loginHeaders.set("App", "MB_WEB");
+//
+//            // Body đã mã hóa
+//
+//
+//            HttpEntity<Map<String, Object>> loginRequest = new HttpEntity<>(requestData, loginHeaders);
+//
+//            // Gửi yêu cầu đăng nhập
+//            ResponseEntity<String> loginResponse = restTemplate.postForEntity(url_login, loginRequest, String.class);
+//            ObjectMapper mapper = new ObjectMapper();
+//            Map<String, Object> loginResponseBody = mapper.readValue(loginResponse.getBody(), Map.class);
+//
+//            // Giải mã chuỗi "result" (nội dung JSON escaped)
+//            // Trả về dữ liệu đã giải mã
+//            apiResponse.setResult(loginResponseBody);
+//            apiResponse.setCode(200);
+//            return ResponseEntity.ok(apiResponse);
+//
+//        } catch (Exception e) {
+//            apiResponse.setCode(500);
+//            apiResponse.setMessage("Có lỗi xảy ra: " + e.getMessage());
+//            apiResponse.setResult(null);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
+//        }
+//    }
+
 
     @GetMapping("/transaction-history")
     public ResponseEntity<APIResponse<?>> getTransactionHistory(@RequestParam String accountphone, @RequestParam(required = false) Integer appointid) {
@@ -299,5 +380,17 @@ public boolean createPayment(Integer appointmentid,BigDecimal amount, String pay
         throw new RuntimeException(e);
     }
 }
-
+    private String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] messageDigest = md.digest(password.getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : messageDigest) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

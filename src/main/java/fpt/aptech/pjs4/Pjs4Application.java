@@ -23,9 +23,9 @@ public class Pjs4Application {
     Tesseract getTesseract(){
         Tesseract tesseract = new Tesseract();
         tesseract.setDatapath("C:\\Users\\PC\\Desktop\\reatjs\\projectapi BE\\MedCareBE\\src\\main\\java\\tessdata");
-        tesseract.setLanguage("vie"); // Chọn ngôn ngữ (English + Vietnamese)
+        tesseract.setLanguage("eng"); // Chọn ngôn ngữ (English + Vietnamese)
         tesseract.setOcrEngineMode(1); // Sử dụng chế độ LSTM (LSTM OCR Engine Mode)
-        tesseract.setPageSegMode(0); // Chế độ phân đoạn văn bản theo đoạn
+        tesseract.setPageSegMode(3); // Chế độ phân đoạn văn bản theo đoạn
         return tesseract;
     }
 }
