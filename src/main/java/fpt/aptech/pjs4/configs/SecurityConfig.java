@@ -22,7 +22,8 @@ public class SecurityConfig {
     private  final String[] PUBLIC_ENPOINT={
             "/api/account/token",
             "/api/account",
-            "/api/specialty/**"
+            "/api/specialty/**",
+            "/api/image/**"
     };
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {

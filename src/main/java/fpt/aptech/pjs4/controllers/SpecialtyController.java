@@ -33,7 +33,7 @@ public class SpecialtyController {
             @RequestPart("description") String description
     ) throws IOException {
         // Tạo thư mục nếu chưa tồn tại
-        Path uploadDir = Paths.get("src/main/resources/static/specialty");
+        Path uploadDir = Paths.get("src/main/resources/static/image");
         if (!Files.exists(uploadDir)) {
             Files.createDirectories(uploadDir);
         }
@@ -46,7 +46,7 @@ public class SpecialtyController {
 
         // Tạo URL hoàn chỉnh cho hình ảnh
         String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/api/specialty/image/")
+                .path("/api/image/")
                 .path(uniqueFileName)
                 .toUriString();
         // Tạo và lưu Specialty
