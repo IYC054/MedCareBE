@@ -37,6 +37,7 @@ public class SecurityConfig {
                 }))
                 .authorizeHttpRequests(requests ->
                         requests.requestMatchers(HttpMethod.POST, PUBLIC_ENPOINT).permitAll()
+                                .requestMatchers(HttpMethod.GET, PUBLIC_ENPOINT).permitAll()
                                 .requestMatchers(HttpMethod.GET, "/api/account").hasRole(Role.ADMIN.name())
                                 .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 ->
