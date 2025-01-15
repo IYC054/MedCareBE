@@ -29,7 +29,8 @@ public class SecurityConfig {
             "/api/patientsprofile/**",
             "/api/appointment/**",
             "/api/workinghours/**",
-            "/api/image/**"
+            "/api/image/**",
+            "/api/feedbacks/**"
     };
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
