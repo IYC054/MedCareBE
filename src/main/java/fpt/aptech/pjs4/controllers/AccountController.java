@@ -11,7 +11,6 @@ import fpt.aptech.pjs4.DTOs.response.AuthencicationResponse;
 import fpt.aptech.pjs4.DTOs.response.IntrospecResponse;
 import fpt.aptech.pjs4.entities.Account;
 import fpt.aptech.pjs4.services.AccountService;
-import jakarta.validation.Path;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,14 +19,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("api/account")
@@ -38,11 +41,22 @@ public class AccountController {
     private AccountService accountService;
 
     @PostMapping
-    public APIResponse<Account> createAccount(@ModelAttribute AccountDTO accountDTO, @RequestParam("avatar") MultipartFile files) {
+    public APIResponse<Account> createAccount(@ModelAttribute AccountDTO accountDTO, @RequestPart("avatar") MultipartFile image) {
         try {
+            Path uploadDir = Paths.get("src/main/resources/static/image");
+            if (!Files.exists(uploadDir)) {
+                Files.createDirectories(uploadDir);
+            }
+            String uniqueFileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
+            Path destinationPath = uploadDir.resolve(uniqueFileName);
+            Files.write(destinationPath, image.getBytes());
+            // Tạo URL hoàn chỉnh cho hình ảnh
+            String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/api/image/")
+                    .path(uniqueFileName)
+                    .toUriString();
             APIResponse<Account> apiResponse = new APIResponse<>();
-            String fileName = files.getOriginalFilename();
-            FileCopyUtils.copy(files.getBytes(), new File(fileUpload + fileName));
+
             Account account = new Account();
             account.setEmail(accountDTO.getEmail());
             account.setName(accountDTO.getName());
@@ -51,7 +65,7 @@ public class AccountController {
             account.setGender(accountDTO.getGender());
             account.setBirthdate(accountDTO.getBirthdate());
           //  account.setRole(accountDTO.getRole());
-            account.setAvatar(fileName);
+            account.setAvatar(imageUrl);
             apiResponse.setResult(accountService.createAccount(account));
             apiResponse.setMessage("Account created successfully!");
             return apiResponse;
