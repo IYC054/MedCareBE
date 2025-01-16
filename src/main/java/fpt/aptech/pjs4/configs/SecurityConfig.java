@@ -4,6 +4,7 @@ import fpt.aptech.pjs4.enums.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
@@ -17,6 +18,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
     protected static  final String SIGNER_KEY="5e3b6f9e67e9f1e3b6ad775d9a1c9078c9078b72ad34d3e4e745fb6b64367861";
     private  final String[] PUBLIC_ENPOINT={
@@ -46,7 +48,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests ->
                         requests.requestMatchers(HttpMethod.POST, PUBLIC_ENPOINT).permitAll()
                                 .requestMatchers(HttpMethod.GET, PUBLIC_ENPOINT).permitAll()
-                                .requestMatchers(HttpMethod.GET, "/api/account").hasRole(Role.ADMIN.name())
+                                //.requestMatchers(HttpMethod.GET, "/api/account").hasRole(Role.ADMIN.name())
                                 .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(
