@@ -3,15 +3,12 @@ package fpt.aptech.pjs4.controllers;
 import com.nimbusds.jose.JOSEException;
 import fpt.aptech.pjs4.DTOs.APIResponse;
 import fpt.aptech.pjs4.DTOs.AccountDTO;
-import fpt.aptech.pjs4.DTOs.AuthLoginToken;
-import fpt.aptech.pjs4.DTOs.Introspect;
 import fpt.aptech.pjs4.DTOs.request.AuthencicationRequest;
 import fpt.aptech.pjs4.DTOs.request.IntrospecRequest;
 import fpt.aptech.pjs4.DTOs.response.AuthencicationResponse;
 import fpt.aptech.pjs4.DTOs.response.IntrospecResponse;
 import fpt.aptech.pjs4.entities.Account;
 import fpt.aptech.pjs4.services.AccountService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -20,7 +17,6 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,7 +24,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:5173")
@@ -158,6 +153,13 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(acc);
         }
 
+    }
+     // lấy thông tin của chủ token
+    @GetMapping("/myinfor")
+    public APIResponse<Account>  getMyInfor() {
+        APIResponse<Account> apiResponse = new APIResponse<>();
+        apiResponse.setResult(accountService.getMyInfor());
+        return apiResponse;
     }
 
 

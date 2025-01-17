@@ -48,6 +48,8 @@ public interface AccountService {
 
     void deleteAccount(int id);
 
+    public Account getMyInfor();
+
     public AuthencicationResponse authenticate(AuthencicationRequest request);
 
     public IntrospecResponse introspec (IntrospecRequest request) throws JOSEException, ParseException;
