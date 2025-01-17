@@ -39,7 +39,8 @@ public class AccountServiceImpl implements AccountService {
     private AccountRepository accountRepository;
 
     @NonFinal
-    protected static  final String SIGNER_KEY="5e3b6f9e67e9f1e3b6ad775d9a1c9078c9078b72ad34d3e4e745fb6b64367861";
+    protected static final String SIGNER_KEY = "5e3b6f9e67e9f1e3b6ad775d9a1c9078c9078b72ad34d3e4e745fb6b64367861";
+
     @Override
     public AuthencicationResponse authenticate(AuthencicationRequest request) {
         // tim tai khoang voi ten dang nhap
@@ -71,10 +72,10 @@ public class AccountServiceImpl implements AccountService {
                 .issueTime(new Date())
                 //  thời hạn token
                 .expirationTime(new Date(Instant.now().plus(10, ChronoUnit.HOURS).toEpochMilli()))
-                .claim("scope",buildScope(account))
+                .claim("scope", buildScope(account))
                 .build();
-        Payload payload  = new Payload(jwtClaimsSet.toJSONObject()); // chỉ nhận Json
-        JWSObject jwsObject = new JWSObject(jwsHeader,payload);
+        Payload payload = new Payload(jwtClaimsSet.toJSONObject()); // chỉ nhận Json
+        JWSObject jwsObject = new JWSObject(jwsHeader, payload);
         // ký token
         try {
             jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
@@ -85,14 +86,15 @@ public class AccountServiceImpl implements AccountService {
         }
 
     }
+
     @Override
-    public IntrospecResponse introspec (IntrospecRequest request) throws JOSEException, ParseException {
+    public IntrospecResponse introspec(IntrospecRequest request) throws JOSEException, ParseException {
         var token = request.getToken();
         JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
-        SignedJWT signedJWT= SignedJWT.parse(token);
+        SignedJWT signedJWT = SignedJWT.parse(token);
         // check token het han chua
         Date expityTime = signedJWT.getJWTClaimsSet().getExpirationTime();
-        var verifide=signedJWT.verify(verifier);
+        var verifide = signedJWT.verify(verifier);
         IntrospecResponse introspecResponse = new IntrospecResponse();
         introspecResponse.setValid(verifide && expityTime.after(new Date()));
         return introspecResponse;
@@ -103,13 +105,14 @@ public class AccountServiceImpl implements AccountService {
         // một cách dễ dàng, đặc biệt khi bạn cần kết hợp các phần tử của
         // một tập hợp hoặc danh sách mà không cần phải lo lắng về dấu phân
         // cách hay việc xử lý dấu phẩy ở cuối chuỗi
-        StringJoiner stringJoiner   = new StringJoiner(" ");
-        if(!CollectionUtils.isEmpty(account.getRole())){
-            account.getRole().forEach(item->stringJoiner.add(item));
+        StringJoiner stringJoiner = new StringJoiner(" ");
+        if (!CollectionUtils.isEmpty(account.getRole())) {
+            account.getRole().forEach(item -> stringJoiner.add(item));
         }
         return stringJoiner.toString();
     }
-//    protected static final String SIGNER_KEY = "jxNGPYNsP81q9q4AnUtVIkA6oKsjP8657q4PfkXz2e+tfqofPtrJTLW9dtgOJrUc";
+
+    //    protected static final String SIGNER_KEY = "jxNGPYNsP81q9q4AnUtVIkA6oKsjP8657q4PfkXz2e+tfqofPtrJTLW9dtgOJrUc";
 //    @Override
 //    public Introspect introspect(Introspect request) {
 //        var token = request.getToken();
@@ -136,23 +139,23 @@ public class AccountServiceImpl implements AccountService {
         if (account.getPassword() == null || account.getPassword().isEmpty()) {
             throw new RuntimeException("Password cannot be empty");
         }
-        if(accountRepository.existsAccountByEmail(account.getEmail())) {
+        if (accountRepository.existsAccountByEmail(account.getEmail())) {
             throw new AppException(ErrorCode.CHECK_EMAIL);
         }
-        if(accountRepository.existsAccountByPhone(account.getPhone())) {
+        if (accountRepository.existsAccountByPhone(account.getPhone())) {
             throw new AppException(ErrorCode.CHECK_PHONE);
         }
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         account.setPassword(passwordEncoder.encode(account.getPassword()));
-        HashSet<String> role = new HashSet<>();
-        role.add(Role.USER.name());
-        account.setRole(role);
+        HashSet<String> roles = new HashSet<>();
+        roles.add(Role.USER.name());
+        account.setRole(roles);
         return accountRepository.save(account);
     }
 
     @Override
     public Account getAccountById(int id) {
-        Account account = accountRepository.findById(id).orElseThrow( () -> new RuntimeException("Ko tìm thấy user"));
+        Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Ko tìm thấy user"));
         return account;
     }
 
@@ -166,7 +169,7 @@ public class AccountServiceImpl implements AccountService {
         Account account1 = getAccountById(id);
         if (accountRepository.existsById(id)) {
             account.setId(id);
-            if(account1.getPassword().equals(account.getPassword())) {
+            if (account1.getPassword().equals(account.getPassword())) {
                 throw new AppException(ErrorCode.CHECK_UPDATEPASS);
             }
 

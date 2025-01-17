@@ -27,7 +27,7 @@ public class Doctor {
     private String status;
 
     // Liên kết với tài khoản người dùng
-    @OneToOne(cascade = CascadeType.ALL, targetEntity = Account.class)
+    @OneToOne( targetEntity = Account.class)
     @JoinColumn(name = "account_id")
     private Account account;
 

@@ -16,6 +16,30 @@ import java.util.Map;
 public interface AccountService {
     Account createAccount(Account account);
 
+    //    protected static final String SIGNER_KEY = "jxNGPYNsP81q9q4AnUtVIkA6oKsjP8657q4PfkXz2e+tfqofPtrJTLW9dtgOJrUc";
+    //    @Override
+    //    public Introspect introspect(Introspect request) {
+    //        var token = request.getToken();
+    //
+    //        try {
+    //            JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
+    //            SignedJWT signedJWT = SignedJWT.parse(token);
+    //            Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+    //            var verify = signedJWT.verify(verifier);
+    //            if (verify && expiryTime.after(new Date())) {
+    //                request.setAuthenticated(true);
+    //
+    //            } else {
+    //                request.setAuthenticated(false);
+    //            }
+    //        } catch (JOSEException | ParseException e) {
+    //            throw new RuntimeException(e);
+    //        }
+    //        return request;
+    //
+    //    }
+
+
     Account getAccountById(int id);
 
     List<Account> getAllAccounts();
