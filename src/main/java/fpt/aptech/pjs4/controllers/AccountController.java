@@ -11,6 +11,7 @@ import fpt.aptech.pjs4.DTOs.response.AuthencicationResponse;
 import fpt.aptech.pjs4.DTOs.response.IntrospecResponse;
 import fpt.aptech.pjs4.entities.Account;
 import fpt.aptech.pjs4.services.AccountService;
+import fpt.aptech.pjs4.services.impl.RoleServicesImpl;
 import jakarta.validation.Path;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,8 @@ public class AccountController {
     private String fileUpload;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private RoleServicesImpl roleServices;
 
     @PostMapping
     public APIResponse<Account> createAccount(@ModelAttribute AccountDTO accountDTO, @RequestParam("avatar") MultipartFile files) {
@@ -117,7 +120,7 @@ public class AccountController {
             existingAccount.setPhone(accountDTO.getPhone());
             existingAccount.setGender(accountDTO.getGender());
             existingAccount.setBirthdate(accountDTO.getBirthdate());
-            //existingAccount.setRole(accountDTO.getRole());
+//            existingAccount.setRole(accountDTO.getRole());
 
             existingAccount.setAvatar(fileName);
 

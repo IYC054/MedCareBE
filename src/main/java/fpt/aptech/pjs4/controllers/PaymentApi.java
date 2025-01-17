@@ -217,13 +217,13 @@ public class PaymentApi {
         APIResponse<Object> apiResponse = new APIResponse<>();
         RestTemplate restTemplate = new RestTemplate();
         String accountno = "0933315633";
-        String sessionId = "a8925af8-9ec7-4369-a16c-b41c792d55ad";
+        String sessionId = "62f69c44-61bc-4fca-b8ab-e9afe8952248";
         String refno = accountno + "-202412237590493-88678";
         Date datenow = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(datenow);
-        calendar.add(Calendar.DATE, -4);
+        calendar.add(Calendar.DATE, -1);
         Date fromDate = calendar.getTime();
 
         // Payload cơ bản
@@ -253,6 +253,7 @@ public class PaymentApi {
             // Lấy transactionHistoryList từ body
             List<Map<String, Object>> transactionHistoryList = (List<Map<String, Object>>) responseBody.get("transactionHistoryList");
             List<Map<String, Object>> matchingTransactions = new ArrayList<>();
+
             BigDecimal amount;
             if (transactionHistoryList != null) {
                 for (Map<String, Object> transaction : transactionHistoryList) {
@@ -262,29 +263,34 @@ public class PaymentApi {
                     // Kiểm tra nếu description không rỗng và chứa số điện thoại
                     if (description.contains(accountphone)) {
                         matchingTransactions.add(transaction);
-                    }
-                    String refNoinTransaction = (String) transaction.get("refNo");
-                    Payment checkrefno = paymentService.findPaymentByTransactionCode(refNoinTransaction);
-                    if (checkrefno == null) {
-                        System.out.println("giao dich chua ton tai trong db " + refNoinTransaction);
-                        String creditAmountStr = (String) transaction.get("creditAmount");
-                        amount = creditAmountStr != null ? new BigDecimal(creditAmountStr) : BigDecimal.ZERO;
-                        String paymethod = "Ngân hàng";
-                        String transactioncode = (String) transaction.get("refNo");
-                        String transactiondescription = (String) transaction.get("description");
-                        apiResponse.setMessage("giao dich chua xu ly " + transactioncode);
-                        apiResponse.setResult(false);
-                        if(appointid != null){
-                            createPayment(appointid,amount, paymethod, transactioncode, transactiondescription);
-                        }
-                    }else{
-                        apiResponse.setMessage("Chưa có giao dịch mới");
-                        apiResponse.setResult(true);
 
                     }
+                    for (Map<String, Object> matchingtransaction : matchingTransactions) {
+                        String refNoinTransaction = (String) matchingtransaction.get("refNo");
+                        Payment checkrefno = paymentService.findPaymentByTransactionCode(refNoinTransaction);
+                        System.out.println(checkrefno);
+                        if (checkrefno == null && description.contains(accountphone)) {
+                            System.out.println("giao dich chua ton tai trong db " + refNoinTransaction);
+                            String creditAmountStr = (String) transaction.get("creditAmount");
+                            amount = creditAmountStr != null ? new BigDecimal(creditAmountStr) : BigDecimal.ZERO;
+                            String paymethod = "Ngân hàng";
+                            String transactioncode = (String) transaction.get("refNo");
+                            String transactiondescription = (String) transaction.get("description");
+                            apiResponse.setMessage("giao dich chua xu ly " + transactioncode);
+                            apiResponse.setResult(true);
+                            if(appointid != null){
+                                createPayment(appointid,amount, paymethod, transactioncode, transactiondescription);
+                            }
+                        }else{
+                            apiResponse.setMessage("Chưa có giao dịch mới");
+                            apiResponse.setResult(false);
+
+                        }
+                    }
+
+
                 }
             }
-
             if (!matchingTransactions.isEmpty()) {
                 // Nếu có giao dịch chứa số điện thoại trong description
                 apiResponse.setCode(200);
