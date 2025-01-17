@@ -51,7 +51,7 @@ public class AccountServiceImpl implements AccountService {
         // check pass có khớp  ko
         boolean authencatite = passwordEncoder.matches(request.getPassword(), username.getPassword());
         if (!authencatite) {
-            throw new AppException(ErrorCode.CHECK_LOGIN);
+            throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
         var token = generateToken(username);
         AuthencicationResponse authencicationResponse = new AuthencicationResponse();
