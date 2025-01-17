@@ -19,6 +19,9 @@ import fpt.aptech.pjs4.services.AccountService;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -64,7 +67,7 @@ public class AccountServiceImpl implements AccountService {
         // tap payload Data trong body
         JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
                 // dai dien cho usser dang nhap
-                .subject(account.getName())
+                .subject(account.getEmail())
                 // xac nhan issure tu ai
                 .issuer("nghimathit.com")
                 // thoi diem hien tai
@@ -151,12 +154,17 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    // chỉ User Id nào mới truy cập id đó được thôi
+    // email trong entity so sanh voi email trong token
+    @PostAuthorize("returnObject.email == authentication.name")
     public Account getAccountById(int id) {
         Account account = accountRepository.findById(id).orElseThrow( () -> new RuntimeException("Ko tìm thấy user"));
         return account;
     }
 
     @Override
+    // chỉ có Role Admin mới truy cập đc vào method này
+    @PreAuthorize("hasRole('ADMIN')")
     public List<Account> getAllAccounts() {
         return accountRepository.findAll();
     }
@@ -180,6 +188,22 @@ public class AccountServiceImpl implements AccountService {
         accountRepository.deleteById(id);
     }
 
+
+    @Override
+    // lấy thông tin infor của chủ token
+    public Account getMyInfor(){
+        var context = SecurityContextHolder.getContext(); // thong tin infor cua token
+        String email = context.getAuthentication().getName();
+        Account byUserEmail= accountRepository.findAccountByEmail(email).orElseThrow(()->new AppException(ErrorCode.USER_EXITED));
+        Account userResponse = new Account();
+        userResponse.setEmail(byUserEmail.getEmail());
+        userResponse.setName(byUserEmail.getName());
+        userResponse.setPhone(byUserEmail.getPhone());
+        userResponse.setGender(byUserEmail.getGender());
+        userResponse.setBirthdate(byUserEmail.getBirthdate());
+        userResponse.setAvatar(byUserEmail.getAvatar());
+        return userResponse;
+    }
     //@Override
 //    public AuthLoginToken AuthLogin(String email, String password) {
 //        var user = accountRepository.findAccountByEmail(email).orElseThrow(() -> new RuntimeException("Email not found"));

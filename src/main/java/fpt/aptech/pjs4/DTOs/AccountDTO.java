@@ -1,7 +1,4 @@
 package fpt.aptech.pjs4.DTOs;
-
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,5 +18,4 @@ public class AccountDTO {
     //set mặc định khi create Account lun
    // private String role;
     private MultipartFile avatar;
-
 }
