@@ -8,6 +8,8 @@ import fpt.aptech.pjs4.DTOs.request.IntrospecRequest;
 import fpt.aptech.pjs4.DTOs.response.AuthencicationResponse;
 import fpt.aptech.pjs4.DTOs.response.IntrospecResponse;
 import fpt.aptech.pjs4.entities.Account;
+import fpt.aptech.pjs4.entities.Role;
+import fpt.aptech.pjs4.repositories.RoleRepository;
 import fpt.aptech.pjs4.services.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +25,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @CrossOrigin(origins = "http://localhost:5173")
@@ -34,10 +38,15 @@ public class AccountController {
     private String fileUpload;
     @Autowired
     private AccountService accountService;
+    @Autowired
+    private RoleRepository roleRepository;
 
     @PostMapping
-    public APIResponse<Account> createAccount(@ModelAttribute AccountDTO accountDTO, @RequestPart("avatar") MultipartFile image) {
+    public APIResponse<Account> createAccount(@ModelAttribute AccountDTO accountDTO,
+                                              @RequestParam List<String> role,
+                                              @RequestPart("avatar") MultipartFile image) {
         try {
+            // Lưu hình ảnh
             Path uploadDir = Paths.get("src/main/resources/static/image");
             if (!Files.exists(uploadDir)) {
                 Files.createDirectories(uploadDir);
@@ -45,11 +54,14 @@ public class AccountController {
             String uniqueFileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
             Path destinationPath = uploadDir.resolve(uniqueFileName);
             Files.write(destinationPath, image.getBytes());
+
             // Tạo URL hoàn chỉnh cho hình ảnh
             String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
                     .path("/api/image/")
                     .path(uniqueFileName)
                     .toUriString();
+
+            // Khởi tạo API response
             APIResponse<Account> apiResponse = new APIResponse<>();
 
             Account account = new Account();
@@ -59,18 +71,29 @@ public class AccountController {
             account.setPhone(accountDTO.getPhone());
             account.setGender(accountDTO.getGender());
             account.setBirthdate(accountDTO.getBirthdate());
-          //  account.setRole(accountDTO.getRole());
+
+            // Lấy danh sách vai trò từ mảng role
+            List<Role> roles = roleRepository.findAllById(role);  // role là một danh sách ["USER", "ADMIN"]
+
+            // Thiết lập các vai trò cho tài khoản
+            account.setRole(roles);
+
+            // Thiết lập URL avatar
             account.setAvatar(imageUrl);
+
+            // Lưu tài khoản và trả về phản hồi API
             apiResponse.setResult(accountService.createAccount(account));
             apiResponse.setMessage("Account created successfully!");
+
             return apiResponse;
-        }catch (IOException e){
+
+        } catch (IOException e) {
             throw new RuntimeException("Failed to upload avatar", e);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Account> getAccountById(@PathVariable int id) {
@@ -95,6 +118,7 @@ public class AccountController {
 
     @PutMapping("/{id}")
     public APIResponse<Account> updateAccount(@PathVariable int id,
+                                              @RequestParam List<String> role,
                                               @ModelAttribute AccountDTO accountDTO,
                                               @RequestParam("avatar") MultipartFile files) {
         try {
@@ -119,19 +143,16 @@ public class AccountController {
 
             String fileName = files.getOriginalFilename();
             FileCopyUtils.copy(files.getBytes(), new File(fileUpload + fileName));
-
             existingAccount.setEmail(accountDTO.getEmail());
             existingAccount.setName(accountDTO.getName());
             existingAccount.setPassword(accountDTO.getPassword());
             existingAccount.setPhone(accountDTO.getPhone());
             existingAccount.setGender(accountDTO.getGender());
             existingAccount.setBirthdate(accountDTO.getBirthdate());
-            //existingAccount.setRole(accountDTO.getRole());
-
+            List<Role> roles = roleRepository.findAllById(role);
+            existingAccount.setRole(roles);
             existingAccount.setAvatar(fileName);
-
             Account updatedAccount = accountService.updateAccount(id, existingAccount);
-
             apiResponse.setResult(updatedAccount);
             apiResponse.setMessage("Account updated successfully!");
 
@@ -152,7 +173,6 @@ public class AccountController {
         }else{
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(acc);
         }
-
     }
      // lấy thông tin của chủ token
     @GetMapping("/myinfor")

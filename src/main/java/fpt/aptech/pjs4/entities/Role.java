@@ -6,19 +6,17 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Nationalized;
 
+import java.util.Set;
+
 @Getter
 @Setter
 @Entity
 @Table(name = "roles")
 public class Role {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Integer id;
+    private  String name;
+    private String description;
 
-    @Size(max = 100)
-    @Nationalized
-    @Column(name = "name", length = 100)
-    private String name;
-
+    @ManyToMany
+    Set<Permission> permissions;
 }

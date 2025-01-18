@@ -26,7 +26,7 @@ public class ApplicationInitConfig {
                 Account account = new Account();
                 account.setEmail("admin@gmail.com");
                 account.setPassword(passwordEncoder.encode("admin"));
-                account.setRole(role);
+                //account.setRole(role);
                 accountRepository.save(account);
                 System.out.println("Da tạo ADMIN_ tạo mặc định ");
             }

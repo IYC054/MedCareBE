@@ -109,9 +109,14 @@ public class AccountServiceImpl implements AccountService {
         // một tập hợp hoặc danh sách mà không cần phải lo lắng về dấu phân
         // cách hay việc xử lý dấu phẩy ở cuối chuỗi
         StringJoiner stringJoiner = new StringJoiner(" ");
-        if (!CollectionUtils.isEmpty(account.getRole())) {
-            account.getRole().forEach(item -> stringJoiner.add(item));
-        }
+       if (!CollectionUtils.isEmpty(account.getRole())) {
+            account.getRole().forEach(role->{
+                stringJoiner.add(role.getName());
+                if(!CollectionUtils.isEmpty(role.getPermissions())) {
+                    role.getPermissions().forEach(permission -> stringJoiner.add(permission.getName()));
+                }
+            });
+       }
         return stringJoiner.toString();
     }
 
@@ -152,7 +157,7 @@ public class AccountServiceImpl implements AccountService {
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         HashSet<String> roles = new HashSet<>();
         roles.add(Role.USER.name());
-        account.setRole(roles);
+        //account.setRole(roles);
         return accountRepository.save(account);
     }
 
