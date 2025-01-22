@@ -16,17 +16,9 @@ public class Patient {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "descriptions", length = 250)
-    private String descriptions;
     @ManyToOne(targetEntity = Account.class)
     @JoinColumn(name = "account_id")
     private Account account;
-    @ManyToOne(optional = false)
-    @JsonIgnore
-    @JoinColumn(name = "doctor_id")
-    private Doctor doctor;
-    @JsonProperty("doctor_id")
-    public Integer getDoctorId() {
-        return doctor != null ? doctor.getId() : null;
-    }
+
+
 }

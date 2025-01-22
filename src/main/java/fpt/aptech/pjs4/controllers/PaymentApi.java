@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,7 +34,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/payments")
 public class PaymentApi {
@@ -217,8 +217,8 @@ public class PaymentApi {
         APIResponse<Object> apiResponse = new APIResponse<>();
         RestTemplate restTemplate = new RestTemplate();
         String accountno = "0933315633";
-        String sessionId = "62f69c44-61bc-4fca-b8ab-e9afe8952248";
-        String refno = accountno + "-202412237590493-88678";
+        String sessionId = "ea4fe95c-c7e2-4415-bcfa-cf088ce62f69";
+        String refno = accountno + "-2025011910271539-89948";
         Date datenow = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Calendar calendar = Calendar.getInstance();
@@ -265,6 +265,7 @@ public class PaymentApi {
                         matchingTransactions.add(transaction);
 
                     }
+
                     for (Map<String, Object> matchingtransaction : matchingTransactions) {
                         String refNoinTransaction = (String) matchingtransaction.get("refNo");
                         Payment checkrefno = paymentService.findPaymentByTransactionCode(refNoinTransaction);
@@ -291,6 +292,7 @@ public class PaymentApi {
 
                 }
             }
+//            apiResponse.setResult(responseBody);
             if (!matchingTransactions.isEmpty()) {
                 // Nếu có giao dịch chứa số điện thoại trong description
                 apiResponse.setCode(200);
@@ -361,7 +363,8 @@ public class PaymentApi {
 //                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
 //            }
 //        }
-public boolean createPayment(Integer appointmentid,BigDecimal amount, String paymentMethod, String transactioncode, String transactiondescription) {
+
+    public boolean createPayment(Integer appointmentid,BigDecimal amount, String paymentMethod, String transactioncode, String transactiondescription) {
     try {
         Appointment appointment = appointmentService.getAppointmentById(appointmentid);
         if (appointment == null) {

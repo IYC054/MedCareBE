@@ -1,12 +1,8 @@
 package fpt.aptech.pjs4.controllers;
 
 import fpt.aptech.pjs4.DTOs.PatientFileDTO;
-import fpt.aptech.pjs4.entities.FilesImage;
-import fpt.aptech.pjs4.entities.Patient;
-import fpt.aptech.pjs4.entities.PatientFile;
-import fpt.aptech.pjs4.services.FilesImageService;
-import fpt.aptech.pjs4.services.PatientFileService;
-import fpt.aptech.pjs4.services.PatientService;
+import fpt.aptech.pjs4.entities.*;
+import fpt.aptech.pjs4.services.*;
 import jakarta.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,10 +27,11 @@ public class PatientFileController {
     ServletContext servletContext;
     private PatientFileService patientFilesService;
     @Autowired
-    private PatientService patientsService;
+    private PatientInformationService patientInformationService;
     @Autowired
     private FilesImageService filesImagesService;
-
+    @Autowired
+    private DoctorService doctorService;
 
     public PatientFileController(FilesImageService filesImagesService,PatientService patientsService,ServletContext servletContext, PatientFileService patientFilesService) {
         this.filesImagesService = filesImagesService;
@@ -45,17 +42,20 @@ public class PatientFileController {
 
     @PostMapping
     public ResponseEntity<PatientFile> createPatientFile(@ModelAttribute PatientFile patientFile,
-                                                         @RequestParam("patients_id") Integer patientsId,
+                                                         @RequestParam("patients_profile_id") Integer patientsId,
+                                                         @RequestParam("doctors_id") Integer doctorId,
                                                          @RequestParam("url_image") List<MultipartFile> files) {
         try {
             File uploadDir = new File(fileUpload);
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
-            Patient patient = patientsService.getPatientById(patientsId);
-            patientFile.setPatients(patient);
-            PatientFile createdPatientFile = patientFilesService.createPatientFile(patientFile);
+            PatientsInformation patient = patientInformationService.getPatientsInformationById(patientsId);
+            Doctor doctor = doctorService.getDoctorById(doctorId);
 
+            patientFile.setPatientsInformation(patient);
+            PatientFile createdPatientFile = patientFilesService.createPatientFile(patientFile);
+            patientFile.setDoctor(doctor);
             for (MultipartFile file : files) {
                 String fileName = file.getOriginalFilename();
                 File destinationFile = new File(uploadDir, fileName);
@@ -79,7 +79,11 @@ public class PatientFileController {
         PatientFile patientFile = patientFilesService.getPatientFileById(id);
         return ResponseEntity.ok(patientFile);
     }
-
+    @GetMapping("/doctor/{id}")
+    public ResponseEntity<List<PatientFile>> getPatientFileByDoctorId(@PathVariable int id) {
+        List<PatientFile> patientFile = patientFilesService.getPatientFileByDoctorId(id);
+        return ResponseEntity.ok(patientFile);
+    }
     @GetMapping
     public ResponseEntity<List<PatientFile>> getAllPatientFiles() {
         List<PatientFile> patientFilesList = patientFilesService.getAllPatientFiles();
@@ -98,16 +102,16 @@ public class PatientFileController {
             }
 
             // Lấy Patient từ DTO
-            Patient patient = patientsService.getPatientById(patientFileDTO.getPatientId());
-            if (patient == null) {
-                System.out.println("Patient with ID " + patientFileDTO.getPatientId() + " not found");
-                return ResponseEntity.badRequest().body("Patient with ID " + patientFileDTO.getPatientId() + " not found");
-            }
+            PatientsInformation patient = patientInformationService.getPatientsInformationById(patientFileDTO.getPatientsInformationId());
 
+            if (patient == null) {
+                return ResponseEntity.badRequest().body("Patient with ID " + patientFileDTO.getPatientsInformationId() + " not found");
+            }
+            Doctor doctor = doctorService.getDoctorById(patientFileDTO.getDoctorId());
             // Cập nhật thông tin
-            existingPatientFile.setPrescription(patientFileDTO.getPrescription());
-            existingPatientFile.setTotalPrice(patientFileDTO.getTotalPrice());
-            existingPatientFile.setPatients(patient);
+            existingPatientFile.setDescription(patientFileDTO.getDescription());
+            existingPatientFile.setPatientsInformation(patient);
+            existingPatientFile.setDoctor(doctor);
 
             // Lưu vào cơ sở dữ liệu
             PatientFile updatedPatientFile = patientFilesService.updatePatientFile(id, existingPatientFile);
@@ -117,7 +121,25 @@ public class PatientFileController {
             return ResponseEntity.status(500).body("Internal server error: " + e.getMessage());
         }
     }
-
+    @PutMapping("/description/{id}")
+    public ResponseEntity<?> updatePatientFileDescription(@PathVariable int id, @RequestBody PatientFileDTO patientFileDTO) {
+        System.out.println("Received ID: " + id);
+        try {
+            // Lấy PatientFile từ cơ sở dữ liệu
+            PatientFile existingPatientFile = patientFilesService.getPatientFileById(id);
+            if (existingPatientFile == null) {
+                System.out.println("PatientFile with ID " + id + " not found");
+                return ResponseEntity.status(404).body("PatientFile with ID " + id + " not found");
+            }
+            existingPatientFile.setDescription(patientFileDTO.getDescription());
+            // Lưu vào cơ sở dữ liệu
+            PatientFile updatedPatientFile = patientFilesService.updatePatientFile(id, existingPatientFile);
+            return ResponseEntity.ok(updatedPatientFile);
+        } catch (Exception e) {
+            System.err.println("An error occurred: " + e.getMessage());
+            return ResponseEntity.status(500).body("Internal server error: " + e.getMessage());
+        }
+    }
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePatientFile(@PathVariable int id) {
         FilesImage filesImage = filesImagesService.getFilesImageById(id);

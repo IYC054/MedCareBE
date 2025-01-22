@@ -34,6 +34,9 @@ public class SecurityConfig {
             "/api/image/**",
             "/api/feedbacks/**",
             "/api/news/**",
+            "api/patientsfile/**",
+            "api/filesimage/**",
+
     };
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -49,6 +52,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests ->
                         requests.requestMatchers(HttpMethod.POST, PUBLIC_ENPOINT).permitAll()
                                 .requestMatchers(HttpMethod.GET, PUBLIC_ENPOINT).permitAll()
+                                .requestMatchers(HttpMethod.PUT, PUBLIC_ENPOINT).permitAll()
+                                .requestMatchers(HttpMethod.DELETE, PUBLIC_ENPOINT).permitAll()
+
                                 //.requestMatchers(HttpMethod.GET, "/api/account").hasRole(Role.ADMIN.name())
                                 .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 ->

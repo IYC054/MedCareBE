@@ -15,7 +15,6 @@ public class PatientsInformationDTO {
     private String gender;
     private String codeBhyt;
     private String nation;
-    private String identityCard;
     private String address;
     private Integer accountid;
 }
