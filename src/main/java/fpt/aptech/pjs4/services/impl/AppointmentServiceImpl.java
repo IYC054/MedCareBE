@@ -39,6 +39,18 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public boolean checkslotApointment(int doctorid, int worktimeid) {
+        long count = appointmentRepository.countByDoctorAndWorktime(
+                doctorid,
+                worktimeid
+        );
+        if (count >= 1) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public void deleteAppointment(int id) {
         appointmentRepository.deleteById(id);
     }

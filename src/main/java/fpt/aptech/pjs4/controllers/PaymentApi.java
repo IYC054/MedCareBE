@@ -217,7 +217,8 @@ public class PaymentApi {
         APIResponse<Object> apiResponse = new APIResponse<>();
         RestTemplate restTemplate = new RestTemplate();
         String accountno = "0933315633";
-        String sessionId = "ea4fe95c-c7e2-4415-bcfa-cf088ce62f69";
+        String sessionId = "b71d28df-6bb0-47ae-9d16-4d5a13060412";
+        String devicecommon = "fp5kuz68-mbib-0000-0000-2024122809001755";
         String refno = accountno + "-2025011910271539-89948";
         Date datenow = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -233,14 +234,14 @@ public class PaymentApi {
         payload.put("toDate", dateFormat.format(datenow));
         payload.put("sessionId", sessionId);
         payload.put("refNo", refno);
-        payload.put("deviceIdCommon", "rgfgfmrr-mbib-0000-0000-2024122008495838");
+        payload.put("deviceIdCommon", devicecommon);
 
         // Header
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("User-Agent", "Mozilla/5.0");
         headers.set("refno", refno);
-        headers.set("deviceid", "rgfgfmrr-mbib-0000-0000-2024122008495838");
+        headers.set("deviceid", devicecommon);
         headers.set("authorization", "Basic RU1CUkVUQUlMV0VCOlNEMjM0ZGZnMzQlI0BGR0AzNHNmc2RmNDU4NDNm");
 
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
@@ -269,15 +270,13 @@ public class PaymentApi {
                     for (Map<String, Object> matchingtransaction : matchingTransactions) {
                         String refNoinTransaction = (String) matchingtransaction.get("refNo");
                         Payment checkrefno = paymentService.findPaymentByTransactionCode(refNoinTransaction);
-                        System.out.println(checkrefno);
                         if (checkrefno == null && description.contains(accountphone)) {
-                            System.out.println("giao dich chua ton tai trong db " + refNoinTransaction);
                             String creditAmountStr = (String) transaction.get("creditAmount");
                             amount = creditAmountStr != null ? new BigDecimal(creditAmountStr) : BigDecimal.ZERO;
                             String paymethod = "Ngân hàng";
                             String transactioncode = (String) transaction.get("refNo");
                             String transactiondescription = (String) transaction.get("description");
-                            apiResponse.setMessage("giao dich chua xu ly " + transactioncode);
+                            apiResponse.setMessage("Có giao dịch mới");
                             apiResponse.setResult(true);
                             if(appointid != null){
                                 createPayment(appointid,amount, paymethod, transactioncode, transactiondescription);
@@ -314,55 +313,55 @@ public class PaymentApi {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
         }
     }
-//    @GetMapping("/transaction-history")
-//    public ResponseEntity<APIResponse<?>> getTransactionHistory() {
-//            APIResponse<Object> apiResponse = new APIResponse<>();
-//            RestTemplate restTemplate = new RestTemplate();
-//            String accountno = "0933315633";
-//            String sessionId = "";
-//            String refno = accountno + "-202412237590493-88678";
-//            Date datenow = new Date();
-//            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-//            Calendar calendar = Calendar.getInstance();
-//            calendar.setTime(datenow);
-//            calendar.add(Calendar.DATE, -1);
-//            Date fromDate = calendar.getTime();
-//            // Payload cơ bản
-//            Map<String, Object> payload = new HashMap<>();
-//            payload.put("accountNo", "0933315633");
-//            payload.put("fromDate", dateFormat.format(fromDate));
-//            payload.put("toDate", dateFormat.format(datenow));
-//            payload.put("sessionId", sessionId);
-//            payload.put("refNo", refno);
-//            payload.put("deviceIdCommon", "rgfgfmrr-mbib-0000-0000-2024122008495838");
-//
-//            // Header
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setContentType(MediaType.APPLICATION_JSON);
-//            headers.set("User-Agent", "Mozilla/5.0");
-//            headers.set("refno", refno);
-//            headers.set("deviceid", "rgfgfmrr-mbib-0000-0000-2024122008495838");
-//            headers.set("authorization", "Basic RU1CUkVUQUlMV0VCOlNEMjM0ZGZnMzQlI0BGR0AzNHNmc2RmNDU4NDNm");
-//
-//            HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
-//
-//            try {
-//                ResponseEntity<String> response = restTemplate.postForEntity(url_mbbank, request, String.class);
-//                ObjectMapper objectMapper = new ObjectMapper();
-//                Map<String, Object> responseBody = objectMapper.readValue(response.getBody(), Map.class);
-//                // Xử lý kết quả thành công
-//                apiResponse.setCode(200);
-//                apiResponse.setMessage("Lấy data thành công.");
-//                apiResponse.setResult(responseBody);
-//                return ResponseEntity.ok(apiResponse);
-//            } catch (Exception e) {
-//                // Xử lý lỗi
-//                apiResponse.setCode(500);
-//                apiResponse.setMessage("Có lỗi xảy ra: " + e.getMessage());
-//                apiResponse.setResult(null);
-//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
-//            }
-//        }
+    @GetMapping("/get-history")
+    public ResponseEntity<?> getTransactionHistory() {
+            APIResponse<Object> apiResponse = new APIResponse<>();
+            RestTemplate restTemplate = new RestTemplate();
+            String accountno = "0933315633";
+            String sessionId = "";
+            String refno = accountno + "-202412237590493-88678";
+            Date datenow = new Date();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(datenow);
+            calendar.add(Calendar.DATE, -1);
+            Date fromDate = calendar.getTime();
+            // Payload cơ bản
+            Map<String, Object> payload = new HashMap<>();
+            payload.put("accountNo", "0933315633");
+            payload.put("fromDate", dateFormat.format(fromDate));
+            payload.put("toDate", dateFormat.format(datenow));
+            payload.put("sessionId", sessionId);
+            payload.put("refNo", refno);
+            payload.put("deviceIdCommon", "rgfgfmrr-mbib-0000-0000-2024122008495838");
+
+            // Header
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("User-Agent", "Mozilla/5.0");
+            headers.set("refno", refno);
+            headers.set("deviceid", "rgfgfmrr-mbib-0000-0000-2024122008495838");
+            headers.set("authorization", "Basic RU1CUkVUQUlMV0VCOlNEMjM0ZGZnMzQlI0BGR0AzNHNmc2RmNDU4NDNm");
+
+            HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
+
+            try {
+                ResponseEntity<String> response = restTemplate.postForEntity(url_mbbank, request, String.class);
+                ObjectMapper objectMapper = new ObjectMapper();
+                Map<String, Object> responseBody = objectMapper.readValue(response.getBody(), Map.class);
+                // Xử lý kết quả thành công
+                apiResponse.setCode(200);
+                apiResponse.setMessage("Lấy data thành công.");
+                apiResponse.setResult(responseBody);
+                return ResponseEntity.ok("true");
+            } catch (Exception e) {
+                // Xử lý lỗi
+                apiResponse.setCode(500);
+                apiResponse.setMessage("Có lỗi xảy ra: " + e.getMessage());
+                apiResponse.setResult(null);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("false");
+            }
+        }
 
     public boolean createPayment(Integer appointmentid,BigDecimal amount, String paymentMethod, String transactioncode, String transactiondescription) {
     try {

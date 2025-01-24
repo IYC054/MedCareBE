@@ -14,7 +14,7 @@ public interface AppointmentService {
     List<Appointment> getDoctorByidDoctor(int doctorid);
     Appointment updateAppointmentStatusOnly(int id, String status);
     Appointment updateAppointment(int id, Appointment appointment);
-
+    boolean checkslotApointment(int doctorid, int worktimeid);
     void deleteAppointment(int id);
 
     List<Appointment> getAllAppointmentsByPatient(int patientId);

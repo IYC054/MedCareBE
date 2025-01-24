@@ -27,6 +27,15 @@ public class PatientFile {
     @JsonIgnore
     @JoinColumn(name = "patients_information_id")
     private PatientsInformation patientsInformation;
+
+    @ManyToOne()
+    @JsonIgnore
+    @JoinColumn(name = "appointment_id")
+    private Appointment appointment;
+    @JsonProperty("appointment_id")
+    public Integer getSpecialtiespatientsApp_id() {
+        return appointment != null ? appointment.getId() : null;
+    }
     @JsonProperty("patients_information_id")
     public Integer getSpecialtiespatientsInformationId() {
         return patientsInformation != null ? patientsInformation.getId() : null;

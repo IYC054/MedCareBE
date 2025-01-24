@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -32,7 +33,8 @@ public class PatientFileController {
     private FilesImageService filesImagesService;
     @Autowired
     private DoctorService doctorService;
-
+    @Autowired
+    private AppointmentService appointmentService;
     public PatientFileController(FilesImageService filesImagesService,PatientService patientsService,ServletContext servletContext, PatientFileService patientFilesService) {
         this.filesImagesService = filesImagesService;
         this.patientFilesService = patientFilesService;
@@ -41,39 +43,69 @@ public class PatientFileController {
     }
 
     @PostMapping
-    public ResponseEntity<PatientFile> createPatientFile(@ModelAttribute PatientFile patientFile,
-                                                         @RequestParam("patients_profile_id") Integer patientsId,
-                                                         @RequestParam("doctors_id") Integer doctorId,
-                                                         @RequestParam("url_image") List<MultipartFile> files) {
+    public ResponseEntity<PatientFile> createPatientFile(
+            @RequestParam("patients_profile_id") Integer patientsId,
+            @RequestParam("doctors_id") Integer doctorId,
+            @RequestParam("appointment_id") Integer appointmentId,
+            @RequestParam(value = "url_image", required = false) List<MultipartFile> files) {
         try {
+            // Tạo thư mục upload nếu chưa tồn tại
             File uploadDir = new File(fileUpload);
-            if (!uploadDir.exists()) {
-                uploadDir.mkdirs();
+            if (!uploadDir.exists() && !uploadDir.mkdirs()) {
+                throw new IOException("Không thể tạo thư mục upload: " + fileUpload);
             }
+
+            // Lấy thông tin bệnh nhân, bác sĩ và cuộc hẹn
             PatientsInformation patient = patientInformationService.getPatientsInformationById(patientsId);
-            Doctor doctor = doctorService.getDoctorById(doctorId);
-
-            patientFile.setPatientsInformation(patient);
-            PatientFile createdPatientFile = patientFilesService.createPatientFile(patientFile);
-            patientFile.setDoctor(doctor);
-            for (MultipartFile file : files) {
-                String fileName = file.getOriginalFilename();
-                File destinationFile = new File(uploadDir, fileName);
-
-                FileCopyUtils.copy(file.getBytes(), destinationFile);
-
-                FilesImage fileImage = new FilesImage();
-                fileImage.setUrlImage(fileName);
-                fileImage.setPatientsFiles(createdPatientFile);
-
-                filesImagesService.createFilesImage(fileImage);
+            if (patient == null) {
+                throw new IllegalArgumentException("Bệnh nhân không tồn tại.");
             }
+
+            Doctor doctor = doctorService.getDoctorById(doctorId);
+            if (doctor == null) {
+                throw new IllegalArgumentException("Bác sĩ không tồn tại.");
+            }
+
+            Appointment appointment = appointmentService.getAppointmentById(appointmentId);
+            if (appointment == null) {
+                throw new IllegalArgumentException("Cuộc hẹn không tồn tại.");
+            }
+
+            // Tạo `PatientFile`
+            PatientFile patientFile = new PatientFile();
+            patientFile.setPatientsInformation(patient);
+            patientFile.setDoctor(doctor);
+            patientFile.setAppointment(appointment);
+            PatientFile createdPatientFile = patientFilesService.createPatientFile(patientFile);
+
+            // Xử lý tệp nếu có
+            if (files != null && !files.isEmpty()) {
+                for (MultipartFile file : files) {
+                    String fileName = file.getOriginalFilename();
+                    File destinationFile = new File(uploadDir, fileName);
+
+                    // Copy file lên server
+                    FileCopyUtils.copy(file.getBytes(), destinationFile);
+
+                    // Lưu thông tin file vào DB
+                    FilesImage fileImage = new FilesImage();
+                    fileImage.setUrlImage(fileName);
+                    fileImage.setPatientsFiles(createdPatientFile);
+                    filesImagesService.createFilesImage(fileImage);
+                }
+            }
+
             return ResponseEntity.status(201).body(createdPatientFile);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(null); // Trả về lỗi do request không hợp lệ
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body(null); // Trả về lỗi khi upload file
         } catch (Exception e) {
-            throw new RuntimeException("Error while creating patient file", e);
+            return ResponseEntity.status(500).body(null); // Trả về lỗi chung
         }
     }
-  
+
+
     @GetMapping("/{id}")
     public ResponseEntity<PatientFile> getPatientFileById(@PathVariable int id) {
         PatientFile patientFile = patientFilesService.getPatientFileById(id);

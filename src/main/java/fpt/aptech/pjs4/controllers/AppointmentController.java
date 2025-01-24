@@ -50,6 +50,14 @@ public class AppointmentController {
         List<Appointment> appointment = appointmentService.getAllAppointmentsByPatient(id);
         return ResponseEntity.ok(appointment);
     }
+    @GetMapping("/checkslot/{doctorid}/{worktimeid}")
+    public ResponseEntity<Boolean> checkSlotAppointment(@PathVariable int doctorid, @PathVariable int worktimeid) {
+        boolean checkslotApointment = appointmentService.checkslotApointment(doctorid, worktimeid);
+        if(checkslotApointment) {
+            return ResponseEntity.ok(true);
+        }
+        return ResponseEntity.ok(false);
+    }
     @GetMapping("/doctors/{id}")
     public ResponseEntity<List<Appointment>> getAppointmentByDoctorId(@PathVariable int id) {
         List<Appointment> doctors = appointmentService.getDoctorByidDoctor(id);
