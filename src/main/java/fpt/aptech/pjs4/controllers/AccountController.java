@@ -41,6 +41,11 @@ public class AccountController {
     @Autowired
     private RoleRepository roleRepository;
 
+    @GetMapping("/find")
+    public ResponseEntity<Boolean> findByEmail(@RequestParam String email) {
+        boolean exists = accountService.getAccountExists(email); // ✅ Lấy kết quả thực tế
+        return ResponseEntity.ok(exists);
+    }
     @PostMapping
     public APIResponse<Account> createAccount(@ModelAttribute AccountDTO accountDTO,
                                               @RequestParam List<String> role,

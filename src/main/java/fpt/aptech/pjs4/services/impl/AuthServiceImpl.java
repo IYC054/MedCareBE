@@ -10,6 +10,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,26 +29,37 @@ public class AuthServiceImpl implements AuthService {
 
     private boolean saveOtp(String email, String otp, int expiryMinutes) {
         OTPDetails otpDetails = otpStore.getOrDefault(email, new OTPDetails());
+        LocalDateTime now = LocalDateTime.now();
 
-        // Kiểm tra nếu vượt quá số lần gửi
-        if (otpDetails.getRequestCount() >= 5) {
-            return false;
+        // Nếu là lần gửi đầu tiên hoặc quá 24 giờ kể từ lần gửi trước => Reset
+        if (otpDetails.getLastRequestTime() == null ||
+                Duration.between(otpDetails.getLastRequestTime(), now).toHours() >= 24) {
+            otpDetails.setRequestCount(1);
+        } else {
+            // Kiểm tra nếu vượt quá số lần gửi trong 24 giờ
+            if (otpDetails.getRequestCount() >= 5) {
+                return false;
+            }
+
+            // Kiểm tra nếu gửi quá sớm (phải đợi ít nhất 3 phút giữa các lần gửi)
+            if (otpDetails.getLastRequestTime().plusMinutes(3).isAfter(now)) {
+                return false;
+            }
+
+            // Tăng số lần gửi OTP
+            otpDetails.incrementRequestCount();
         }
 
-        // Kiểm tra nếu gửi quá sớm
-        if (otpDetails.getLastRequestTime() != null &&
-                otpDetails.getLastRequestTime().plusMinutes(3).isAfter(LocalDateTime.now())) {
-            return false;
-        }
-
+        // Cập nhật thông tin OTP
         otpDetails.setOtp(otp);
-        otpDetails.setExpiryTime(LocalDateTime.now().plusMinutes(expiryMinutes));
-        otpDetails.incrementRequestCount();
-        otpDetails.setLastRequestTime(LocalDateTime.now());
+        otpDetails.setExpiryTime(now.plusMinutes(expiryMinutes));
+        otpDetails.setLastRequestTime(now);
 
+        // Lưu vào HashMap
         otpStore.put(email, otpDetails);
         return true;
     }
+
 
     private boolean validateOtp(String email, String otp) {
         OTPDetails otpDetails = otpStore.get(email);

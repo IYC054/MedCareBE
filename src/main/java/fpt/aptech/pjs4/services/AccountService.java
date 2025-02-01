@@ -39,6 +39,7 @@ public interface AccountService {
     //
     //    }
 
+    boolean getAccountExists(String email);
 
     Account getAccountById(int id);
 

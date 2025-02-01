@@ -162,6 +162,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    public boolean getAccountExists(String email) {
+        return accountRepository.existsAccountByEmail(email);
+    }
+
+    @Override
     // chỉ User Id nào mới truy cập id đó được thôi
     // email trong entity so sanh voi email trong token
     @PostAuthorize("returnObject.email == authentication.name")

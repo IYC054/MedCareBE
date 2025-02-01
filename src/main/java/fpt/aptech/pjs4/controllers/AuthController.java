@@ -2,10 +2,10 @@ package fpt.aptech.pjs4.controllers;
 
 import fpt.aptech.pjs4.services.AuthService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -17,12 +17,15 @@ public class AuthController {
     }
 
     @PostMapping("/send")
-    public ResponseEntity<String> sendOtp(@RequestParam String email) {
+    public ResponseEntity<Map<String, String>> sendOtp(@RequestParam String email) {
         String response = authService.sendOtp(email);
+        Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("message", response);
+
         if (response.contains("exceeded") || response.contains("need to wait")) {
-            return ResponseEntity.badRequest().body(response);
+            return ResponseEntity.badRequest().body(responseBody);
         }
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @PostMapping("/verify")
