@@ -29,12 +29,16 @@ public class AuthController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<String> verifyOtp(@RequestParam String email, @RequestParam String otp) {
+    public ResponseEntity<Map<String, String>> verifyOtp(@RequestParam String email, @RequestParam String otp) {
         boolean isValid = authService.verifyOtp(email, otp);
+
+        Map<String, String> response = new HashMap<>();
         if (isValid) {
-            return ResponseEntity.ok("OTP verified successfully!");
+            response.put("message", "OTP verified successfully!");
+            return ResponseEntity.ok(response); // ✅ Trả về JSON
         } else {
-            return ResponseEntity.badRequest().body("Invalid or expired OTP!");
+            response.put("error", "Invalid or expired OTP!");
+            return ResponseEntity.badRequest().body(response);
         }
     }
 

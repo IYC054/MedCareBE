@@ -49,26 +49,27 @@ public class AccountController {
     @PostMapping
     public APIResponse<Account> createAccount(@ModelAttribute AccountDTO accountDTO,
                                               @RequestParam List<String> role,
-                                              @RequestPart("avatar") MultipartFile image) {
+                                              @RequestPart(value = "avatar", required = false) MultipartFile image) { // Chú ý: required = false
         try {
             // Lưu hình ảnh
-            Path uploadDir = Paths.get("src/main/resources/static/image");
-            if (!Files.exists(uploadDir)) {
-                Files.createDirectories(uploadDir);
+            String imageUrl = null;
+            if (image != null && !image.isEmpty()) {
+                Path uploadDir = Paths.get("src/main/resources/static/image");
+                if (!Files.exists(uploadDir)) {
+                    Files.createDirectories(uploadDir);
+                }
+
+                String uniqueFileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
+                Path destinationPath = uploadDir.resolve(uniqueFileName);
+                Files.write(destinationPath, image.getBytes());
+
+                imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                        .path("/api/image/")
+                        .path(uniqueFileName)
+                        .toUriString();
             }
-            String uniqueFileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
-            Path destinationPath = uploadDir.resolve(uniqueFileName);
-            Files.write(destinationPath, image.getBytes());
 
-            // Tạo URL hoàn chỉnh cho hình ảnh
-            String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/api/image/")
-                    .path(uniqueFileName)
-                    .toUriString();
-
-            // Khởi tạo API response
-            APIResponse<Account> apiResponse = new APIResponse<>();
-
+            // Tạo account
             Account account = new Account();
             account.setEmail(accountDTO.getEmail());
             account.setName(accountDTO.getName());
@@ -77,16 +78,15 @@ public class AccountController {
             account.setGender(accountDTO.getGender());
             account.setBirthdate(accountDTO.getBirthdate());
 
-            // Lấy danh sách vai trò từ mảng role
-            List<Role> roles = roleRepository.findAllById(role);  // role là một danh sách ["USER", "ADMIN"]
-
-            // Thiết lập các vai trò cho tài khoản
+            // Lấy danh sách vai trò
+            List<Role> roles = roleRepository.findAllById(role);
             account.setRole(roles);
 
-            // Thiết lập URL avatar
+            // Thiết lập avatar (nếu có)
             account.setAvatar(imageUrl);
 
-            // Lưu tài khoản và trả về phản hồi API
+            // Lưu account
+            APIResponse<Account> apiResponse = new APIResponse<>();
             apiResponse.setResult(accountService.createAccount(account));
             apiResponse.setMessage("Account created successfully!");
 
@@ -98,6 +98,7 @@ public class AccountController {
             throw new RuntimeException(e);
         }
     }
+
 
 
     @GetMapping("/{id}")

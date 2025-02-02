@@ -42,7 +42,7 @@ public class AuthServiceImpl implements AuthService {
             }
 
             // Kiểm tra nếu gửi quá sớm (phải đợi ít nhất 3 phút giữa các lần gửi)
-            if (otpDetails.getLastRequestTime().plusMinutes(3).isAfter(now)) {
+            if (otpDetails.getLastRequestTime().plusMinutes(1).isAfter(now)) {
                 return false;
             }
 
