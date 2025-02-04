@@ -132,16 +132,9 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void resetPassword(String email, String otp, String newPassword) {
-        // Kiểm tra OTP
-        boolean isOtpValid = validateOtp(email, otp);
-        if (!isOtpValid) {
-            throw new RuntimeException("Invalid or expired OTP");
-        }
-
+    public void resetPassword(String email, String newPassword) {
         // Tìm người dùng và cập nhật mật khẩu
-        Account account = accountRepository.findAccountByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        Account account = accountRepository.findByEmail(email);
 
         // Hash mật khẩu trước khi lưu
         String encodedPassword = new BCryptPasswordEncoder().encode(newPassword);
