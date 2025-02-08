@@ -1,11 +1,12 @@
 package fpt.aptech.pjs4.controllers;
 
+import fpt.aptech.pjs4.DTOs.request.ResetPasswordRequest;
 import fpt.aptech.pjs4.services.AuthService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -17,36 +18,59 @@ public class AuthController {
     }
 
     @PostMapping("/send")
-    public ResponseEntity<String> sendOtp(@RequestParam String email) {
+    public ResponseEntity<Map<String, String>> sendOtp(@RequestParam String email) {
+        System.out.println("Received OTP request for email: " + email);
+
         String response = authService.sendOtp(email);
+        Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("message", response);
+
+        System.out.println("OTP Response: " + response);
+
         if (response.contains("exceeded") || response.contains("need to wait")) {
-            return ResponseEntity.badRequest().body(response);
+            return ResponseEntity.badRequest().body(responseBody);
         }
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(responseBody);
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<String> verifyOtp(@RequestParam String email, @RequestParam String otp) {
+    public ResponseEntity<Map<String, Object>> verifyOtp(@RequestParam String email, @RequestParam String otp) {
         boolean isValid = authService.verifyOtp(email, otp);
+
+        Map<String, Object> response = new HashMap<>();
         if (isValid) {
-            return ResponseEntity.ok("OTP verified successfully!");
+            response.put("success", true);
+            response.put("message", "OTP verified successfully!");
+            return ResponseEntity.ok(response); // ✅ Return JSON with success flag
         } else {
-            return ResponseEntity.badRequest().body("Invalid or expired OTP!");
+            response.put("success", false);
+            response.put("error", "Invalid or expired OTP!");
+            return ResponseEntity.badRequest().body(response);
         }
     }
 
-    //forgot password
     @PostMapping("/forgot-password")
-    public ResponseEntity<String> forgotPassword(@RequestParam String email) {
+    public ResponseEntity<Map<String, Object>> forgotPassword(@RequestParam String email) {
         authService.sendOtpForgotPassword(email);
-        return ResponseEntity.ok("OTP has been sent to your email if the account exists.");
+
+        // Create a JSON response
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("message", "OTP has been sent to your email if the account exists.");
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(@RequestParam String email,
-                                                @RequestParam String otp,
-                                                @RequestParam String newPassword) {
-        authService.resetPassword(email, otp, newPassword);
-        return ResponseEntity.ok("Password has been reset successfully.");
+    public ResponseEntity<Map<String, Object>> resetPassword(@RequestBody ResetPasswordRequest resetPasswordRequest) {
+        authService.resetPassword(resetPasswordRequest.getEmail(), resetPasswordRequest.getNewPassword());
+
+        // Create a JSON response
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", "success");
+        response.put("message", "Password has been reset successfully.");
+
+        return ResponseEntity.ok(response);
     }
+
 }

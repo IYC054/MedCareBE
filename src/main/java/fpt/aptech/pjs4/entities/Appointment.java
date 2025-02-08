@@ -3,6 +3,8 @@ package fpt.aptech.pjs4.entities;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -44,5 +46,8 @@ public class Appointment {
     @ManyToOne(targetEntity = PatientsInformation.class)
     @JoinColumn(name = "patientprofile_id")
     private PatientsInformation patientprofile;
+
+    @OneToMany(mappedBy = "appointment")
+    private Set<PatientFile> patientFiles = new LinkedHashSet<>();
 
 }

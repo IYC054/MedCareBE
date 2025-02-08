@@ -3,6 +3,8 @@ package fpt.aptech.pjs4.controllers;
 import com.nimbusds.jose.JOSEException;
 import fpt.aptech.pjs4.DTOs.APIResponse;
 import fpt.aptech.pjs4.DTOs.AccountDTO;
+import fpt.aptech.pjs4.DTOs.AuthLoginToken;
+import fpt.aptech.pjs4.DTOs.Introspect;
 import fpt.aptech.pjs4.DTOs.request.AuthencicationRequest;
 import fpt.aptech.pjs4.DTOs.request.IntrospecRequest;
 import fpt.aptech.pjs4.DTOs.response.AuthencicationResponse;
@@ -25,10 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -41,29 +40,35 @@ public class AccountController {
     @Autowired
     private RoleRepository roleRepository;
 
+    @GetMapping("/find")
+    public ResponseEntity<Boolean> findByEmail(@RequestParam String email) {
+        boolean exists = accountService.getAccountExists(email); // ✅ Lấy kết quả thực tế
+        return ResponseEntity.ok(exists);
+    }
     @PostMapping
     public APIResponse<Account> createAccount(@ModelAttribute AccountDTO accountDTO,
                                               @RequestParam List<String> role,
-                                              @RequestPart("avatar") MultipartFile image) {
+                                              @RequestPart(value = "avatar", required = false) MultipartFile image) { // Chú ý: required = false
         try {
             // Lưu hình ảnh
-            Path uploadDir = Paths.get("src/main/resources/static/image");
-            if (!Files.exists(uploadDir)) {
-                Files.createDirectories(uploadDir);
+            String imageUrl = null;
+            if (image != null && !image.isEmpty()) {
+                Path uploadDir = Paths.get("src/main/resources/static/image");
+                if (!Files.exists(uploadDir)) {
+                    Files.createDirectories(uploadDir);
+                }
+
+                String uniqueFileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
+                Path destinationPath = uploadDir.resolve(uniqueFileName);
+                Files.write(destinationPath, image.getBytes());
+
+                imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                        .path("/api/image/")
+                        .path(uniqueFileName)
+                        .toUriString();
             }
-            String uniqueFileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
-            Path destinationPath = uploadDir.resolve(uniqueFileName);
-            Files.write(destinationPath, image.getBytes());
 
-            // Tạo URL hoàn chỉnh cho hình ảnh
-            String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/api/image/")
-                    .path(uniqueFileName)
-                    .toUriString();
-
-            // Khởi tạo API response
-            APIResponse<Account> apiResponse = new APIResponse<>();
-
+            // Tạo account
             Account account = new Account();
             account.setEmail(accountDTO.getEmail());
             account.setName(accountDTO.getName());
@@ -72,16 +77,15 @@ public class AccountController {
             account.setGender(accountDTO.getGender());
             account.setBirthdate(accountDTO.getBirthdate());
 
-            // Lấy danh sách vai trò từ mảng role
-            List<Role> roles = roleRepository.findAllById(role);  // role là một danh sách ["USER", "ADMIN"]
-
-            // Thiết lập các vai trò cho tài khoản
+            // Lấy danh sách vai trò
+            List<Role> roles = roleRepository.findAllById(role);
             account.setRole(roles);
 
-            // Thiết lập URL avatar
+            // Thiết lập avatar (nếu có)
             account.setAvatar(imageUrl);
 
-            // Lưu tài khoản và trả về phản hồi API
+            // Lưu account
+            APIResponse<Account> apiResponse = new APIResponse<>();
             apiResponse.setResult(accountService.createAccount(account));
             apiResponse.setMessage("Account created successfully!");
 
@@ -93,6 +97,7 @@ public class AccountController {
             throw new RuntimeException(e);
         }
     }
+
 
 
     @GetMapping("/{id}")
@@ -183,7 +188,7 @@ public class AccountController {
     }
 
 
-    // login
+//    // login
 //    @PostMapping("/login")
 //    public APIResponse<AuthLoginToken> login(@RequestBody Account loginRequest) {
 //        APIResponse<AuthLoginToken> apiResponse = new APIResponse<>();
@@ -220,11 +225,11 @@ public class AccountController {
 //    }
 // post token kiểm tra còn sống mình tạo ra ko
 @PostMapping("/introspect")
-public APIResponse<IntrospecResponse> authencication(@RequestBody IntrospecRequest request) throws ParseException, JOSEException {
-    var result = accountService.introspec(request);
-    APIResponse<IntrospecResponse> apiResponse = new APIResponse<>();
-    apiResponse.setResult(result);
-    return apiResponse;
+public Map<String, Object> authentication(@RequestBody Introspect introspect) {
+    String token = introspect.getToken();
+
+    // Trả về claims từ token
+    return accountService.getClaimsFromToken(token);
 }
 //    @GetMapping("/detail/token")
 //    public Map<String, Object> getTokenClaims(@RequestHeader("Authorization") String token) {

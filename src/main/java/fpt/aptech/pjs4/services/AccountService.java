@@ -39,6 +39,7 @@ public interface AccountService {
     //
     //    }
 
+    boolean getAccountExists(String email);
 
     Account getAccountById(int id);
 
@@ -52,5 +53,7 @@ public interface AccountService {
 
     public AuthencicationResponse authenticate(AuthencicationRequest request);
 
-    public IntrospecResponse introspec (IntrospecRequest request) throws JOSEException, ParseException;
+//    public IntrospecResponse introspec (IntrospecRequest request) throws JOSEException, ParseException;
+    public Map<String, Object> getClaimsFromToken(String token);
 }
+

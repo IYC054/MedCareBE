@@ -28,6 +28,7 @@ public class PatientServiceImpl implements PatientService {
         return patientRepository.findAll();
     }
 
+
     @Override
     public Patient updatePatient(int id, Patient patient) {
         if (patientRepository.existsById(id)) {

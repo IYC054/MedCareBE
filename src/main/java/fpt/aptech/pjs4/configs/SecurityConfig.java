@@ -34,11 +34,16 @@ public class SecurityConfig {
             "/api/image/**",
             "/api/feedbacks/**",
             "/api/news/**",
+<<<<<<< HEAD
             "/api/account/find",
             "/api/auth/send",
             "/api/auth/verify",
             "/api/auth/forgot-password",
             "/api/auth/reset-password"
+=======
+            "api/patientsfile/**",
+            "api/filesimage/**",
+>>>>>>> 50deb578f92db67d8da18887a9728d554270afa0
 
     };
     @Bean
@@ -55,6 +60,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(requests ->
                         requests.requestMatchers(HttpMethod.POST, PUBLIC_ENPOINT).permitAll()
                                 .requestMatchers(HttpMethod.GET, PUBLIC_ENPOINT).permitAll()
+                                .requestMatchers(HttpMethod.PUT, PUBLIC_ENPOINT).permitAll()
+                                .requestMatchers(HttpMethod.DELETE, PUBLIC_ENPOINT).permitAll()
+
                                 //.requestMatchers(HttpMethod.GET, "/api/account").hasRole(Role.ADMIN.name())
                                 .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 ->

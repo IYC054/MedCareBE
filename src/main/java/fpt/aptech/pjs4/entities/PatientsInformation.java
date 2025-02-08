@@ -48,10 +48,6 @@ public class PatientsInformation {
     @Column(name = "nation", length = 20)
     private String nation;
 
-    @Size(max = 20)
-    @Nationalized
-    @Column(name = "identity_card", length = 20)
-    private String identityCard;
 
     @Size(max = 100)
     @Nationalized

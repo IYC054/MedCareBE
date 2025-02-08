@@ -24,6 +24,11 @@ public class PatientFileServiceImpl implements PatientFileService {
     }
 
     @Override
+    public List<PatientFile> getPatientFileByDoctorId(int doctorid) {
+        return patientFileRepository.findPatientFileByDoctorId(doctorid);
+    }
+
+    @Override
     public List<PatientFile> getAllPatientFiles() {
         return patientFileRepository.findAll();
     }

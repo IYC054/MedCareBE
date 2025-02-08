@@ -1,22 +1,22 @@
 package fpt.aptech.pjs4.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fpt.aptech.pjs4.DTOs.APIResponse;
-import fpt.aptech.pjs4.DTOs.OcrResult;
-import fpt.aptech.pjs4.DTOs.PaymentDTO;
-import fpt.aptech.pjs4.DTOs.PaymentRequest;
+import fpt.aptech.pjs4.DTOs.*;
 import fpt.aptech.pjs4.entities.Appointment;
 import fpt.aptech.pjs4.entities.Payment;
 import fpt.aptech.pjs4.services.AppointmentService;
 import fpt.aptech.pjs4.services.PaymentService;
 import fpt.aptech.pjs4.services.impl.OcrService;
+import fpt.aptech.pjs4.services.impl.VNPAYService;
 import io.swagger.v3.oas.models.responses.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import net.sourceforge.tess4j.TesseractException;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +25,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -33,7 +34,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
-@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/payments")
 public class PaymentApi {
@@ -217,8 +217,9 @@ public class PaymentApi {
         APIResponse<Object> apiResponse = new APIResponse<>();
         RestTemplate restTemplate = new RestTemplate();
         String accountno = "0933315633";
-        String sessionId = "62f69c44-61bc-4fca-b8ab-e9afe8952248";
-        String refno = accountno + "-202412237590493-88678";
+        String sessionId = "b71d28df-6bb0-47ae-9d16-4d5a13060412";
+        String devicecommon = "fp5kuz68-mbib-0000-0000-2024122809001755";
+        String refno = accountno + "-2025011910271539-89948";
         Date datenow = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Calendar calendar = Calendar.getInstance();
@@ -233,14 +234,14 @@ public class PaymentApi {
         payload.put("toDate", dateFormat.format(datenow));
         payload.put("sessionId", sessionId);
         payload.put("refNo", refno);
-        payload.put("deviceIdCommon", "rgfgfmrr-mbib-0000-0000-2024122008495838");
+        payload.put("deviceIdCommon", devicecommon);
 
         // Header
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("User-Agent", "Mozilla/5.0");
         headers.set("refno", refno);
-        headers.set("deviceid", "rgfgfmrr-mbib-0000-0000-2024122008495838");
+        headers.set("deviceid", devicecommon);
         headers.set("authorization", "Basic RU1CUkVUQUlMV0VCOlNEMjM0ZGZnMzQlI0BGR0AzNHNmc2RmNDU4NDNm");
 
         HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
@@ -265,18 +266,17 @@ public class PaymentApi {
                         matchingTransactions.add(transaction);
 
                     }
+
                     for (Map<String, Object> matchingtransaction : matchingTransactions) {
                         String refNoinTransaction = (String) matchingtransaction.get("refNo");
                         Payment checkrefno = paymentService.findPaymentByTransactionCode(refNoinTransaction);
-                        System.out.println(checkrefno);
                         if (checkrefno == null && description.contains(accountphone)) {
-                            System.out.println("giao dich chua ton tai trong db " + refNoinTransaction);
                             String creditAmountStr = (String) transaction.get("creditAmount");
                             amount = creditAmountStr != null ? new BigDecimal(creditAmountStr) : BigDecimal.ZERO;
                             String paymethod = "Ngân hàng";
                             String transactioncode = (String) transaction.get("refNo");
                             String transactiondescription = (String) transaction.get("description");
-                            apiResponse.setMessage("giao dich chua xu ly " + transactioncode);
+                            apiResponse.setMessage("Có giao dịch mới");
                             apiResponse.setResult(true);
                             if(appointid != null){
                                 createPayment(appointid,amount, paymethod, transactioncode, transactiondescription);
@@ -291,6 +291,7 @@ public class PaymentApi {
 
                 }
             }
+//            apiResponse.setResult(responseBody);
             if (!matchingTransactions.isEmpty()) {
                 // Nếu có giao dịch chứa số điện thoại trong description
                 apiResponse.setCode(200);
@@ -312,56 +313,57 @@ public class PaymentApi {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
         }
     }
-//    @GetMapping("/transaction-history")
-//    public ResponseEntity<APIResponse<?>> getTransactionHistory() {
-//            APIResponse<Object> apiResponse = new APIResponse<>();
-//            RestTemplate restTemplate = new RestTemplate();
-//            String accountno = "0933315633";
-//            String sessionId = "";
-//            String refno = accountno + "-202412237590493-88678";
-//            Date datenow = new Date();
-//            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-//            Calendar calendar = Calendar.getInstance();
-//            calendar.setTime(datenow);
-//            calendar.add(Calendar.DATE, -1);
-//            Date fromDate = calendar.getTime();
-//            // Payload cơ bản
-//            Map<String, Object> payload = new HashMap<>();
-//            payload.put("accountNo", "0933315633");
-//            payload.put("fromDate", dateFormat.format(fromDate));
-//            payload.put("toDate", dateFormat.format(datenow));
-//            payload.put("sessionId", sessionId);
-//            payload.put("refNo", refno);
-//            payload.put("deviceIdCommon", "rgfgfmrr-mbib-0000-0000-2024122008495838");
-//
-//            // Header
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setContentType(MediaType.APPLICATION_JSON);
-//            headers.set("User-Agent", "Mozilla/5.0");
-//            headers.set("refno", refno);
-//            headers.set("deviceid", "rgfgfmrr-mbib-0000-0000-2024122008495838");
-//            headers.set("authorization", "Basic RU1CUkVUQUlMV0VCOlNEMjM0ZGZnMzQlI0BGR0AzNHNmc2RmNDU4NDNm");
-//
-//            HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
-//
-//            try {
-//                ResponseEntity<String> response = restTemplate.postForEntity(url_mbbank, request, String.class);
-//                ObjectMapper objectMapper = new ObjectMapper();
-//                Map<String, Object> responseBody = objectMapper.readValue(response.getBody(), Map.class);
-//                // Xử lý kết quả thành công
-//                apiResponse.setCode(200);
-//                apiResponse.setMessage("Lấy data thành công.");
-//                apiResponse.setResult(responseBody);
-//                return ResponseEntity.ok(apiResponse);
-//            } catch (Exception e) {
-//                // Xử lý lỗi
-//                apiResponse.setCode(500);
-//                apiResponse.setMessage("Có lỗi xảy ra: " + e.getMessage());
-//                apiResponse.setResult(null);
-//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiResponse);
-//            }
-//        }
-public boolean createPayment(Integer appointmentid,BigDecimal amount, String paymentMethod, String transactioncode, String transactiondescription) {
+    @GetMapping("/get-history")
+    public ResponseEntity<?> getTransactionHistory() {
+            APIResponse<Object> apiResponse = new APIResponse<>();
+            RestTemplate restTemplate = new RestTemplate();
+            String accountno = "0933315633";
+            String sessionId = "";
+            String refno = accountno + "-202412237590493-88678";
+            Date datenow = new Date();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(datenow);
+            calendar.add(Calendar.DATE, -1);
+            Date fromDate = calendar.getTime();
+            // Payload cơ bản
+            Map<String, Object> payload = new HashMap<>();
+            payload.put("accountNo", "0933315633");
+            payload.put("fromDate", dateFormat.format(fromDate));
+            payload.put("toDate", dateFormat.format(datenow));
+            payload.put("sessionId", sessionId);
+            payload.put("refNo", refno);
+            payload.put("deviceIdCommon", "rgfgfmrr-mbib-0000-0000-2024122008495838");
+
+            // Header
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("User-Agent", "Mozilla/5.0");
+            headers.set("refno", refno);
+            headers.set("deviceid", "rgfgfmrr-mbib-0000-0000-2024122008495838");
+            headers.set("authorization", "Basic RU1CUkVUQUlMV0VCOlNEMjM0ZGZnMzQlI0BGR0AzNHNmc2RmNDU4NDNm");
+
+            HttpEntity<Map<String, Object>> request = new HttpEntity<>(payload, headers);
+
+            try {
+                ResponseEntity<String> response = restTemplate.postForEntity(url_mbbank, request, String.class);
+                ObjectMapper objectMapper = new ObjectMapper();
+                Map<String, Object> responseBody = objectMapper.readValue(response.getBody(), Map.class);
+                // Xử lý kết quả thành công
+                apiResponse.setCode(200);
+                apiResponse.setMessage("Lấy data thành công.");
+                apiResponse.setResult(responseBody);
+                return ResponseEntity.ok("true");
+            } catch (Exception e) {
+                // Xử lý lỗi
+                apiResponse.setCode(500);
+                apiResponse.setMessage("Có lỗi xảy ra: " + e.getMessage());
+                apiResponse.setResult(null);
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("false");
+            }
+        }
+
+    public boolean createPayment(Integer appointmentid,BigDecimal amount, String paymentMethod, String transactioncode, String transactiondescription) {
     try {
         Appointment appointment = appointmentService.getAppointmentById(appointmentid);
         if (appointment == null) {
@@ -399,4 +401,14 @@ public boolean createPayment(Integer appointmentid,BigDecimal amount, String pay
             throw new RuntimeException(e);
         }
     }
+    @PostMapping("/create-payment")
+    public ResponseEntity<?> submidOrder(@RequestParam("amount") int orderTotal,
+                              @RequestParam("orderInfo") String orderInfo,
+                              HttpServletRequest request){
+        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+        String vnpayUrl = VNPAYService.createOrder(request, orderTotal, orderInfo, baseUrl);
+        return ResponseEntity.ok(vnpayUrl);
+    }
+
+
 }

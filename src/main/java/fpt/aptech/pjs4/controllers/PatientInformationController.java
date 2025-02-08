@@ -52,7 +52,6 @@ public class PatientInformationController {
         patientsInformation.setPhone(patientsInformationDTO.getPhone());
         patientsInformation.setFullname(patientsInformationDTO.getFullname());
         patientsInformation.setCodeBhyt(patientsInformationDTO.getCodeBhyt());
-        patientsInformation.setIdentityCard(patientsInformationDTO.getIdentityCard());
         patientsInformation.setNation(patientsInformationDTO.getNation());
         PatientsInformation createdPatient = patientInformationService.addPatientInformation(patientsInformation);
         return ResponseEntity.status(201).body(createdPatient);

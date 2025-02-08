@@ -9,6 +9,6 @@ public interface AuthService {
     public boolean verifyOtp(String email, String otp);
     //    public String generateOtp();
     public String sendOtpForgotPassword(String email);
-    public void resetPassword(String email, String otp, String newPassword);
+    public void resetPassword(String email, String newPassword);
 
 }
