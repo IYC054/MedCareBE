@@ -1,16 +1,15 @@
 package fpt.aptech.pjs4.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fpt.aptech.pjs4.DTOs.APIResponse;
-import fpt.aptech.pjs4.DTOs.OcrResult;
-import fpt.aptech.pjs4.DTOs.PaymentDTO;
-import fpt.aptech.pjs4.DTOs.PaymentRequest;
+import fpt.aptech.pjs4.DTOs.*;
 import fpt.aptech.pjs4.entities.Appointment;
 import fpt.aptech.pjs4.entities.Payment;
 import fpt.aptech.pjs4.services.AppointmentService;
 import fpt.aptech.pjs4.services.PaymentService;
 import fpt.aptech.pjs4.services.impl.OcrService;
+import fpt.aptech.pjs4.services.impl.VNPAYService;
 import io.swagger.v3.oas.models.responses.ApiResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import net.sourceforge.tess4j.TesseractException;
 import org.aspectj.weaver.ast.Or;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +25,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -401,4 +401,14 @@ public class PaymentApi {
             throw new RuntimeException(e);
         }
     }
+    @PostMapping("/create-payment")
+    public ResponseEntity<?> submidOrder(@RequestParam("amount") int orderTotal,
+                              @RequestParam("orderInfo") String orderInfo,
+                              HttpServletRequest request){
+        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+        String vnpayUrl = VNPAYService.createOrder(request, orderTotal, orderInfo, baseUrl);
+        return ResponseEntity.ok(vnpayUrl);
+    }
+
+
 }

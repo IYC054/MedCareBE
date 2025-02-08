@@ -6,6 +6,7 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import fpt.aptech.pjs4.DTOs.Introspect;
 import fpt.aptech.pjs4.DTOs.request.AuthencicationRequest;
 import fpt.aptech.pjs4.DTOs.request.IntrospecRequest;
 import fpt.aptech.pjs4.DTOs.response.AuthencicationResponse;
@@ -30,10 +31,7 @@ import org.springframework.util.CollectionUtils;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.StringJoiner;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -76,6 +74,7 @@ public class AccountServiceImpl implements AccountService {
                 //  thời hạn token
                 .expirationTime(new Date(Instant.now().plus(10, ChronoUnit.HOURS).toEpochMilli()))
                 .claim("scope", buildScope(account))
+                .claim("id", account.getId())
                 .build();
         Payload payload = new Payload(jwtClaimsSet.toJSONObject()); // chỉ nhận Json
         JWSObject jwsObject = new JWSObject(jwsHeader, payload);
@@ -90,17 +89,23 @@ public class AccountServiceImpl implements AccountService {
 
     }
 
-    @Override
-    public IntrospecResponse introspec(IntrospecRequest request) throws JOSEException, ParseException {
-        var token = request.getToken();
-        JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
-        SignedJWT signedJWT = SignedJWT.parse(token);
-        // check token het han chua
-        Date expityTime = signedJWT.getJWTClaimsSet().getExpirationTime();
-        var verifide = signedJWT.verify(verifier);
-        IntrospecResponse introspecResponse = new IntrospecResponse();
-        introspecResponse.setValid(verifide && expityTime.after(new Date()));
-        return introspecResponse;
+    public Map<String, Object> getClaimsFromToken(String token) {
+        try {
+            // Giải mã token
+            JWSObject jwsObject = JWSObject.parse(token);
+
+            // Xác minh chữ ký của token
+            if (!jwsObject.verify(new MACVerifier(SIGNER_KEY.getBytes()))) {
+                throw new RuntimeException("Token không hợp lệ");
+            }
+
+            // Lấy toàn bộ claims trong token
+            JWTClaimsSet claimsSet = JWTClaimsSet.parse(jwsObject.getPayload().toJSONObject());
+            return claimsSet.getClaims();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi khi xử lý token", e);
+        }
     }
 
     private String buildScope(Account account) {

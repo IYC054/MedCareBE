@@ -3,6 +3,8 @@ package fpt.aptech.pjs4.controllers;
 import com.nimbusds.jose.JOSEException;
 import fpt.aptech.pjs4.DTOs.APIResponse;
 import fpt.aptech.pjs4.DTOs.AccountDTO;
+import fpt.aptech.pjs4.DTOs.AuthLoginToken;
+import fpt.aptech.pjs4.DTOs.Introspect;
 import fpt.aptech.pjs4.DTOs.request.AuthencicationRequest;
 import fpt.aptech.pjs4.DTOs.request.IntrospecRequest;
 import fpt.aptech.pjs4.DTOs.response.AuthencicationResponse;
@@ -25,10 +27,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -189,7 +188,7 @@ public class AccountController {
     }
 
 
-    // login
+//    // login
 //    @PostMapping("/login")
 //    public APIResponse<AuthLoginToken> login(@RequestBody Account loginRequest) {
 //        APIResponse<AuthLoginToken> apiResponse = new APIResponse<>();
@@ -226,11 +225,11 @@ public class AccountController {
 //    }
 // post token kiểm tra còn sống mình tạo ra ko
 @PostMapping("/introspect")
-public APIResponse<IntrospecResponse> authencication(@RequestBody IntrospecRequest request) throws ParseException, JOSEException {
-    var result = accountService.introspec(request);
-    APIResponse<IntrospecResponse> apiResponse = new APIResponse<>();
-    apiResponse.setResult(result);
-    return apiResponse;
+public Map<String, Object> authentication(@RequestBody Introspect introspect) {
+    String token = introspect.getToken();
+
+    // Trả về claims từ token
+    return accountService.getClaimsFromToken(token);
 }
 //    @GetMapping("/detail/token")
 //    public Map<String, Object> getTokenClaims(@RequestHeader("Authorization") String token) {
