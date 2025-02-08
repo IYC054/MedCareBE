@@ -19,9 +19,13 @@ public class AuthController {
 
     @PostMapping("/send")
     public ResponseEntity<Map<String, String>> sendOtp(@RequestParam String email) {
+        System.out.println("Received OTP request for email: " + email);
+
         String response = authService.sendOtp(email);
         Map<String, String> responseBody = new HashMap<>();
         responseBody.put("message", response);
+
+        System.out.println("OTP Response: " + response);
 
         if (response.contains("exceeded") || response.contains("need to wait")) {
             return ResponseEntity.badRequest().body(responseBody);
