@@ -34,16 +34,14 @@ public class SecurityConfig {
             "/api/image/**",
             "/api/feedbacks/**",
             "/api/news/**",
-<<<<<<< HEAD
             "/api/account/find",
             "/api/auth/send",
             "/api/auth/verify",
             "/api/auth/forgot-password",
-            "/api/auth/reset-password"
-=======
+            "/api/auth/reset-password",
             "api/patientsfile/**",
             "api/filesimage/**",
->>>>>>> 50deb578f92db67d8da18887a9728d554270afa0
+
 
     };
     @Bean
