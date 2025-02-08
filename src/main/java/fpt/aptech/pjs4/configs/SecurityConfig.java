@@ -34,6 +34,12 @@ public class SecurityConfig {
             "/api/image/**",
             "/api/feedbacks/**",
             "/api/news/**",
+            "/api/account/find",
+            "/api/auth/send",
+            "/api/auth/verify",
+            "/api/auth/forgot-password",
+            "/api/auth/reset-password"
+
     };
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {

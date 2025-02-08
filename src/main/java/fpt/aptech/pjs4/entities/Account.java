@@ -47,7 +47,6 @@ public class Account {
     @ManyToMany
     private List<Role> role;
 
-
     @Size(max = 100)
     @Column(name = "avatar", length = 100)
     private String avatar;

@@ -178,13 +178,15 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @PostAuthorize("returnObject.email == authentication.name")
     public Account updateAccount(int id, Account account) {
         Account account1 = getAccountById(id);
         if (accountRepository.existsById(id)) {
             account.setId(id);
-            if (account1.getPassword().equals(account.getPassword())) {
-                throw new AppException(ErrorCode.CHECK_UPDATEPASS);
-            }
+
+//            if (account1.getPassword().equals(account.getPassword())) {
+//                throw new AppException(ErrorCode.CHECK_UPDATEPASS);
+//            }
 
             return accountRepository.save(account);
         }
