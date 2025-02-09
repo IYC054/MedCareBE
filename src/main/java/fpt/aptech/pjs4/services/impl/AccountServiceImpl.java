@@ -187,6 +187,7 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.findAll();
     }
 
+<<<<<<< HEAD
     @Override
     @PostAuthorize("returnObject.email == authentication.name")
     public Account updateAccount(int id, Account account) {
@@ -195,15 +196,61 @@ public class AccountServiceImpl implements AccountService {
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         if (accountRepository.existsById(id)) {
             account.setId(id);
+=======
+//    @Override
+//    @PostAuthorize("returnObject.email == authentication.name")
+//    public Account updateAccount(int id, Account account) {
+//        Account account1 = getAccountById(id);
+//        if (accountRepository.existsById(id)) {
+//            account.setId(id);
+//
+////            if (account1.getPassword().equals(account.getPassword())) {
+////                throw new AppException(ErrorCode.CHECK_UPDATEPASS);
+////            }
+//
+//            return accountRepository.save(account);
+//        }
+//        return null;
+//    }
+@Override
+@PostAuthorize("returnObject.email == authentication.name")
+public Account updateAccount(int id, Account account) {
+    Account existingAccount = getAccountById(id);
+>>>>>>> 12e25d18656ac8d22de3bc159d711b48384398ce
 
-//            if (account1.getPassword().equals(account.getPassword())) {
-//                throw new AppException(ErrorCode.CHECK_UPDATEPASS);
-//            }
-
-            return accountRepository.save(account);
-        }
-        return null;
+    if (existingAccount == null) {
+        throw new AppException(ErrorCode.USER_EXITED);
     }
+
+    // Giữ nguyên ID của tài khoản
+    account.setId(id);
+
+    // Kiểm tra nếu mật khẩu mới được cung cấp, mã hóa trước khi lưu
+    if (account.getPassword() != null && !account.getPassword().isEmpty()) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+        // Nếu mật khẩu mới khác với mật khẩu cũ thì mới cập nhật
+        if (!passwordEncoder.matches(account.getPassword(), existingAccount.getPassword())) {
+            account.setPassword(passwordEncoder.encode(account.getPassword()));
+        } else {
+            throw new AppException(ErrorCode.CHECK_UPDATEPASS);
+        }
+    } else {
+        // Nếu không nhập mật khẩu mới, giữ nguyên mật khẩu cũ
+        account.setPassword(existingAccount.getPassword());
+    }
+
+    // Giữ nguyên avatar nếu không cập nhật mới
+    if (account.getAvatar() == null || account.getAvatar().isEmpty()) {
+        account.setAvatar(existingAccount.getAvatar());
+    }
+
+    // Giữ nguyên các thông tin không thay đổi
+    account.setRole(existingAccount.getRole());
+
+    return accountRepository.save(account);
+}
+
 
     @Override
     public void deleteAccount(int id) {
