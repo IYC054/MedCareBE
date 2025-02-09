@@ -1,0 +1,40 @@
+package fpt.aptech.pjs4.entities;
+
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
+import lombok.*;
+
+import java.time.LocalDate;
+
+
+@Entity
+@Table(name = "messagers")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class Message {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Integer id;
+
+    // Sử dụng Integer cho senderId và receiverId
+    @ManyToOne
+    @JoinColumn(name = "sender_id", nullable = false)
+    private Account sender;
+
+    @ManyToOne
+    @JoinColumn(name = "receiver_id", nullable = false)
+    private Account receiver;
+
+    @Column(name = "message_text",nullable = false)
+    private String message;
+    @Size(max = 100)
+    @Column(name = "image_url", length = 100)
+    private String image;
+
+    @Column(name = "sent_at")
+    private LocalDate sent;
+}
