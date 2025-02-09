@@ -187,16 +187,16 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.findAll();
     }
 
-<<<<<<< HEAD
-    @Override
-    @PostAuthorize("returnObject.email == authentication.name")
-    public Account updateAccount(int id, Account account) {
-        Account account1 = getAccountById(id);
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        account.setPassword(passwordEncoder.encode(account.getPassword()));
-        if (accountRepository.existsById(id)) {
-            account.setId(id);
-=======
+
+//    @Override
+//    @PostAuthorize("returnObject.email == authentication.name")
+//    public Account updateAccount(int id, Account account) {
+//        Account account1 = getAccountById(id);
+//        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+//        account.setPassword(passwordEncoder.encode(account.getPassword()));
+//        if (accountRepository.existsById(id)) {
+//            account.setId(id);
+
 //    @Override
 //    @PostAuthorize("returnObject.email == authentication.name")
 //    public Account updateAccount(int id, Account account) {
@@ -216,7 +216,7 @@ public class AccountServiceImpl implements AccountService {
 @PostAuthorize("returnObject.email == authentication.name")
 public Account updateAccount(int id, Account account) {
     Account existingAccount = getAccountById(id);
->>>>>>> 12e25d18656ac8d22de3bc159d711b48384398ce
+
 
     if (existingAccount == null) {
         throw new AppException(ErrorCode.USER_EXITED);
