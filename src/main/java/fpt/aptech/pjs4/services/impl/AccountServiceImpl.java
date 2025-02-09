@@ -161,7 +161,7 @@ public class AccountServiceImpl implements AccountService {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         HashSet<String> roles = new HashSet<>();
-        roles.add(Role.USER.name());
+        roles.add(Role.PATIENTS.name());
         //account.setRole(roles);
         return accountRepository.save(account);
     }
@@ -191,6 +191,8 @@ public class AccountServiceImpl implements AccountService {
     @PostAuthorize("returnObject.email == authentication.name")
     public Account updateAccount(int id, Account account) {
         Account account1 = getAccountById(id);
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        account.setPassword(passwordEncoder.encode(account.getPassword()));
         if (accountRepository.existsById(id)) {
             account.setId(id);
 

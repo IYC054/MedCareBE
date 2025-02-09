@@ -23,7 +23,6 @@ public class SecurityConfig {
     protected static  final String SIGNER_KEY="5e3b6f9e67e9f1e3b6ad775d9a1c9078c9078b72ad34d3e4e745fb6b64367861";
     private  final String[] PUBLIC_ENPOINT={
             "/api/account/token",
-            "/api/account/**",
             "/api/doctors/**",
             "/api/specialty/**",
             "/api/payments/**",
