@@ -51,7 +51,6 @@ public class PaymentController {
                 payment.setPaymentMethod("Momo");
                 payment.setTransactionDate(transactionDate);
                 payment.setAppointment(appointment);
-                payment.setTransactionCode(trans_code);
                 payment.setStatus("Chờ xử lý");
                 payment.setTransactionDescription(orderInfo);
                 paymentService.createPayment(payment);
@@ -80,7 +79,6 @@ public class PaymentController {
         payment.setAmount(paymentDTO.getAmount());
         payment.setPaymentMethod(paymentDTO.getPaymentMethod());
         payment.setStatus(paymentDTO.getStatus());
-        payment.setTransactionCode(paymentDTO.getTransactionCode());
         payment.setStatus("Chờ xử lý");
         payment.setTransactionDescription(paymentDTO.getTransactionDescription());
         payment.setTransactionDate(transactionDate);

@@ -29,4 +29,5 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
     public Payment findPaymentByTransactionCode(@Param("transcode") String transcode);
 
     public List<Payment> findPaymentByAppointment_Id(int appointmentId);
+    boolean existsByTransactionCode(String transactionCode);
 }

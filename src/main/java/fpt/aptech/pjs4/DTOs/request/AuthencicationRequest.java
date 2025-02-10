@@ -1,9 +1,10 @@
 package fpt.aptech.pjs4.DTOs.request;
 
+import fpt.aptech.pjs4.entities.Account;
+
 public class AuthencicationRequest {
     private String email;
     private String password;
-
     public String getEmail() {
         return email;
     }
@@ -19,5 +20,6 @@ public class AuthencicationRequest {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }
 

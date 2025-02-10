@@ -13,7 +13,6 @@ public class PaymentDTO {
     private String paymentMethod;
     private String paymentDate;
     private String status;
-    private String transactionCode;
     private Integer appointmentId;
     private Instant transactionDate;
     private String transactionDescription;
