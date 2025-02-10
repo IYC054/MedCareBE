@@ -11,13 +11,15 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/chat").withSockJS();
+    public void configureMessageBroker(MessageBrokerRegistry registry) {
+        // Đặt prefix cho các tin nhắn từ client
+        registry.enableSimpleBroker("/queue", "/topic");  // Để gửi tin nhắn đến client
+        registry.setApplicationDestinationPrefixes("/app"); // Để gửi tin nhắn từ client đến server
     }
 
     @Override
-    public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/topic");  // Thêm broker để gửi tin nhắn đến người dùng
-        registry.setApplicationDestinationPrefixes("/app"); // Định nghĩa prefix cho các tin nhắn
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        // Đăng ký endpoint WebSocket (cho client kết nối)
+        registry.addEndpoint("/chat").withSockJS();
     }
 }

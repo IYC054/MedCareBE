@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,7 +38,7 @@ public class MessageServiceImpl implements MessageService {
         message.setReceiver(receiver);
         message.setMessage(messageText);
         message.setImage(imageUrl);
-        message.setSent(LocalDate.now());
+        message.setSent(LocalDateTime.now());
 
         // Lưu tin nhắn vào cơ sở dữ liệu
         return messageReponsitory.save(message);
