@@ -56,6 +56,7 @@ public class AccountServiceImpl implements AccountService {
         AuthencicationResponse authencicationResponse = new AuthencicationResponse();
         authencicationResponse.setToken(token);
         authencicationResponse.setAuthenticated(true);
+        authencicationResponse.setUser(username);
         return authencicationResponse;
 
     }
