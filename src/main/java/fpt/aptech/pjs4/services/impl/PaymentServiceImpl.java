@@ -19,6 +19,13 @@ public class PaymentServiceImpl implements PaymentService {
     private PaymentRepository paymentRepository;
     @Override
     public Payment createPayment(Payment payment) {
+        if (payment.getTransactionCode() == null) {
+            String newTransactionCode;
+            do {
+                newTransactionCode = "MEDCARE" + (int) (Math.random() * 10000000);
+            } while (paymentRepository.existsByTransactionCode(newTransactionCode)); // Kiểm tra trùng
+            payment.setTransactionCode(newTransactionCode);
+        }
         return paymentRepository.save(payment);
     }
 
