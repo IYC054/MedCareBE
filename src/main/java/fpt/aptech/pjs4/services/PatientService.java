@@ -1,10 +1,11 @@
 package fpt.aptech.pjs4.services;
 
+import fpt.aptech.pjs4.DTOs.PatientDTO;
 import fpt.aptech.pjs4.entities.Patient;
 import java.util.List;
 
 public interface PatientService {
-    Patient createPatient(Patient patient);
+    Patient createPatient(int accountid);
 
     Patient getPatientById(int id);
 

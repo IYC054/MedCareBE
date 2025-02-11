@@ -40,8 +40,8 @@ public class SecurityConfig {
             "/api/auth/verify",
             "/api/auth/forgot-password",
             "/api/auth/reset-password",
-            "api/patientsfile/**",
-            "api/filesimage/**",
+            "/api/patientsfile/**",
+            "/api/filesimage/**",
 
 
     };
@@ -53,7 +53,7 @@ public class SecurityConfig {
                     cors.setAllowedOrigins(List.of("http://localhost:5173"));
                     cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
                     cors.setAllowedHeaders(List.of("*"));
-                    cors.setExposedHeaders(List.of("Authorization"));
+                    cors.setAllowedHeaders(List.of("Authorization", "Content-Type"));
                     return cors;
                 }))
                 .authorizeHttpRequests(requests ->

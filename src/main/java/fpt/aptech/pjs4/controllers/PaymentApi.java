@@ -217,8 +217,8 @@ public class PaymentApi {
         APIResponse<Object> apiResponse = new APIResponse<>();
         RestTemplate restTemplate = new RestTemplate();
         String accountno = "0933315633";
-        String sessionId = "b71d28df-6bb0-47ae-9d16-4d5a13060412";
-        String devicecommon = "fp5kuz68-mbib-0000-0000-2024122809001755";
+        String sessionId = "0b257a3e-cae8-49f4-be12-8ce1fb87f2d0";
+        String devicecommon = "rgfgfmrr-mbib-0000-0000-2024122008495838";
         String refno = accountno + "-2025011910271539-89948";
         Date datenow = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -318,7 +318,7 @@ public class PaymentApi {
             APIResponse<Object> apiResponse = new APIResponse<>();
             RestTemplate restTemplate = new RestTemplate();
             String accountno = "0933315633";
-            String sessionId = "99dc2960-7291-4dcc-986a-8e4bcebdb30b";
+            String sessionId = "0b257a3e-cae8-49f4-be12-8ce1fb87f2d0";
             String refno = accountno + "-202412237590493-88678";
             Date datenow = new Date();
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
