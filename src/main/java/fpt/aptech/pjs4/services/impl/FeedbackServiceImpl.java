@@ -34,10 +34,10 @@ public class FeedbackServiceImpl implements FeedbackService {
                 .orElseThrow(() -> new IllegalArgumentException("Account not found"));
 
         // Kiểm tra thời gian gửi feedback gần nhất
-        if (account.getLastFeedbackTime() != null &&
-                account.getLastFeedbackTime().isAfter(LocalDateTime.now().minusMinutes(5))) {
-            throw new IllegalArgumentException("You can only send feedback every 5 minutes.");
-        }
+//        if (account.getLastFeedbackTime() != null &&
+//                account.getLastFeedbackTime().isAfter(LocalDateTime.now().minusMinutes(5))) {
+//            throw new IllegalArgumentException("You can only send feedback every 5 minutes.");
+//        }
 
         // Kiểm tra nội dung trùng lặp
         if (feedbackRepository.existsByAccountIdAndMessage(accountId, feedback.getMessage())) {
@@ -46,9 +46,9 @@ public class FeedbackServiceImpl implements FeedbackService {
 
         // Cập nhật thời gian gửi feedback
         account.setLastFeedbackTime(LocalDateTime.now());
+
         accountRepository.save(account);
 
-        // Gắn account vào feedback
         feedback.setAccount(account);
 
         // Lưu feedback và gửi email
@@ -67,6 +67,11 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public List<Feedback> getAllFeedbacks() {
         return feedbackRepository.findAll();
+    }
+
+    @Override
+    public Feedback getOneFeed(int feedbackId) {
+        return feedbackRepository.findById(feedbackId).orElseThrow();
     }
 
     private void sendThankYouEmail(String to, String feedbackMessage) {

@@ -1,58 +1,86 @@
 package fpt.aptech.pjs4.controllers;
 
-import fpt.aptech.pjs4.DTOs.MessageDto;
 import fpt.aptech.pjs4.entities.Account;
 import fpt.aptech.pjs4.entities.Message;
-import fpt.aptech.pjs4.services.MessageService;
-import org.springframework.beans.factory.annotation.Autowired;
+import fpt.aptech.pjs4.repositories.AccountRepository;
+import fpt.aptech.pjs4.repositories.MessageReponsitory;
+import org.springframework.http.HttpStatus;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/chat")
 public class ChatController {
 
     private final SimpMessagingTemplate messagingTemplate;
-    private final MessageService messageService;
+    private final MessageReponsitory messageRepository;
+    private final AccountRepository accountRepository;
 
-    @Autowired
-    public ChatController(SimpMessagingTemplate messagingTemplate, MessageService messageService) {
+    public ChatController(SimpMessagingTemplate messagingTemplate, MessageReponsitory messageRepository, AccountRepository accountRepository) {
         this.messagingTemplate = messagingTemplate;
-        this.messageService = messageService;
+        this.messageRepository = messageRepository;
+        this.accountRepository = accountRepository;
     }
 
-    // WebSocket endpoint for real-time messaging
-    @MessageMapping("/chat.sendMessage")
-    public void sendMessage(String messageText, Integer senderId, Integer receiverId, String imageUrl) {
-        // Retrieve Accounts from the database using senderId and receiverId
-        Account sender = new Account(); // Fetch sender from DB using senderId
-        sender.setId(senderId);
 
-        Account receiver = new Account(); // Fetch receiver from DB using receiverId
-        receiver.setId(receiverId);
+    @PostMapping("/{to}")
+    public void sendMessage(@RequestBody Message message, @PathVariable String to) {
+        // Kiểm tra nếu sender hoặc receiver là null
+        if (message.getSender() == null || message.getReceiver() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sender or Receiver cannot be null");
+        }
 
-        // Save message in the database
-        Message message = messageService.saveMessage(sender, receiver, messageText, imageUrl);
+        // Lấy thông tin sender và receiver từ database
+        Account sender = accountRepository.findById(message.getSender().getId()).orElse(null);
+        Account receiver = accountRepository.findById(message.getReceiver().getId()).orElse(null);
 
-        // Send the message to a specific WebSocket destination
-        messagingTemplate.convertAndSend("/topic/public", message);  // Sends the message to all subscribers
+        if (sender != null && receiver != null) {
+            // Đặt thời gian gửi tin nhắn với độ chính xác đến giây
+            message.setSent(LocalDateTime.now());
+
+            // Lưu tin nhắn vào database
+            messageRepository.save(message);
+
+            // Gửi tin nhắn đến receiver thông qua messagingTemplate
+            messagingTemplate.convertAndSendToUser(to, "/queue/messages", message);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sender or Receiver not found");
+        }
     }
 
-    // API endpoint for sending message through HTTP (for testing or integration with frontend)
-    @PostMapping("/send")
-    public Message sendMessageApi(@RequestBody MessageDto messageDto) {
-        // Retrieve Accounts from the database using senderId and receiverId
-        Account sender = new Account(); // Fetch sender from DB using messageDto.getSenderId()
-        sender.setId(messageDto.getSenderId());
 
-        Account receiver = new Account(); // Fetch receiver from DB using messageDto.getReceiverId()
-        receiver.setId(messageDto.getReceiverId());
+    @GetMapping("/history/{senderId}/{receiverId}")
+    public List<Message> getChatHistory(@PathVariable Integer senderId, @PathVariable Integer receiverId) {
+        // Lấy thông tin sender và receiver từ database
+        Account sender = accountRepository.findById(senderId).orElse(null);
+        Account receiver = accountRepository.findById(receiverId).orElse(null);
 
-        // Save message into the database
-        Message message = messageService.saveMessage(sender, receiver, messageDto.getMessageText(), messageDto.getImageUrl());
+        // Nếu cả sender và receiver đều tồn tại
+        if (sender != null && receiver != null) {
+            // Trả về tất cả tin nhắn giữa sender và receiver, không phân biệt thứ tự sender và receiver
+            List<Message> messagesFromSenderToReceiver = messageRepository.findBySenderAndReceiver(sender, receiver);
+            List<Message> messagesFromReceiverToSender = messageRepository.findBySenderAndReceiver(receiver, sender);
 
-        // Return the saved message
-        return message;
+            // Kết hợp cả 2 danh sách tin nhắn
+            messagesFromSenderToReceiver.addAll(messagesFromReceiverToSender);
+
+            // Sắp xếp theo thời gian gửi (từ cũ đến mới)
+            return messagesFromSenderToReceiver.stream()
+                    .sorted(Comparator.comparing(Message::getSent))
+                    .collect(Collectors.toList());
+        }
+
+        return List.of();
     }
+
 }

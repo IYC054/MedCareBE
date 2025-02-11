@@ -1,6 +1,5 @@
 package fpt.aptech.pjs4.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -27,10 +26,20 @@ public class Feedback {
 
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)
-    private Account account;
+    private Account account; // Người gui phản hồi
+
+    @ManyToOne
+    @JoinColumn(name = "recipient_id", nullable = false)
+    private Account recipient; // nguoi nhan
+
+    @Column(name = "status", nullable = false, length = 20)
+    private String status;
 
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
+        if (this.status == null) {
+            this.status = "NEW";
+        }
     }
 }

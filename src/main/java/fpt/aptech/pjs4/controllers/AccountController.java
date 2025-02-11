@@ -45,7 +45,60 @@ public class AccountController {
         boolean exists = accountService.getAccountExists(email); // ✅ Lấy kết quả thực tế
         return ResponseEntity.ok(exists);
     }
-    @PostMapping
+    @PostMapping("/register")
+    public APIResponse<Account> registerAccount(@ModelAttribute AccountDTO accountDTO,
+                                              @RequestParam List<String> role,
+                                              @RequestPart(value = "avatar", required = false) MultipartFile image) { // Chú ý: required = false
+        try {
+            // Lưu hình ảnh
+            String imageUrl = null;
+            if (image != null && !image.isEmpty()) {
+                Path uploadDir = Paths.get("src/main/resources/static/image");
+                if (!Files.exists(uploadDir)) {
+                    Files.createDirectories(uploadDir);
+                }
+
+                String uniqueFileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
+                Path destinationPath = uploadDir.resolve(uniqueFileName);
+                Files.write(destinationPath, image.getBytes());
+
+                imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                        .path("/api/image/")
+                        .path(uniqueFileName)
+                        .toUriString();
+            }
+
+            // Tạo account
+            Account account = new Account();
+            account.setEmail(accountDTO.getEmail());
+            account.setName(accountDTO.getName());
+            account.setPassword(accountDTO.getPassword());
+            account.setPhone(accountDTO.getPhone());
+            account.setGender(accountDTO.getGender());
+            account.setBirthdate(accountDTO.getBirthdate());
+
+            // Lấy danh sách vai trò
+            List<Role> roles = roleRepository.findAllById(role);
+            account.setRole(roles);
+
+            // Thiết lập avatar (nếu có)
+            account.setAvatar(imageUrl);
+
+            // Lưu account
+            APIResponse<Account> apiResponse = new APIResponse<>();
+            apiResponse.setResult(accountService.createAccount(account));
+            apiResponse.setMessage("Account created successfully!");
+
+            return apiResponse;
+
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to upload avatar", e);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @PostMapping()
     public APIResponse<Account> createAccount(@ModelAttribute AccountDTO accountDTO,
                                               @RequestParam List<String> role,
                                               @RequestPart(value = "avatar", required = false) MultipartFile image) { // Chú ý: required = false

@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Entity
@@ -20,7 +21,6 @@ public class Message {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    // Sử dụng Integer cho senderId và receiverId
     @ManyToOne
     @JoinColumn(name = "sender_id", nullable = false)
     private Account sender;
@@ -36,5 +36,5 @@ public class Message {
     private String image;
 
     @Column(name = "sent_at")
-    private LocalDate sent;
+    private LocalDateTime sent;
 }
