@@ -34,7 +34,7 @@ public class Specialty {
     private String image;
 
     @JsonIgnore
-    @ManyToOne(optional = false)
+    @ManyToOne
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
     @JsonProperty("doctor_id")
