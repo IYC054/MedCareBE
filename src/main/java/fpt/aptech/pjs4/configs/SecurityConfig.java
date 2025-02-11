@@ -33,6 +33,7 @@ public class SecurityConfig {
             "/api/image/**",
             "/api/feedbacks/**",
             "/api/news/**",
+            "/api/hospital/**",
             "/api/account/find",
             "/api/auth/send",
             "/api/auth/verify",

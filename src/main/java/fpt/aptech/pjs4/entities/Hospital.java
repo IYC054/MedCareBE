@@ -3,7 +3,9 @@ package fpt.aptech.pjs4.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.annotations.Nationalized;
 
 import java.time.Instant;
 
@@ -33,12 +35,10 @@ public class Hospital {
 
     @Column(name = "description", length = 250)
     private String description;
-    @ManyToOne(optional = false)
-    @JsonIgnore
-    @JoinColumn(name = "specialties_id")
-    private Specialty specialties;
-    @JsonProperty("specialties_id")
-    public Integer getSpecialtiesId() {
-        return specialties != null ? specialties.getId() : null;
-    }
+
+    @Size(max = 250)
+    @Nationalized
+    @Column(name = "url_image", length = 250)
+    private String urlImage;
+
 }

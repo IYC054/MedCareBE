@@ -318,7 +318,7 @@ public class PaymentApi {
             APIResponse<Object> apiResponse = new APIResponse<>();
             RestTemplate restTemplate = new RestTemplate();
             String accountno = "0933315633";
-            String sessionId = "";
+            String sessionId = "99dc2960-7291-4dcc-986a-8e4bcebdb30b";
             String refno = accountno + "-202412237590493-88678";
             Date datenow = new Date();
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
