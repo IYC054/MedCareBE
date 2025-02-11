@@ -173,9 +173,9 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    // chỉ User Id nào mới truy cập id đó được thôi
+    // chỉ User Id nào mới truy cập id đó được thôi và Role Admin
     // email trong entity so sanh voi email trong token
-    @PostAuthorize("returnObject.email == authentication.name")
+    @PostAuthorize("returnObject.email == authentication.name or hasRole('ADMIN')")
     public Account getAccountById(int id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Ko tìm thấy user"));
         return account;
