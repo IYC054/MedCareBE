@@ -40,9 +40,19 @@ public class SecurityConfig {
             "/api/auth/verify",
             "/api/auth/forgot-password",
             "/api/auth/reset-password",
-            "api/patientsfile/**",
-            "api/filesimage/**",
+            "/api/patientsfile/**",
+            "/api/filesimage/**",
+    };
+    private  final String[] PUBLIC_ENPOINT_GET={
 
+    };
+    private  final String[] PUBLIC_ENPOINT_POST={
+
+    };
+    private  final String[] PUBLIC_ENPOINT_UPDATE={
+
+    };
+    private  final String[] PUBLIC_ENPOINT_DELETE={
 
     };
     @Bean
