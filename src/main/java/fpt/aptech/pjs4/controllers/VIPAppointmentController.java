@@ -1,10 +1,7 @@
 package fpt.aptech.pjs4.controllers;
 
 import fpt.aptech.pjs4.DTOs.VipAppointmentDTO;
-import fpt.aptech.pjs4.entities.Doctor;
-import fpt.aptech.pjs4.entities.Patient;
-import fpt.aptech.pjs4.entities.PatientsInformation;
-import fpt.aptech.pjs4.entities.VipAppointment;
+import fpt.aptech.pjs4.entities.*;
 import fpt.aptech.pjs4.services.DoctorService;
 import fpt.aptech.pjs4.services.PatientInformationService;
 import fpt.aptech.pjs4.services.PatientService;
@@ -40,7 +37,11 @@ public class VIPAppointmentController {
         VipAppointment appointment = vipAppointmentService.getVIPAppointmentById(id);
         return appointment != null ? ResponseEntity.ok(appointment) : ResponseEntity.notFound().build();
     }
-
+    @GetMapping("/doctors/{id}")
+    public ResponseEntity<List<VipAppointment>> getAppointmentByDoctorId(@PathVariable int id) {
+        List<VipAppointment> doctors = vipAppointmentService.getDoctorByidDoctor(id);
+        return ResponseEntity.ok(doctors);
+    }
     // Tạo mới lịch hẹn VIP
     @PostMapping
     public ResponseEntity<VipAppointment> createVIPAppointment(@RequestBody VipAppointmentDTO vipAppointmentDTO) {

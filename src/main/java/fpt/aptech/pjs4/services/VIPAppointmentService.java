@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface VIPAppointmentService {
     VipAppointment createVIPAppointment(VipAppointment vipAppointment);
-
+    List<VipAppointment> getDoctorByidDoctor(int doctorid);
     VipAppointment getVIPAppointmentById(int id);
 
     List<VipAppointment> getAllVIPAppointments();

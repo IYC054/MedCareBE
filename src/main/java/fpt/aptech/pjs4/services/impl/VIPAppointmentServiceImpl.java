@@ -22,6 +22,11 @@ public class VIPAppointmentServiceImpl implements VIPAppointmentService {
     }
 
     @Override
+    public List<VipAppointment> getDoctorByidDoctor(int doctorid) {
+        return appointmentRepository.findAppointmentByDoctorId(doctorid);
+    }
+
+    @Override
     public VipAppointment getVIPAppointmentById(int id) {
         return appointmentRepository.findById(id).orElse(null);
     }
