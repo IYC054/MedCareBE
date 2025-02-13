@@ -23,7 +23,7 @@ public class News {
     @Column(name = "description", length = 250)
     private String description;
 
-    @Column(name = "images", length = 50)
+    @Column(name = "images", length = 250)
     private String images;
 
     @Column(name = "\"date\"")

@@ -40,8 +40,9 @@ public class SecurityConfig {
             "/api/auth/verify",
             "/api/auth/forgot-password",
             "/api/auth/reset-password",
-            "api/patientsfile/**",
-            "api/filesimage/**",
+            "/api/patientsfile/**",
+            "/api/filesimage/**",
+            "/api/chat/**"
 
 
     };

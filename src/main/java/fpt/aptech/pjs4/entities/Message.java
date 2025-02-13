@@ -31,8 +31,7 @@ public class Message {
 
     @Column(name = "message_text",nullable = false)
     private String message;
-    @Size(max = 100)
-    @Column(name = "image_url", length = 100)
+    @Column(name = "image_url", length = 250)
     private String image;
 
     @Column(name = "sent_at")

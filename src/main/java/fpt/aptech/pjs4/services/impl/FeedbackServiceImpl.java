@@ -38,23 +38,17 @@ public class FeedbackServiceImpl implements FeedbackService {
 //                account.getLastFeedbackTime().isAfter(LocalDateTime.now().minusMinutes(5))) {
 //            throw new IllegalArgumentException("You can only send feedback every 5 minutes.");
 //        }
-
         // Kiểm tra nội dung trùng lặp
         if (feedbackRepository.existsByAccountIdAndMessage(accountId, feedback.getMessage())) {
             throw new IllegalArgumentException("Duplicate feedback is not allowed.");
         }
-
         // Cập nhật thời gian gửi feedback
         account.setLastFeedbackTime(LocalDateTime.now());
-
         accountRepository.save(account);
-
         feedback.setAccount(account);
-
         // Lưu feedback và gửi email
         Feedback savedFeedback = feedbackRepository.save(feedback);
         sendThankYouEmail(account.getEmail(), feedback.getMessage());
-
         return savedFeedback;
     }
 
@@ -72,6 +66,11 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public Feedback getOneFeed(int feedbackId) {
         return feedbackRepository.findById(feedbackId).orElseThrow();
+    }
+
+    @Override
+    public void deleteFeedback(int feedbackId) {
+        feedbackRepository.deleteById(feedbackId);
     }
 
     private void sendThankYouEmail(String to, String feedbackMessage) {

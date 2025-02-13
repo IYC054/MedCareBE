@@ -74,10 +74,56 @@ public class NewsController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<News> updateNews(@PathVariable int id, @RequestBody News news) {
-        News updatedNews = newsService.updateNews(id, news);
+    public ResponseEntity<News> updateNews(
+            @PathVariable int id,
+            @RequestPart(value = "date", required = false) String date,
+            @RequestPart(value = "description", required = false) String description,
+            @RequestPart(value = "title", required = false) String title,
+            @RequestPart(value = "images", required = false) MultipartFile image) throws IOException {
+
+        // Lấy thông tin bài viết hiện tại
+        News existingNews = newsService.getNewsById(id);
+        if (existingNews == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Cập nhật thông tin nếu có dữ liệu mới
+        if (title != null) {
+            existingNews.setTitle(title);
+        }
+        if (description != null) {
+            existingNews.setDescription(description);
+        }
+        if (date != null) {
+            existingNews.setDate(LocalDate.parse(date));
+        }
+
+        // Xử lý cập nhật hình ảnh nếu có ảnh mới
+        if (image != null && !image.isEmpty()) {
+            Path uploadDir = Paths.get("src/main/resources/static/image");
+            if (!Files.exists(uploadDir)) {
+                Files.createDirectories(uploadDir);
+            }
+
+            // Lưu ảnh mới
+            String uniqueFileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
+            Path destinationPath = uploadDir.resolve(uniqueFileName);
+            Files.write(destinationPath, image.getBytes());
+
+            // Tạo URL ảnh mới
+            String imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/api/image/")
+                    .path(uniqueFileName)
+                    .toUriString();
+
+            existingNews.setImages(imageUrl);
+        }
+
+        // Cập nhật bài viết
+        News updatedNews = newsService.updateNews(id, existingNews);
         return ResponseEntity.ok(updatedNews);
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteNews(@PathVariable int id) {
