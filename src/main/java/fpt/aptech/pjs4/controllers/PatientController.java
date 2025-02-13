@@ -1,6 +1,9 @@
 package fpt.aptech.pjs4.controllers;
 
+import fpt.aptech.pjs4.DTOs.PatientDTO;
+import fpt.aptech.pjs4.entities.Account;
 import fpt.aptech.pjs4.entities.Patient;
+import fpt.aptech.pjs4.services.AccountService;
 import fpt.aptech.pjs4.services.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +16,11 @@ import java.util.List;
 public class PatientController {
     @Autowired
     private PatientService patientService;
-
+    @Autowired
+    private AccountService accountService;
     @PostMapping
-    public ResponseEntity<Patient> createPatient(@RequestBody Patient patient) {
-        Patient createdPatient = patientService.createPatient(patient);
+    public ResponseEntity<Patient> createPatient(@RequestBody PatientDTO patient) {
+        Patient createdPatient = patientService.createPatient(patient.getAccountid());
         return ResponseEntity.status(201).body(createdPatient);
     }
 

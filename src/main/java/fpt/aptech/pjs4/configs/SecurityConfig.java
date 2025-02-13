@@ -21,29 +21,38 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
     protected static  final String SIGNER_KEY="5e3b6f9e67e9f1e3b6ad775d9a1c9078c9078b72ad34d3e4e745fb6b64367861";
-    private  final String[] PUBLIC_ENPOINT={
-            "/api/account/token",
-            "/api/account/register",
+
+    private  final String[] PUBLIC_ENPOINT_GET={
+            "/api/image/**",
+            "/api/news/**",
             "/api/doctors/**",
-            "/api/specialty/**",
             "/api/payments/**",
-            "/api/patients/**",
+            "/api/specialty/**",
+            "/api/hospital/**",
+            "/api/workinghours/**",
+            "/api/filesimage/**",
+            "/api/patientsfile/**",
             "/api/patientsprofile/**",
             "/api/appointment/**",
-            "/api/workinghours/**",
-            "/api/image/**",
-            "/api/feedbacks/**",
-            "/api/news/**",
-            "/api/hospital/**",
+            "/api/account/find",
+    };
+
+    private  final String[] PUBLIC_ENPOINT_POST={
+            "/api/account/token",
+            "/api/account/register",
             "/api/account/find",
             "/api/auth/send",
-            "/api/auth/verify",
             "/api/auth/forgot-password",
             "/api/auth/reset-password",
-            "/api/patientsfile/**",
-            "/api/filesimage/**",
-            "/api/chat/**"
+            "/api/auth/verify",
+            "/api/feedbacks/**",
+            "/api/patients/**",
 
+    };
+    private  final String[] PUBLIC_ENPOINT_UPDATE={
+
+    };
+    private  final String[] PUBLIC_ENPOINT_DELETE={
 
     };
     @Bean
@@ -54,14 +63,14 @@ public class SecurityConfig {
                     cors.setAllowedOrigins(List.of("http://localhost:5173"));
                     cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
                     cors.setAllowedHeaders(List.of("*"));
-                    cors.setExposedHeaders(List.of("Authorization"));
+                    cors.setAllowedHeaders(List.of("Authorization", "Content-Type"));
                     return cors;
                 }))
                 .authorizeHttpRequests(requests ->
-                        requests.requestMatchers(HttpMethod.POST, PUBLIC_ENPOINT).permitAll()
-                                .requestMatchers(HttpMethod.GET, PUBLIC_ENPOINT).permitAll()
-                                .requestMatchers(HttpMethod.PUT, PUBLIC_ENPOINT).permitAll()
-                                .requestMatchers(HttpMethod.DELETE, PUBLIC_ENPOINT).permitAll()
+                        requests.requestMatchers(HttpMethod.POST, PUBLIC_ENPOINT_POST).permitAll()
+                                .requestMatchers(HttpMethod.GET, PUBLIC_ENPOINT_GET).permitAll()
+                                .requestMatchers(HttpMethod.PUT, PUBLIC_ENPOINT_UPDATE).permitAll()
+                                .requestMatchers(HttpMethod.DELETE, PUBLIC_ENPOINT_DELETE).permitAll()
 
                                 //.requestMatchers(HttpMethod.GET, "/api/account").hasRole(Role.ADMIN.name())
                                 .anyRequest().authenticated())

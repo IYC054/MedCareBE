@@ -1,6 +1,9 @@
 package fpt.aptech.pjs4.services.impl;
 
+import fpt.aptech.pjs4.DTOs.PatientDTO;
+import fpt.aptech.pjs4.entities.Account;
 import fpt.aptech.pjs4.entities.Patient;
+import fpt.aptech.pjs4.repositories.AccountRepository;
 import fpt.aptech.pjs4.repositories.PatientRepository;
 import fpt.aptech.pjs4.services.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +15,14 @@ import java.util.List;
 public class PatientServiceImpl implements PatientService {
     @Autowired
     private PatientRepository patientRepository;
-
+    @Autowired
+    private AccountRepository accountRepository;
     @Override
-    public Patient createPatient(Patient patient) {
-        return patientRepository.save(patient);
+    public Patient createPatient(int accountid) {
+        Account acc = accountRepository.findById(accountid).get();
+        Patient patient1 = new Patient();
+        patient1.setAccount(acc);
+        return patientRepository.save(patient1);
     }
 
     @Override

@@ -13,6 +13,7 @@ import fpt.aptech.pjs4.entities.Account;
 import fpt.aptech.pjs4.entities.Role;
 import fpt.aptech.pjs4.repositories.RoleRepository;
 import fpt.aptech.pjs4.services.AccountService;
+import fpt.aptech.pjs4.services.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,8 @@ public class AccountController {
     private AccountService accountService;
     @Autowired
     private RoleRepository roleRepository;
+    @Autowired
+    private PatientService patientService;
 
     @GetMapping("/find")
     public ResponseEntity<Boolean> findByEmail(@RequestParam String email) {
@@ -46,7 +49,7 @@ public class AccountController {
         return ResponseEntity.ok(exists);
     }
     @PostMapping("/register")
-    public APIResponse<Account> registerAccount(@ModelAttribute AccountDTO accountDTO,
+    public APIResponse<Account> createAccount2(@ModelAttribute AccountDTO accountDTO,
                                               @RequestParam List<String> role,
                                               @RequestPart(value = "avatar", required = false) MultipartFile image) { // Chú ý: required = false
         try {
@@ -86,8 +89,12 @@ public class AccountController {
 
             // Lưu account
             APIResponse<Account> apiResponse = new APIResponse<>();
-            apiResponse.setResult(accountService.createAccount(account));
+            Account account1 = accountService.createAccount(account);
+            apiResponse.setResult(account1);
             apiResponse.setMessage("Account created successfully!");
+            if (role.contains("PATIENTS")) {
+                patientService.createPatient(account1.getId());
+            }
 
             return apiResponse;
 
@@ -139,8 +146,12 @@ public class AccountController {
 
             // Lưu account
             APIResponse<Account> apiResponse = new APIResponse<>();
-            apiResponse.setResult(accountService.createAccount(account));
+            Account account1 = accountService.createAccount(account);
+            apiResponse.setResult(account1);
             apiResponse.setMessage("Account created successfully!");
+            if (role.contains("PATIENTS")) {
+                patientService.createPatient(account1.getId());
+            }
 
             return apiResponse;
 
