@@ -217,7 +217,7 @@ public class PaymentApi {
         APIResponse<Object> apiResponse = new APIResponse<>();
         RestTemplate restTemplate = new RestTemplate();
         String accountno = "0933315633";
-        String sessionId = "0b257a3e-cae8-49f4-be12-8ce1fb87f2d0";
+        String sessionId = "14ba080e-6fde-4450-8813-e69671548d82";
         String devicecommon = "rgfgfmrr-mbib-0000-0000-2024122008495838";
         String refno = accountno + "-2025011910271539-89948";
         Date datenow = new Date();
@@ -270,6 +270,7 @@ public class PaymentApi {
                     for (Map<String, Object> matchingtransaction : matchingTransactions) {
                         String refNoinTransaction = (String) matchingtransaction.get("refNo");
                         Payment checkrefno = paymentService.findPaymentByTransactionCode(refNoinTransaction);
+
                         if (checkrefno == null && description.contains(accountphone)) {
                             String creditAmountStr = (String) transaction.get("creditAmount");
                             amount = creditAmountStr != null ? new BigDecimal(creditAmountStr) : BigDecimal.ZERO;
@@ -282,8 +283,9 @@ public class PaymentApi {
                                 createPayment(appointid,amount, paymethod, transactioncode, transactiondescription);
                             }
                         }else{
-                            apiResponse.setMessage("Chưa có giao dịch mới");
-                            apiResponse.setResult(false);
+                            Payment checkrefno2 = paymentService.findPaymentByTransactionCode(refNoinTransaction);
+
+                            apiResponse.setResult(checkrefno);
 
                         }
                     }
@@ -300,7 +302,7 @@ public class PaymentApi {
             } else {
                 // Nếu không có giao dịch chứa số điện thoại trong description
                 apiResponse.setCode(404);
-//                apiResponse.setMessage("Không tìm thấy giao dịch chứa số điện thoại.");
+                apiResponse.setMessage("Không tìm thấy giao dịch chứa số điện thoại.");
             }
 
             return ResponseEntity.ok(apiResponse);

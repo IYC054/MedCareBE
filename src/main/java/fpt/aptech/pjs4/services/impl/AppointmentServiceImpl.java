@@ -44,7 +44,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 doctorid,
                 worktimeid
         );
-        if (count >= 1) {
+        if (count >= 20) {
             return false;
         }
         return true;
