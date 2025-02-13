@@ -33,7 +33,8 @@ public class SecurityConfig {
             "/api/filesimage/**",
             "/api/patientsfile/**",
             "/api/patientsprofile/**",
-            "/api/appointment/**"
+            "/api/appointment/**",
+            "/api/account/find",
     };
 
     private  final String[] PUBLIC_ENPOINT_POST={
