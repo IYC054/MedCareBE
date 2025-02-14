@@ -46,7 +46,7 @@ public class ChatController {
 
         if (sender != null && receiver != null) {
             // Đặt thời gian gửi tin nhắn với độ chính xác đến giây
-            message.setSent(LocalDateTime.now());
+          //  message.setSent(LocalDateTime.now());
 
             // Lưu tin nhắn vào database
             messageRepository.save(message);
@@ -68,16 +68,16 @@ public class ChatController {
         // Nếu cả sender và receiver đều tồn tại
         if (sender != null && receiver != null) {
             // Trả về tất cả tin nhắn giữa sender và receiver, không phân biệt thứ tự sender và receiver
-            List<Message> messagesFromSenderToReceiver = messageRepository.findBySenderAndReceiver(sender, receiver);
-            List<Message> messagesFromReceiverToSender = messageRepository.findBySenderAndReceiver(receiver, sender);
+         //   List<Message> messagesFromSenderToReceiver = messageRepository.findBySenderAndReceiver(sender, receiver);
+          //  List<Message> messagesFromReceiverToSender = messageRepository.findBySenderAndReceiver(receiver, sender);
 
             // Kết hợp cả 2 danh sách tin nhắn
-            messagesFromSenderToReceiver.addAll(messagesFromReceiverToSender);
+          //  messagesFromSenderToReceiver.addAll(messagesFromReceiverToSender);
 
             // Sắp xếp theo thời gian gửi (từ cũ đến mới)
-            return messagesFromSenderToReceiver.stream()
-                    .sorted(Comparator.comparing(Message::getSent))
-                    .collect(Collectors.toList());
+         //   return messagesFromSenderToReceiver.stream()
+              //      .sorted(Comparator.comparing(Message::getSent))
+            //        .collect(Collectors.toList());
         }
 
         return List.of();

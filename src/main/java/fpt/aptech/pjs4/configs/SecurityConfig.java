@@ -64,6 +64,7 @@ public class SecurityConfig {
                     cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
                     cors.setAllowedHeaders(List.of("*"));
                     cors.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+                    cors.setAllowCredentials(true);
                     return cors;
                 }))
                 .authorizeHttpRequests(requests ->
@@ -71,6 +72,8 @@ public class SecurityConfig {
                                 .requestMatchers(HttpMethod.GET, PUBLIC_ENPOINT_GET).permitAll()
                                 .requestMatchers(HttpMethod.PUT, PUBLIC_ENPOINT_UPDATE).permitAll()
                                 .requestMatchers(HttpMethod.DELETE, PUBLIC_ENPOINT_DELETE).permitAll()
+                                .requestMatchers("/ws/**").permitAll()
+                                .requestMatchers("/ws").permitAll()
 
                                 //.requestMatchers(HttpMethod.GET, "/api/account").hasRole(Role.ADMIN.name())
                                 .anyRequest().authenticated())
