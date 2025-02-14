@@ -30,7 +30,7 @@ public class Specialty {
     @Size(max = 200)
 
     @Nationalized
-    @Column(name = "image", length = 200)
+    @Column(name = "image", length = 250)
     private String image;
 
     @JsonIgnore

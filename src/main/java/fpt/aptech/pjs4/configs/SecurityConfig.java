@@ -34,6 +34,7 @@ public class SecurityConfig {
             "/api/patientsfile/**",
             "/api/patientsprofile/**",
             "/api/appointment/**",
+            "/api/vip-appointments/**",
             "/api/account/find",
     };
 
@@ -53,7 +54,8 @@ public class SecurityConfig {
 
     };
     private  final String[] PUBLIC_ENPOINT_DELETE={
-
+            "/api/vip-appointments/**",
+            "/api/payments/**",
     };
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {

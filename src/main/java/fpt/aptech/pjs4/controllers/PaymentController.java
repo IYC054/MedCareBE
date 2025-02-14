@@ -1,10 +1,13 @@
 package fpt.aptech.pjs4.controllers;
 
+import fpt.aptech.pjs4.DTOs.AppointmentDTO;
 import fpt.aptech.pjs4.DTOs.PaymentDTO;
 import fpt.aptech.pjs4.entities.Appointment;
 import fpt.aptech.pjs4.entities.Payment;
+import fpt.aptech.pjs4.entities.VipAppointment;
 import fpt.aptech.pjs4.services.AppointmentService;
 import fpt.aptech.pjs4.services.PaymentService;
+import fpt.aptech.pjs4.services.VIPAppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +31,8 @@ public class PaymentController {
 
     @Autowired
     private AppointmentService appointmentService;
+    @Autowired
+    private VIPAppointmentService vipAppointmentService;
     @PostMapping("/confirm-payment")
     public ResponseEntity<?> confirmPayment(
             @RequestParam int resultCode,
@@ -66,27 +71,50 @@ public class PaymentController {
 
     // Create Payment
     @PostMapping
-    public ResponseEntity<?> createPayment(@RequestBody PaymentDTO paymentDTO) {
-        Appointment appointment = appointmentService.getAppointmentById(paymentDTO.getAppointmentId());
-        if (appointment == null) {
-            return ResponseEntity.status(404).body("Không tồn tại giao dịch này");
+    public ResponseEntity<?> createPayment(@RequestBody PaymentDTO paymentDTO, @RequestParam boolean isVIP) {
+        if (isVIP && paymentDTO.getVipAppointmentId() == null) {
+            return ResponseEntity.badRequest().body("vipAppointmentId không được để trống khi isVIP = true");
         }
+        if (!isVIP && paymentDTO.getAppointmentId() == null) {
+            return ResponseEntity.badRequest().body("appointmentId không được để trống khi isVIP = false");
+        }
+
+        Appointment appointment = null;
+        VipAppointment vipAppointment = null;
+        if (isVIP) {
+            vipAppointment = vipAppointmentService.getVIPAppointmentById(paymentDTO.getVipAppointmentId());
+            if (vipAppointment == null) {
+                return ResponseEntity.status(404).body("VIP appointment không tồn tại");
+            }
+        } else {
+            appointment = appointmentService.getAppointmentById(paymentDTO.getAppointmentId());
+            if (appointment == null) {
+                return ResponseEntity.status(404).body("Appointment không tồn tại");
+            }
+        }
+
         Instant now = Instant.now();
         ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
         LocalDateTime localDateTime = LocalDateTime.ofInstant(now, zoneId);
         Instant transactionDate = localDateTime.atZone(zoneId).toInstant();
+
         Payment payment = new Payment();
         payment.setAmount(paymentDTO.getAmount());
         payment.setPaymentMethod(paymentDTO.getPaymentMethod());
-        payment.setStatus(paymentDTO.getStatus());
         payment.setStatus("Chờ xử lý");
         payment.setTransactionDescription(paymentDTO.getTransactionDescription());
         payment.setTransactionDate(transactionDate);
-        payment.setAppointment(appointment);
+
+        if (isVIP) {
+            payment.setVipAppointment(vipAppointment);
+        } else {
+            payment.setAppointment(appointment);
+        }
 
         Payment createdPayment = paymentService.createPayment(payment);
         return ResponseEntity.status(201).body(createdPayment);
     }
+
     @PutMapping("/cancel/{id}")
     public ResponseEntity<?> cancelPayment(@PathVariable int id) {
         try {

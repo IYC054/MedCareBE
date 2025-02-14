@@ -22,6 +22,11 @@ public class FeedbackController {
         Feedback savedFeedback = feedbackService.saveFeedback(accountId, feedback);
         return ResponseEntity.ok(savedFeedback);
     }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteMail(@PathVariable Integer id) {
+        feedbackService.deleteFeedback(id);
+        return ResponseEntity.ok("Mail deleted successfully");
+    }
 
     // GET all feedbacks for an account
     @GetMapping("/{accountId}")
@@ -29,7 +34,7 @@ public class FeedbackController {
         List<Feedback> feedbacks = feedbackService.getFeedbacksByAccountId(accountId);
         return ResponseEntity.ok(feedbacks);
     }
-    @GetMapping("one/{id}")
+    @GetMapping("/one/{id}")
     public ResponseEntity<Feedback> getOneFeedbacks(@PathVariable int id) {
         Feedback feedbacks = feedbackService.getOneFeed(id);
         return ResponseEntity.ok(feedbacks);

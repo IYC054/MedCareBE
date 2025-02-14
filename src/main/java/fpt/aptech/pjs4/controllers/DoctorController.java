@@ -31,6 +31,11 @@ public class DoctorController {
         List<Doctor> doctors = doctorService.getAllDoctors();
         return ResponseEntity.ok(doctors);
     }
+    @GetMapping("/account/{id}")
+    public ResponseEntity<Doctor> getdoctorbyaccountid(@PathVariable int id) {
+        Doctor doctors = doctorService.findDoctorByAccountId(id);
+        return ResponseEntity.ok(doctors);
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<Doctor> updateDoctor(@PathVariable int id, @RequestBody Doctor doctor) {

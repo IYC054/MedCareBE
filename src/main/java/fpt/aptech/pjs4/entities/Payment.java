@@ -39,7 +39,6 @@ public class Payment {
     @Column(name = "status", nullable = false, length = 60)
     private String status;
 
-    @NotNull
     @ManyToOne(optional = false)
     @JsonIgnore
     @JoinColumn(name = "appointment_id", nullable = false)
@@ -50,6 +49,14 @@ public class Payment {
     @Column(name = "transaction_code", nullable = false, length = 50)
     private String transactionCode;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @JoinColumn(name = "vip_appointment_id", nullable = false)
+    private VipAppointment vipAppointment;
+    @JsonProperty("vip_appointment_id")
+    public Integer getVIPAppointmentId() {
+        return vipAppointment != null ? vipAppointment.getId() : null;
+    }
     @JsonProperty("appointment_id")
     public Integer getAppointmentId() {
         return appointment != null ? appointment.getId() : null;

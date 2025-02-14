@@ -14,6 +14,7 @@ public class PaymentDTO {
     private String paymentDate;
     private String status;
     private Integer appointmentId;
+    private Integer vipAppointmentId;
     private Instant transactionDate;
     private String transactionDescription;
 }
