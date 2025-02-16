@@ -42,6 +42,12 @@ public class VIPAppointmentController {
         List<VipAppointment> doctors = vipAppointmentService.getDoctorByidDoctor(id);
         return ResponseEntity.ok(doctors);
     }
+    @PutMapping("/status/{id}")
+    public ResponseEntity<VipAppointment> updateAppointmentStatus(@PathVariable int id, @RequestBody Appointment appointment) {
+        String status = appointment.getStatus();
+        VipAppointment updatedAppointment = vipAppointmentService.updateVipAppointmentStatusOnly(id, status);
+        return ResponseEntity.ok(updatedAppointment);
+    }
     // Tạo mới lịch hẹn VIP
     @PostMapping
     public ResponseEntity<VipAppointment> createVIPAppointment(@RequestBody VipAppointmentDTO vipAppointmentDTO) {

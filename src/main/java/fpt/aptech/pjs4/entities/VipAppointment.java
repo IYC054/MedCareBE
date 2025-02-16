@@ -29,6 +29,10 @@ public class VipAppointment {
     @JsonIgnore
     @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
+
+    @OneToMany(mappedBy = "vipappointment")
+    private Set<Payment> payments = new LinkedHashSet<>();
+
     @JsonProperty("patient_id")
     public Integer getPatientId() {
         return doctor != null ? patient.getId() : null;
@@ -76,8 +80,5 @@ public class VipAppointment {
     @Column(name = "type", nullable = false, length = 100)
     private String type;
 
-
-    @OneToMany(mappedBy = "vipAppointment")
-    private Set<Payment> payments = new LinkedHashSet<>();
 
 }

@@ -86,4 +86,9 @@ public class PaymentServiceImpl implements PaymentService {
     public List<Payment> findPaymentByAppointmentId(Integer appointmentId) {
         return paymentRepository.findPaymentByAppointment_Id(appointmentId);
     }
+
+    @Override
+    public List<Payment> findPaymentByVipAppointmentId(Integer vipappointmentId) {
+        return paymentRepository.findPaymentByVipAppointmentId(vipappointmentId);
+    }
 }

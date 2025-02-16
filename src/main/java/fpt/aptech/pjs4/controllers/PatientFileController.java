@@ -34,6 +34,8 @@ public class PatientFileController {
     @Autowired
     private DoctorService doctorService;
     @Autowired
+    private VIPAppointmentService  vipAppointmentService;
+    @Autowired
     private AppointmentService appointmentService;
     public PatientFileController(FilesImageService filesImagesService,PatientService patientsService,ServletContext servletContext, PatientFileService patientFilesService) {
         this.filesImagesService = filesImagesService;
@@ -46,7 +48,9 @@ public class PatientFileController {
     public ResponseEntity<PatientFile> createPatientFile(
             @RequestParam("patients_profile_id") Integer patientsId,
             @RequestParam("doctors_id") Integer doctorId,
-            @RequestParam("appointment_id") Integer appointmentId,
+            @RequestParam(value = "appointment_id" ,required = false) Integer appointmentId,
+            @RequestParam(value = "vipappointment_id", required = false) Integer vipappointmentId,
+
             @RequestParam(value = "url_image", required = false) List<MultipartFile> files) {
         try {
             // Tạo thư mục upload nếu chưa tồn tại
@@ -70,12 +74,16 @@ public class PatientFileController {
             if (appointment == null) {
                 throw new IllegalArgumentException("Cuộc hẹn không tồn tại.");
             }
-
+            VipAppointment vipappointment = vipAppointmentService.getVIPAppointmentById(vipappointmentId);
+            if (vipappointment == null) {
+                throw new IllegalArgumentException("Cuộc hẹn không tồn tại.");
+            }
             // Tạo `PatientFile`
             PatientFile patientFile = new PatientFile();
             patientFile.setPatientsInformation(patient);
             patientFile.setDoctor(doctor);
             patientFile.setAppointment(appointment);
+            patientFile.setVipappointment(vipappointment);
             PatientFile createdPatientFile = patientFilesService.createPatientFile(patientFile);
 
             // Xử lý tệp nếu có
@@ -104,7 +112,70 @@ public class PatientFileController {
             return ResponseEntity.status(500).body(null); // Trả về lỗi chung
         }
     }
+//vip
+@PostMapping("/vip-appointment")
+public ResponseEntity<PatientFile> createPatientFileVIPapt(
+        @RequestParam("patients_profile_id") Integer patientsId,
+        @RequestParam("doctors_id") Integer doctorId,
+        @RequestParam(value = "vipappointment_id", required = false) Integer vipappointmentId,
 
+        @RequestParam(value = "url_image", required = false) List<MultipartFile> files) {
+    try {
+        // Tạo thư mục upload nếu chưa tồn tại
+        File uploadDir = new File(fileUpload);
+        if (!uploadDir.exists() && !uploadDir.mkdirs()) {
+            throw new IOException("Không thể tạo thư mục upload: " + fileUpload);
+        }
+
+        // Lấy thông tin bệnh nhân, bác sĩ và cuộc hẹn
+        PatientsInformation patient = patientInformationService.getPatientsInformationById(patientsId);
+        if (patient == null) {
+            throw new IllegalArgumentException("Bệnh nhân không tồn tại.");
+        }
+
+        Doctor doctor = doctorService.getDoctorById(doctorId);
+        if (doctor == null) {
+            throw new IllegalArgumentException("Bác sĩ không tồn tại.");
+        }
+
+
+        VipAppointment vipappointment = vipAppointmentService.getVIPAppointmentById(vipappointmentId);
+        if (vipappointment == null) {
+            throw new IllegalArgumentException("Cuộc hẹn không tồn tại.");
+        }
+        // Tạo `PatientFile`
+        PatientFile patientFile = new PatientFile();
+        patientFile.setPatientsInformation(patient);
+        patientFile.setDoctor(doctor);
+        patientFile.setVipappointment(vipappointment);
+        PatientFile createdPatientFile = patientFilesService.createPatientFile(patientFile);
+
+        // Xử lý tệp nếu có
+        if (files != null && !files.isEmpty()) {
+            for (MultipartFile file : files) {
+                String fileName = file.getOriginalFilename();
+                File destinationFile = new File(uploadDir, fileName);
+
+                // Copy file lên server
+                FileCopyUtils.copy(file.getBytes(), destinationFile);
+
+                // Lưu thông tin file vào DB
+                FilesImage fileImage = new FilesImage();
+                fileImage.setUrlImage(fileName);
+                fileImage.setPatientsFiles(createdPatientFile);
+                filesImagesService.createFilesImage(fileImage);
+            }
+        }
+
+        return ResponseEntity.status(201).body(createdPatientFile);
+    } catch (IllegalArgumentException e) {
+        return ResponseEntity.status(400).body(null); // Trả về lỗi do request không hợp lệ
+    } catch (IOException e) {
+        return ResponseEntity.status(500).body(null); // Trả về lỗi khi upload file
+    } catch (Exception e) {
+        return ResponseEntity.status(500).body(null); // Trả về lỗi chung
+    }
+}
 
     @GetMapping("/{id}")
     public ResponseEntity<PatientFile> getPatientFileById(@PathVariable int id) {

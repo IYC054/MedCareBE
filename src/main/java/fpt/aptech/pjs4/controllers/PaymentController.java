@@ -106,7 +106,7 @@ public class PaymentController {
         payment.setTransactionDate(transactionDate);
 
         if (isVIP) {
-            payment.setVipAppointment(vipAppointment);
+            payment.setVipappointment(vipAppointment);
         } else {
             payment.setAppointment(appointment);
         }
@@ -145,6 +145,14 @@ public class PaymentController {
     @GetMapping("/{id}")
     public ResponseEntity<Payment> getPaymentById(@PathVariable int id) {
         Payment payment = paymentService.getPayment(id);
+        if (payment == null) {
+            return ResponseEntity.status(404).body(null);
+        }
+        return ResponseEntity.ok(payment);
+    }
+    @GetMapping("/vip-appointment/{id}")
+    public ResponseEntity<List<Payment>> getVipappointmentById(@PathVariable int id) {
+        List<Payment> payment = paymentService.findPaymentByVipAppointmentId(id);
         if (payment == null) {
             return ResponseEntity.status(404).body(null);
         }

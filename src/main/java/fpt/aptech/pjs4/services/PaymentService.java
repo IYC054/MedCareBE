@@ -18,4 +18,6 @@ public interface PaymentService {
     public List<Payment> filterPayments(LocalDate startDate, LocalDate endDate,
                                         String transactionCode, String status);
     List<Payment> findPaymentByAppointmentId(Integer appointmentId);
+    List<Payment> findPaymentByVipAppointmentId(Integer vipappointmentId);
+
 }

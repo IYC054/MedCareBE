@@ -51,11 +51,12 @@ public class Payment {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-    @JoinColumn(name = "vip_appointment_id", nullable = false)
-    private VipAppointment vipAppointment;
-    @JsonProperty("vip_appointment_id")
+    @JoinColumn(name = "vipappointment_id")
+    private VipAppointment vipappointment;
+
+    @JsonProperty("vipappointment_id")
     public Integer getVIPAppointmentId() {
-        return vipAppointment != null ? vipAppointment.getId() : null;
+        return vipappointment != null ? vipappointment.getId() : null;
     }
     @JsonProperty("appointment_id")
     public Integer getAppointmentId() {

@@ -32,6 +32,15 @@ public class PatientFile {
     @JsonIgnore
     @JoinColumn(name = "appointment_id")
     private Appointment appointment;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
+    @JoinColumn(name = "vipappointment_id")
+    private VipAppointment vipappointment;
+    @JsonProperty("vipappointment_id")
+    public Integer getVipAppointmentId() {
+        return vipappointment != null ? vipappointment.getId() : null;
+    }
     @JsonProperty("appointment_id")
     public Integer getSpecialtiespatientsApp_id() {
         return appointment != null ? appointment.getId() : null;

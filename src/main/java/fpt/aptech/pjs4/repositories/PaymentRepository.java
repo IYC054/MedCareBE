@@ -30,4 +30,6 @@ public interface PaymentRepository extends JpaRepository<Payment, Integer> {
 
     public List<Payment> findPaymentByAppointment_Id(int appointmentId);
     boolean existsByTransactionCode(String transactionCode);
+    @Query("SELECT p FROM Payment p WHERE p.vipappointment.id = :id")
+    List<Payment> findPaymentByVipAppointmentId(@Param("id") int vipappointmentId);
 }
