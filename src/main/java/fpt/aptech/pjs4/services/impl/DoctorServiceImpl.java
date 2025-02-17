@@ -33,6 +33,10 @@ public class DoctorServiceImpl implements DoctorService {
         return doctorRepository.findAll();
     }
 
+    @Override
+    public List<Doctor> getAllDoctorsbySpecialty(int id) {
+        return doctorRepository.findDoctorBySpecialtiesid(id);
+    }
 
 
     @Override

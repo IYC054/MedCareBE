@@ -23,7 +23,7 @@ public class Doctorworking {
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
     @JsonProperty("doctor_id")
-    public Integer getPatientsId() {
+    public Integer getDoctorId() {
         return doctor != null ? doctor.getId() : null;
     }
     @Column(name = "work_date")

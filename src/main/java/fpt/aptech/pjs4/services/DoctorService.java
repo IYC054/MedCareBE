@@ -11,6 +11,7 @@ public interface DoctorService {
 
     Doctor findDoctorByAccountId(int id);
     List<Doctor> getAllDoctors();
+    List<Doctor> getAllDoctorsbySpecialty(int id);
 
     Doctor updateDoctor(int id, Doctor doctor);
 

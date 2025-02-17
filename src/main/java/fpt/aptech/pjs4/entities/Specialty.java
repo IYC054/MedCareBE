@@ -33,14 +33,13 @@ public class Specialty {
     @Column(name = "image", length = 250)
     private String image;
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
-    @ManyToOne
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
     @JsonProperty("doctor_id")
     public Integer getDoctorId() {
         return doctor != null ? doctor.getId() : null;
     }
-
-
 }

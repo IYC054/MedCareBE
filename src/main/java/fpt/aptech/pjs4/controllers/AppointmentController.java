@@ -1,12 +1,22 @@
 package fpt.aptech.pjs4.controllers;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
 import fpt.aptech.pjs4.DTOs.AppointmentDTO;
+import fpt.aptech.pjs4.configs.QRCodeService;
 import fpt.aptech.pjs4.entities.*;
 import fpt.aptech.pjs4.services.*;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.util.Hashtable;
 import java.util.List;
 
 @RestController
@@ -16,6 +26,8 @@ public class AppointmentController {
     private AppointmentService appointmentService;
     @Autowired
     private PatientService patientService;
+    @Autowired
+    private QRCodeService qrCodeService;
     @Autowired
     private DoctorService doctorService;
     @Autowired
@@ -87,4 +99,27 @@ public class AppointmentController {
         appointmentService.deleteAppointment(id);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/generate-qrcode")
+    public void generateQRCode(@RequestParam int appointmentId, HttpServletResponse response) throws Exception {
+        // Tạo URL chứa thông tin cuộc hẹn
+        String qrCodeData = "http://localhost:8080/appointment/details?appointmentId=" + appointmentId;
+
+        // Tạo QR Code
+        int width = 300;
+        int height = 300;
+        Hashtable<EncodeHintType, Object> hintMap = new Hashtable<>();
+        hintMap.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+        BitMatrix matrix = new MultiFormatWriter().encode(qrCodeData, BarcodeFormat.QR_CODE, width, height, hintMap);
+
+        // Thiết lập response header để trả về hình ảnh QR
+        response.setContentType("image/png");
+        try {
+            MatrixToImageWriter.writeToStream(matrix, "PNG", response.getOutputStream());
+        } catch (IOException e) {
+            throw new RuntimeException("Error writing QR Code to output stream", e);
+        }
+    }
+
+
+
 }
