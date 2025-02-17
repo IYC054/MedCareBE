@@ -2,6 +2,7 @@ package fpt.aptech.pjs4.controllers;
 
 import fpt.aptech.pjs4.DTOs.AppointmentDTO;
 import fpt.aptech.pjs4.DTOs.PaymentDTO;
+import fpt.aptech.pjs4.DTOs.PaymentDTOQuery;
 import fpt.aptech.pjs4.entities.Appointment;
 import fpt.aptech.pjs4.entities.Payment;
 import fpt.aptech.pjs4.entities.VipAppointment;
@@ -218,5 +219,13 @@ public class PaymentController {
 
 
         return paymentService.filterPayments(startDate, endDate, transactionCode, status);
+    }
+    @GetMapping("/patient/{id}")
+    public ResponseEntity<List<PaymentDTOQuery>> getPaymentByPatientId(@PathVariable int id) {
+        List<PaymentDTOQuery> payment = paymentService.findAllPaymentByPatientId(id);
+        if (payment == null) {
+            return ResponseEntity.status(404).body(null);
+        }
+        return ResponseEntity.ok(payment);
     }
 }

@@ -1,6 +1,7 @@
 package fpt.aptech.pjs4.controllers;
 
 import fpt.aptech.pjs4.DTOs.PatientFileDTO;
+import fpt.aptech.pjs4.DTOs.PatientFileDTOQuery;
 import fpt.aptech.pjs4.entities.*;
 import fpt.aptech.pjs4.services.*;
 import jakarta.servlet.ServletContext;
@@ -180,6 +181,11 @@ public ResponseEntity<PatientFile> createPatientFileVIPapt(
     @GetMapping("/{id}")
     public ResponseEntity<PatientFile> getPatientFileById(@PathVariable int id) {
         PatientFile patientFile = patientFilesService.getPatientFileById(id);
+        return ResponseEntity.ok(patientFile);
+    }
+    @GetMapping("/profile/{id}")
+    public ResponseEntity<List<PatientFile>> getPatientFileByIdProfileId(@PathVariable int id) {
+        List<PatientFile> patientFile = patientFilesService.findAllPatientFilesByProfileId(id);
         return ResponseEntity.ok(patientFile);
     }
     @GetMapping("/doctor/{id}")

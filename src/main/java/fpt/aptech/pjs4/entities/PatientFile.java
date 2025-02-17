@@ -8,6 +8,9 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Nationalized;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 @Getter
 @Setter
 @Entity
@@ -37,6 +40,10 @@ public class PatientFile {
     @JsonIgnore
     @JoinColumn(name = "vipappointment_id")
     private VipAppointment vipappointment;
+
+    @OneToMany(mappedBy = "patientsFiles")
+    private Set<FilesImage> filesImages = new LinkedHashSet<>();
+
     @JsonProperty("vipappointment_id")
     public Integer getVipAppointmentId() {
         return vipappointment != null ? vipappointment.getId() : null;

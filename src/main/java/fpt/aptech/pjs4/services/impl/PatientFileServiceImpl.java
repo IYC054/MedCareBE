@@ -1,5 +1,6 @@
 package fpt.aptech.pjs4.services.impl;
 
+import fpt.aptech.pjs4.DTOs.PatientFileDTOQuery;
 import fpt.aptech.pjs4.entities.PatientFile;
 import fpt.aptech.pjs4.repositories.PatientFileRepository;
 import fpt.aptech.pjs4.services.PatientFileService;
@@ -31,6 +32,11 @@ public class PatientFileServiceImpl implements PatientFileService {
     @Override
     public List<PatientFile> getAllPatientFiles() {
         return patientFileRepository.findAll();
+    }
+
+    @Override
+    public List<PatientFile> findAllPatientFilesByProfileId(int profileId) {
+        return patientFileRepository.findAllPatientFilesByProfileId(profileId);
     }
 
     @Override
