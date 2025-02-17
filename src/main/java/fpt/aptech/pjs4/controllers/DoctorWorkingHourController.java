@@ -1,5 +1,6 @@
 package fpt.aptech.pjs4.controllers;
 
+import fpt.aptech.pjs4.DTOs.DoctorworkingDTO;
 import fpt.aptech.pjs4.entities.Doctorworking;
 import fpt.aptech.pjs4.services.DoctorWorkingHourService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +37,14 @@ public class DoctorWorkingHourController {
 
     // Thêm giờ làm việc mới
     @PostMapping
-    public ResponseEntity<Doctorworking> addWorkingHour(@RequestBody Doctorworking workingHour) {
-        Doctorworking newWorkingHour = workingHourService.addWorkingHour(workingHour);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newWorkingHour);
+    public ResponseEntity<List<Doctorworking>> addWorkingHour(@RequestBody DoctorworkingDTO workingHour) {
+        // Get the list of Doctorworking objects from the service
+        List<Doctorworking> newWorkingHours = workingHourService.addWorkingHour(workingHour);
+
+        // Return a response with the list of created working hours and HTTP status CREATED
+        return ResponseEntity.status(HttpStatus.CREATED).body(newWorkingHours);
     }
+
 
     // Cập nhật giờ làm việc
     @PutMapping("/{id}")

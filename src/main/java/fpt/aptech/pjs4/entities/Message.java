@@ -35,17 +35,11 @@ public class Message {
 //    @Column(name = "image_url", length = 100)
 //    private String image;  // URL của hình ảnh (nếu có)
 
-<<<<<<< HEAD
-    @Size(max = 100)
-    @Column(name = "image_url", length = 100)
-    private String image;  // URL của hình ảnh (nếu có)
-
-=======
     @Column(name = "message_text",nullable = false)
     private String message;
     @Column(name = "image_url", length = 250)
     private String image;
->>>>>>> f69ba0f218abacd5b82e9b451913e41e3613400f
+
 
     @Column(name = "sent_at")
     private LocalDateTime sentAt = LocalDateTime.now();  // Thời gian gửi tin nhắn
