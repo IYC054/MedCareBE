@@ -36,6 +36,7 @@ public class SecurityConfig {
             "/api/appointment/**",
             "/api/vip-appointments/**",
             "/api/account/find",
+            "/api/rates/**",
     };
 
     private  final String[] PUBLIC_ENPOINT_POST={
@@ -48,6 +49,8 @@ public class SecurityConfig {
             "/api/auth/verify",
             "/api/feedbacks/**",
             "/api/patients/**",
+            "/api/rates",
+            "/api/payments/momo",
 
     };
     private  final String[] PUBLIC_ENPOINT_UPDATE={
@@ -62,7 +65,7 @@ public class SecurityConfig {
         httpSecurity
                 .cors(corsConfigurer -> corsConfigurer.configurationSource(request -> {
                     var cors = new org.springframework.web.cors.CorsConfiguration();
-                    cors.setAllowedOrigins(List.of("http://localhost:5173"));
+                    cors.setAllowedOrigins(List.of("http://localhost:5173/"));
                     cors.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
                     cors.setAllowedHeaders(List.of("*"));
                     cors.setAllowedHeaders(List.of("Authorization", "Content-Type"));
