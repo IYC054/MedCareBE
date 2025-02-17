@@ -34,6 +34,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'com.google.zxing:core:3.4.1'
+    implementation 'com.google.zxing:javase:3.4.1'
     implementation 'org.springframework.boot:spring-boot-starter-tomcat'
     compileOnly 'org.projectlombok:lombok'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
@@ -48,6 +50,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'
     implementation 'com.microsoft.sqlserver:mssql-jdbc:10.2.0.jre8'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation "net.sourceforge.tess4j:tess4j:4.5.4"
 
 

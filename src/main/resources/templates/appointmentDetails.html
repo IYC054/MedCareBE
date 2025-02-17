@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Chi tiết cuộc hẹn</title>
+</head>
+<body>
+<h1>Thông tin cuộc hẹn</h1>
+
+<div th:if="${appointment != null}">
+    <p><strong>ID:</strong> <span th:text="${appointment.id}"></span></p>
+</div>
+
+<div th:if="${appointment == null}">
+    <p th:text="${message}"></p>
+</div>
+</body>
+</html>
