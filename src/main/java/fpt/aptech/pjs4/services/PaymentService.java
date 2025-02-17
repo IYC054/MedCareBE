@@ -1,5 +1,6 @@
 package fpt.aptech.pjs4.services;
 
+import fpt.aptech.pjs4.DTOs.PaymentDTOQuery;
 import fpt.aptech.pjs4.entities.Payment;
 
 import java.time.LocalDate;
@@ -18,4 +19,7 @@ public interface PaymentService {
     public List<Payment> filterPayments(LocalDate startDate, LocalDate endDate,
                                         String transactionCode, String status);
     List<Payment> findPaymentByAppointmentId(Integer appointmentId);
+    List<Payment> findPaymentByVipAppointmentId(Integer vipappointmentId);
+    List<PaymentDTOQuery> findAllPaymentByPatientId(int patientId);
+
 }

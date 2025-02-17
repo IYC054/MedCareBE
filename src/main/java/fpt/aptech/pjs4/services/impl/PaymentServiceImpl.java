@@ -1,5 +1,6 @@
 package fpt.aptech.pjs4.services.impl;
 
+import fpt.aptech.pjs4.DTOs.PaymentDTOQuery;
 import fpt.aptech.pjs4.entities.Payment;
 import fpt.aptech.pjs4.repositories.PaymentRepository;
 import fpt.aptech.pjs4.services.PaymentService;
@@ -85,5 +86,15 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public List<Payment> findPaymentByAppointmentId(Integer appointmentId) {
         return paymentRepository.findPaymentByAppointment_Id(appointmentId);
+    }
+
+    @Override
+    public List<Payment> findPaymentByVipAppointmentId(Integer vipappointmentId) {
+        return paymentRepository.findPaymentByVipAppointmentId(vipappointmentId);
+    }
+
+    @Override
+    public List<PaymentDTOQuery> findAllPaymentByPatientId(int patientId) {
+        return paymentRepository.findAllPaymentByPatientId(patientId);
     }
 }
