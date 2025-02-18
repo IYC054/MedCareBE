@@ -1,5 +1,6 @@
 package fpt.aptech.pjs4.services.impl;
 
+import fpt.aptech.pjs4.DTOs.AppointmentDetailDTO;
 import fpt.aptech.pjs4.entities.Appointment;
 import fpt.aptech.pjs4.entities.VipAppointment;
 import fpt.aptech.pjs4.repositories.AppointmentRepository;
@@ -48,6 +49,17 @@ public class VIPAppointmentServiceImpl implements VIPAppointmentService {
     @Override
     public List<VipAppointment> getAllVIPAppointments() {
         return appointmentRepository.findAll();
+    }
+
+    @Override
+    public AppointmentDetailDTO getvipAppointmentDetail(int appointmentId) {
+        return appointmentRepository.findVipAppointmentDetailById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+    }
+
+    @Override
+    public List<VipAppointment> getAllVipAppointmentsByPatient(int patientId) {
+        return appointmentRepository.findAppointmentByPatientId(patientId);
     }
 
     @Override

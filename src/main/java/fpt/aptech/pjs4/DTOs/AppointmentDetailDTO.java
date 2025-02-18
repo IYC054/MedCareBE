@@ -8,17 +8,17 @@ import java.time.LocalTime;
 public class AppointmentDetailDTO {
     private String patientProfileName;
     private String doctorName;
+    private String transactionCode;
     private LocalDate workDate;
     private LocalTime startTime;
     private LocalTime endTime;
 
-    public AppointmentDetailDTO(String patientProfileName, String doctorName, LocalDate workDate, LocalTime startTime, LocalTime endTime) {
+    public AppointmentDetailDTO(String patientProfileName, String doctorName, String transactionCode, LocalDate workDate, LocalTime startTime, LocalTime endTime) {
         this.patientProfileName = patientProfileName;
         this.doctorName = doctorName;
+        this.transactionCode = transactionCode;
         this.workDate = workDate;
         this.startTime = startTime;
         this.endTime = endTime;
     }
-
-    // Getters và Setters
 }

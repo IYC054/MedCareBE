@@ -1,5 +1,6 @@
 package fpt.aptech.pjs4.services;
 
+import fpt.aptech.pjs4.DTOs.AppointmentDetailDTO;
 import fpt.aptech.pjs4.entities.Appointment;
 import fpt.aptech.pjs4.entities.VipAppointment;
 
@@ -11,7 +12,8 @@ public interface VIPAppointmentService {
     VipAppointment getVIPAppointmentById(int id);
     VipAppointment updateVipAppointmentStatusOnly(int id, String status);
     List<VipAppointment> getAllVIPAppointments();
-
+    public AppointmentDetailDTO getvipAppointmentDetail(int appointmentId);
+    List<VipAppointment> getAllVipAppointmentsByPatient(int patientId);
     void deleteAppointment(int id);
 
 }

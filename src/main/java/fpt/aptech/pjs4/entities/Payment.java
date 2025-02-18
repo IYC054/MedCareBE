@@ -44,9 +44,9 @@ public class Payment {
     @JoinColumn(name = "appointment_id", nullable = false)
     private Appointment appointment;
 
-    @Size(max = 50)
+    @Size(max = 100)
     @NotNull
-    @Column(name = "transaction_code", nullable = false, length = 50)
+    @Column(name = "transaction_code", nullable = false, length = 100)
     private String transactionCode;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -131,17 +131,7 @@ public class PaymentController {
             return ResponseEntity.status(500).body("Lỗi khi xử lý giao dịch: " + e.getMessage());
         }
     }
-    @Scheduled(cron = "0 0 23 * * *")
-    public void runAt11PM() {
-        List<Payment> payments = paymentService.getPaymentsByCurrentDate();
-        for (Payment payment : payments) {
-            if(payment.getStatus().contentEquals("Chờ xử lý")) {
-                payment.setStatus("Thanh toán thành công");
-                paymentService.updatePayment(payment.getId(), payment);
-            }
-        }
-        System.out.println("Đã chạy vào lúc 11h tối: " + java.time.LocalDateTime.now());
-    }
+
     // Get Payment by ID
     @GetMapping("/{id}")
     public ResponseEntity<Payment> getPaymentById(@PathVariable int id) {

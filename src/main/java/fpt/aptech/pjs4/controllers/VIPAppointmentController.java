@@ -74,4 +74,9 @@ public class VIPAppointmentController {
         vipAppointmentService.deleteAppointment(id);
         return ResponseEntity.noContent().build();
     }
+    @GetMapping("/patient/{id}")
+    public ResponseEntity<List<VipAppointment>> getAppointmentByPatientId(@PathVariable int id) {
+        List<VipAppointment> appointment = vipAppointmentService.getAllVipAppointmentsByPatient(id);
+        return ResponseEntity.ok(appointment);
+    }
 }
