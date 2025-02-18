@@ -34,10 +34,10 @@ public class MessageController {
     @GetMapping("/{senderId}/{receiverId}")
     public List<Message> getMessagesBetweenUsers(@PathVariable Integer senderId, @PathVariable Integer receiverId) {
         // Lấy thông tin tài khoản từ cơ sở dữ liệu (giả sử bạn có cách lấy account bằng ID)
-        Account sender = new Account();  // Thay bằng cách lấy Account từ DB
+        Account sender = new Account();
         sender.setId(senderId);
 
-        Account receiver = new Account();  // Thay bằng cách lấy Account từ DB
+        Account receiver = new Account();
         receiver.setId(receiverId);
 
         // Lấy tất cả tin nhắn giữa 2 user

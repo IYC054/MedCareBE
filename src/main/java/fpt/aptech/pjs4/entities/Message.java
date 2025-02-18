@@ -40,6 +40,7 @@ public class Message {
     @Column(name = "image_url", length = 250)
     private String image;
 
+
     @Column(name = "sent_at")
     private LocalDateTime sentAt = LocalDateTime.now();  // Thời gian gửi tin nhắn
 }

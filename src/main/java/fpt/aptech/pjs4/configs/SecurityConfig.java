@@ -52,7 +52,8 @@ public class SecurityConfig {
             "/api/patients/**",
             "/api/payments/momo",
             "/api/payments/confirm-payment",
-            "/api/appointment/**"
+            "/api/appointment/**",
+            "/api/rates",
 
     };
     private  final String[] PUBLIC_ENPOINT_UPDATE={
