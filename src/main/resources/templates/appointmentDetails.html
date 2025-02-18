@@ -7,7 +7,11 @@
 <h1>Thông tin cuộc hẹn</h1>
 
 <div th:if="${appointment != null}">
-    <p><strong>ID:</strong> <span th:text="${appointment.id}"></span></p>
+    <p><strong>ID:</strong> <span th:text="${appointment.patientProfileName}"></span></p>
+    <p><strong>Bác sĩ:</strong> <span th:text="${appointment.doctorName}"></span></p>
+    <p><strong>Ngày khám:</strong> <span th:text="${appointment.workDate}"></span></p>
+    <p><strong>Thời gian khám:</strong> <span th:text="${appointment.startTime} + ' - ' + ${appointment.endTime}"></span></p>
+
 </div>
 
 <div th:if="${appointment == null}">

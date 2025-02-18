@@ -1,5 +1,6 @@
 package fpt.aptech.pjs4.controllers;
 
+import fpt.aptech.pjs4.DTOs.AppointmentDetailDTO;
 import fpt.aptech.pjs4.entities.Appointment;
 import fpt.aptech.pjs4.services.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 @Controller
-public class DetailsPaymentController {
+public class DetailsAppointmentController {
     @Autowired
     private AppointmentService appointmentService;
     @GetMapping("/appointment/details")
@@ -16,7 +17,7 @@ public class DetailsPaymentController {
         try {
             System.out.println("Received appointmentId: " + appointmentId);  // Log giá trị appointmentId
             int id = Integer.parseInt(appointmentId);
-            Appointment appointment = appointmentService.getAppointmentById(id);
+            AppointmentDetailDTO appointment = appointmentService.getAppointmentDetail(id);
             if (appointment == null) {
                 model.addAttribute("message", "Không tìm thấy cuộc hẹn");
                 return "error";
