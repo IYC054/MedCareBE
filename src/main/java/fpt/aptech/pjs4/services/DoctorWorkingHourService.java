@@ -9,7 +9,7 @@ public interface DoctorWorkingHourService {
     List<Doctorworking> getAllWorkingHours();
     Doctorworking getWorkingHour(int id);
     List<Doctorworking> addWorkingHour(DoctorworkingDTO workingHour);
-    Doctorworking updateWorkingHour(Doctorworking workingHour);
-    void deleteWorkingHour(int id);
+    Doctorworking updateWorkingHour(DoctorworkingDTO workingHour);
+    void deleteWorkingHoursByDoctor(int id);
     List<Doctorworking> getWorkingHoursByDoctor(int id);
 }

@@ -41,15 +41,12 @@ public class DoctorWorkingHourServicesImpl implements DoctorWorkingHourService {
             LocalDate today = workingHour.getWorkStart();
             // Assume workingHour.getWorkDate() returns a LocalDate object
             LocalDate workDate = workingHour.getWorkDate();
-
             // Create a list to store the working hours for each date between today and workDate
             List<Doctorworking> workingHoursList = new ArrayList<>();
-
             // Fetch the Doctor object from the repository using the doctor ID
             Integer doctorId = workingHour.getDoctor();  // Get the doctor ID from the DTO
             Doctor doctor = doctorRepository.findById(doctorId)
                     .orElseThrow(() -> new RuntimeException("Doctor not found"));
-
             // Loop through all the dates from today to the workDate
             while (!today.isAfter(workDate)) {
                 // Create a new Doctorworking object for each date
@@ -58,14 +55,11 @@ public class DoctorWorkingHourServicesImpl implements DoctorWorkingHourService {
                 newWorkingHour.setStartTime(workingHour.getStartTime());  // Set the start time
                 newWorkingHour.setEndTime(workingHour.getEndTime());  // Set the end time
                 newWorkingHour.setDoctor(doctor);  // Set the Doctor object (not just the ID)
-
                 // Add the new working hour to the list
                 workingHoursList.add(newWorkingHour);
-
                 // Move to the next day
                 today = today.plusDays(1);
             }
-
             // Save all the working hours at once
             return doctorWorkingHourRepository.saveAll(workingHoursList);
         } catch (Exception e) {
@@ -75,23 +69,38 @@ public class DoctorWorkingHourServicesImpl implements DoctorWorkingHourService {
 
 
     @Override
-    public Doctorworking updateWorkingHour(Doctorworking workingHour) {
-        if (doctorWorkingHourRepository.existsById(workingHour.getId())) {
-            return doctorWorkingHourRepository.save(workingHour); // Cập nhật nếu tồn tại
-        } else {
-            return null; // Trả về null nếu không tìm thấy
+    public Doctorworking updateWorkingHour(DoctorworkingDTO workingHourDTO) {
+        try {
+            // Tìm bản ghi cần cập nhật dựa trên ID
+            Doctorworking existingWorkingHour = doctorWorkingHourRepository.findById(workingHourDTO.getId())
+                    .orElseThrow(() -> new RuntimeException("Working hour not found"));
+
+            // Lấy thông tin bác sĩ nếu có cập nhật
+            if (workingHourDTO.getDoctor() != null) {
+                Doctor doctor = doctorRepository.findById(workingHourDTO.getDoctor())
+                        .orElseThrow(() -> new RuntimeException("Doctor not found"));
+                existingWorkingHour.setDoctor(doctor);
+            }
+
+            // Cập nhật thông tin giờ làm việc
+            existingWorkingHour.setWorkDate(workingHourDTO.getWorkDate());
+            existingWorkingHour.setStartTime(workingHourDTO.getStartTime());
+            existingWorkingHour.setEndTime(workingHourDTO.getEndTime());
+
+            // Lưu lại dữ liệu đã cập nhật
+            return doctorWorkingHourRepository.save(existingWorkingHour);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void deleteWorkingHour(int id) {
-        if (doctorWorkingHourRepository.existsById(id)) {
-            doctorWorkingHourRepository.deleteById(id); // Xóa nếu tồn tại
-        }
+    public List<Doctorworking> getWorkingHoursByDoctor(int doctorId) {
+        return doctorWorkingHourRepository.findByDoctorId(doctorId);
     }
-
     @Override
-    public List<Doctorworking> getWorkingHoursByDoctor(int id) {
-        return doctorWorkingHourRepository.findByDoctor_Id(id);
+    // Xóa tất cả các bản ghi có doctor_id = id
+    public void deleteWorkingHoursByDoctor(int doctorId) {
+        doctorWorkingHourRepository.deleteByDoctorId(doctorId);
     }
 }

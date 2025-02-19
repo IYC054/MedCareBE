@@ -1,13 +1,16 @@
 package fpt.aptech.pjs4.controllers;
 
 import fpt.aptech.pjs4.DTOs.DoctorworkingDTO;
+import fpt.aptech.pjs4.entities.Doctor;
 import fpt.aptech.pjs4.entities.Doctorworking;
+import fpt.aptech.pjs4.repositories.DoctorWorkingHourRepository;
 import fpt.aptech.pjs4.services.DoctorWorkingHourService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -16,6 +19,8 @@ public class DoctorWorkingHourController {
 
     @Autowired
     private DoctorWorkingHourService workingHourService;
+    @Autowired
+    private DoctorWorkingHourRepository doctorWorkingHourRepository;
 
     // Lấy tất cả giờ làm việc
     @GetMapping
@@ -48,7 +53,7 @@ public class DoctorWorkingHourController {
 
     // Cập nhật giờ làm việc
     @PutMapping("/{id}")
-    public ResponseEntity<Doctorworking> updateWorkingHour(@PathVariable int id, @RequestBody Doctorworking workingHour) {
+    public ResponseEntity<Doctorworking> updateWorkingHour(@PathVariable int id, @RequestBody DoctorworkingDTO workingHour) {
         workingHour.setId(id);
         Doctorworking updatedWorkingHour = workingHourService.updateWorkingHour(workingHour);
         if (updatedWorkingHour != null) {
@@ -59,20 +64,16 @@ public class DoctorWorkingHourController {
     }
 
     // Xóa giờ làm việc
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteWorkingHour(@PathVariable int id) {
-        workingHourService.deleteWorkingHour(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    // Lấy giờ làm việc theo bác sĩ
     @GetMapping("/doctor/{doctorId}")
-    public ResponseEntity<List<Doctorworking>> getWorkingHoursByDoctor(@PathVariable int doctorId) {
-        List<Doctorworking> workingHours = workingHourService.getWorkingHoursByDoctor(doctorId);
-        if(workingHours == null){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-
-        }
-        return ResponseEntity.ok(workingHours);
+    public List<Doctorworking> getWorkingHours(@PathVariable int doctorId) {
+        return workingHourService.getWorkingHoursByDoctor(doctorId);
     }
+
+    // Xóa tất cả lịch làm việc của bác sĩ theo doctor_id
+    @DeleteMapping("/doctor/{doctorId}")
+    public void deleteWorkingHours(@PathVariable int doctorId) {
+        workingHourService.deleteWorkingHoursByDoctor(doctorId);
+    }
+
+
 }
