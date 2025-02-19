@@ -1,5 +1,6 @@
 package fpt.aptech.pjs4.services.impl;
 
+import fpt.aptech.pjs4.DTOs.AppointmentDetailDTO;
 import fpt.aptech.pjs4.entities.Appointment;
 import fpt.aptech.pjs4.entities.Doctor;
 import fpt.aptech.pjs4.repositories.AppointmentRepository;
@@ -54,6 +55,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     public void deleteAppointment(int id) {
         appointmentRepository.deleteById(id);
     }
+
+    @Override
+    public AppointmentDetailDTO getAppointmentDetail(int appointmentId) {
+        return appointmentRepository.findAppointmentDetailById(appointmentId)
+                .orElseThrow(() -> new RuntimeException("Appointment not found"));
+    }
+
     @Override
     public List<Appointment> getDoctorByidDoctor(int doctorid) {
         return appointmentRepository.findAppointmentByDoctorId(doctorid);

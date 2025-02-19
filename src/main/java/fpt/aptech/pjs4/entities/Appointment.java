@@ -50,4 +50,7 @@ public class Appointment {
     @OneToMany(mappedBy = "appointment")
     private Set<PatientFile> patientFiles = new LinkedHashSet<>();
 
+    @OneToMany(mappedBy = "appointment")
+    private Set<Payment> payments = new LinkedHashSet<>();
+
 }

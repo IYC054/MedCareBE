@@ -32,7 +32,8 @@ public class SecurityConfig {
             "/api/hospital/**",
             "/api/workinghours/**",
             "/api/filesimage/**",
-            "/appointment/details",
+            "/appointment/details/**",
+            "/vip-appointment/details/**",
             "/api/patientsfile/**",
             "/api/patientsprofile/**",
             "/api/appointment/**",
@@ -51,6 +52,7 @@ public class SecurityConfig {
             "/api/auth/verify",
             "/api/feedbacks/**",
             "/api/patients/**",
+            "/api/payments/**",
             "/api/payments/momo",
             "/api/payments/confirm-payment",
             "/api/appointment/**",
@@ -60,6 +62,7 @@ public class SecurityConfig {
     private  final String[] PUBLIC_ENPOINT_UPDATE={
             "/api/appointment/**",
             "/api/vip-appointments/**",
+            "/api/payments/**",
 
     };
     private  final String[] PUBLIC_ENPOINT_DELETE={

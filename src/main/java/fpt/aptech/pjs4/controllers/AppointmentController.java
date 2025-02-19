@@ -16,6 +16,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -100,9 +102,16 @@ public class AppointmentController {
         return ResponseEntity.noContent().build();
     }
     @GetMapping("/generate-qrcode")
-    public void generateQRCode(@RequestParam int appointmentId, HttpServletResponse response) throws Exception {
+    public void generateQRCode(@RequestParam int appointmentId, HttpServletResponse response, @RequestParam boolean isVIP) throws Exception {
+        String serverIp = getServerIp();
         // Tạo URL chứa thông tin cuộc hẹn
-        String qrCodeData = "http://localhost:8080/appointment/details?appointmentId=" + appointmentId;
+        String qrCodeData = "";
+        if(isVIP){
+            qrCodeData = "http://" + serverIp +":8080/vip-appointment/details?VipAppointmentId=" + appointmentId;
+
+        }else{
+            qrCodeData = "http://" + serverIp +":8080/appointment/details?appointmentId=" + appointmentId;
+        }
 
         // Tạo QR Code
         int width = 300;
@@ -117,6 +126,15 @@ public class AppointmentController {
             MatrixToImageWriter.writeToStream(matrix, "PNG", response.getOutputStream());
         } catch (IOException e) {
             throw new RuntimeException("Error writing QR Code to output stream", e);
+        }
+    }
+    public String getServerIp() {
+        try {
+            InetAddress inetAddress = InetAddress.getLocalHost();
+            return inetAddress.getHostAddress(); // Trả về địa chỉ IP của máy chủ
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            return "localhost"; // Trả về localhost nếu có lỗi
         }
     }
 
