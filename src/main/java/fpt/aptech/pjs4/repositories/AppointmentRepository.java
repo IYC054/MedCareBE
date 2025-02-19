@@ -17,7 +17,7 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
     List<Appointment> findAppointmentByDoctorId(int doctorId);
     @Query("SELECT COUNT(a) FROM Appointment a WHERE a.doctor.id = :doctorId AND a.worktime.id = :worktimeId")
     long countByDoctorAndWorktime(@Param("doctorId") int doctorId, @Param("worktimeId") int worktimeId);
-    @Query("SELECT new fpt.aptech.pjs4.DTOs.AppointmentDetailDTO(pi.fullname, a_doctor.name, p.transactionCode, dw.workDate, dw.startTime, dw.endTime) " +
+    @Query("SELECT new fpt.aptech.pjs4.DTOs.AppointmentDetailDTO(pi.fullname, a_doctor.name, p.transactionCode, dw.workDate, dw.startTime, dw.endTime, p.status) " +
             "FROM Appointment ap " +
             "JOIN ap.patientprofile pi " +
             "JOIN ap.doctor d " +

@@ -1,6 +1,7 @@
 package fpt.aptech.pjs4.services.impl;
 
 import fpt.aptech.pjs4.DTOs.PaymentDTOQuery;
+import fpt.aptech.pjs4.entities.Appointment;
 import fpt.aptech.pjs4.entities.Payment;
 import fpt.aptech.pjs4.repositories.PaymentRepository;
 import fpt.aptech.pjs4.services.PaymentService;
@@ -33,6 +34,21 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public Payment getPayment(int id) {
         return paymentRepository.findById(id).get();
+    }
+
+    @Override
+    public Payment updatePaymentStatusOnly(int id, String status) {
+        Payment payment = paymentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Appointment không tồn tại"));
+
+        try {
+            payment.setStatus(status);
+            return paymentRepository.save(payment);
+        } catch (Exception ex) {
+            // Ghi lại chi tiết lỗi
+            ex.printStackTrace();
+            throw new RuntimeException("Lỗi khi lưu Appointment: " + ex.getMessage());
+        }
     }
 
     @Override

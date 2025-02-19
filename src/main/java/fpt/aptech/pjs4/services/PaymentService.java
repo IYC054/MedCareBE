@@ -1,6 +1,7 @@
 package fpt.aptech.pjs4.services;
 
 import fpt.aptech.pjs4.DTOs.PaymentDTOQuery;
+import fpt.aptech.pjs4.entities.Appointment;
 import fpt.aptech.pjs4.entities.Payment;
 
 import java.time.LocalDate;
@@ -10,6 +11,7 @@ import java.util.List;
 public interface PaymentService {
     Payment createPayment(Payment payment);
     Payment getPayment(int id);
+    Payment updatePaymentStatusOnly(int id, String status);
     Payment getPaymentbyDescription(String description);
     List<Payment> getPaymentsByCurrentDate();
     Payment updatePayment(int id,Payment payment);

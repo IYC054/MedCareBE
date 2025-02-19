@@ -317,10 +317,11 @@ public class PaymentApi {
     }
     @GetMapping("/get-history")
     public ResponseEntity<?> getTransactionHistory() {
+        System.out.println("Lay lich su giao dich");
             APIResponse<Object> apiResponse = new APIResponse<>();
             RestTemplate restTemplate = new RestTemplate();
             String accountno = "0933315633";
-            String sessionId = "0b257a3e-cae8-49f4-be12-8ce1fb87f2d0";
+            String sessionId = "85c850f5-00da-46e6-8217-ab64d71e8305";
             String refno = accountno + "-202412237590493-88678";
             Date datenow = new Date();
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -351,11 +352,13 @@ public class PaymentApi {
                 ResponseEntity<String> response = restTemplate.postForEntity(url_mbbank, request, String.class);
                 ObjectMapper objectMapper = new ObjectMapper();
                 Map<String, Object> responseBody = objectMapper.readValue(response.getBody(), Map.class);
+                List<Map<String, Object>> transactionHistoryList = (List<Map<String, Object>>) responseBody.get("transactionHistoryList");
+                List<Map<String, Object>> matchingTransactions = new ArrayList<>();
                 // Xử lý kết quả thành công
                 apiResponse.setCode(200);
                 apiResponse.setMessage("Lấy data thành công.");
                 apiResponse.setResult(responseBody);
-                return ResponseEntity.ok("true");
+                return ResponseEntity.ok(apiResponse);
             } catch (Exception e) {
                 // Xử lý lỗi
                 apiResponse.setCode(500);
@@ -411,6 +414,11 @@ public class PaymentApi {
         String vnpayUrl = VNPAYService.createOrder(request, orderTotal, orderInfo, baseUrl);
         return ResponseEntity.ok(vnpayUrl);
     }
-
+    @PutMapping("/status/{id}")
+    public ResponseEntity<Payment> updateAppointmentStatus(@PathVariable int id, @RequestBody Appointment appointment) {
+        String status = appointment.getStatus();
+        Payment updatedPayment = paymentService.updatePaymentStatusOnly(id, status);
+        return ResponseEntity.ok(updatedPayment);
+    }
 
 }

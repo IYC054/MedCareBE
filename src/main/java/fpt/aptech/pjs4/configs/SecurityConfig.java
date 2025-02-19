@@ -61,6 +61,7 @@ public class SecurityConfig {
     private  final String[] PUBLIC_ENPOINT_UPDATE={
             "/api/appointment/**",
             "/api/vip-appointments/**",
+            "/api/payments/**",
 
     };
     private  final String[] PUBLIC_ENPOINT_DELETE={
