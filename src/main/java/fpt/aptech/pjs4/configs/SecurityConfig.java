@@ -36,6 +36,7 @@ public class SecurityConfig {
             "/api/patientsfile/**",
             "/api/patientsprofile/**",
             "/api/appointment/**",
+            "/api/doctors/**",
             "/api/vip-appointments/**",
             "/api/account/find",
     };

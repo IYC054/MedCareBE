@@ -14,6 +14,7 @@ import fpt.aptech.pjs4.entities.Role;
 import fpt.aptech.pjs4.repositories.RoleRepository;
 import fpt.aptech.pjs4.services.AccountService;
 import fpt.aptech.pjs4.services.PatientService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -187,54 +188,75 @@ public class AccountController {
         return apiResponse;
     }
 
-
     @PutMapping("/{id}")
-    public APIResponse<Account> updateAccount(@PathVariable int id,
-                                              @RequestParam List<String> role,
-                                              @ModelAttribute AccountDTO accountDTO,
-                                              @RequestParam("avatar") MultipartFile files) {
-        try {
-            APIResponse<Account> apiResponse = new APIResponse<>();
+    public ResponseEntity<?> updateAccount(
+            @PathVariable int id,
+            @RequestParam(required = false) List<String> role,
+            @ModelAttribute AccountDTO accountDTO,
+            @RequestPart(value = "avatar", required = false) MultipartFile image) throws IOException {
 
-            Account existingAccount = accountService.getAccountById(id);
-            if (existingAccount == null) {
-                apiResponse.setMessage("Account not found");
-                return apiResponse;
-            }
-
-            String oldAvatar = existingAccount.getAvatar();
-            if (oldAvatar != null && !oldAvatar.isEmpty()) {
-                File oldFile = new File(fileUpload + oldAvatar);
-                if (oldFile.exists()) {
-                    boolean deleted = oldFile.delete();
-                    if (!deleted) {
-                        throw new RuntimeException("Failed to delete old avatar");
-                    }
-                }
-            }
-
-            String fileName = files.getOriginalFilename();
-            FileCopyUtils.copy(files.getBytes(), new File(fileUpload + fileName));
-            existingAccount.setEmail(accountDTO.getEmail());
-            existingAccount.setName(accountDTO.getName());
-            existingAccount.setPassword(accountDTO.getPassword());
-            existingAccount.setPhone(accountDTO.getPhone());
-            existingAccount.setGender(accountDTO.getGender());
-            existingAccount.setBirthdate(accountDTO.getBirthdate());
-            List<Role> roles = roleRepository.findAllById(role);
-            existingAccount.setRole(roles);
-            existingAccount.setAvatar(fileName);
-            Account updatedAccount = accountService.updateAccount(id, existingAccount);
-            apiResponse.setResult(updatedAccount);
-            apiResponse.setMessage("Account updated successfully!");
-
-            return apiResponse;
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to upload avatar", e);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        Account existingAccount = accountService.getAccountById(id);
+        if (existingAccount == null) {
+            throw new EntityNotFoundException("Account not found");
         }
+
+        // Xử lý avatar (chỉ thay đổi nếu có ảnh mới)
+        String imageUrl = existingAccount.getAvatar();
+        if (image != null && !image.isEmpty()) {
+            Path uploadDir = Paths.get("src/main/resources/static/image");
+            if (!Files.exists(uploadDir)) {
+                Files.createDirectories(uploadDir);
+            }
+
+            String uniqueFileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
+            Path destinationPath = uploadDir.resolve(uniqueFileName);
+            Files.write(destinationPath, image.getBytes());
+
+            imageUrl = ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/api/image/")
+                    .path(uniqueFileName)
+                    .toUriString();
+        }
+
+        // Cập nhật thông tin tài khoản nếu có giá trị mới
+        if (accountDTO.getEmail() != null && !accountDTO.getEmail().isEmpty()) {
+            existingAccount.setEmail(accountDTO.getEmail());
+        }
+        if (accountDTO.getName() != null && !accountDTO.getName().isEmpty()) {
+            existingAccount.setName(accountDTO.getName());
+        }
+        if (accountDTO.getPassword() != null && !accountDTO.getPassword().isEmpty()) {
+            existingAccount.setPassword(accountDTO.getPassword());
+        }
+        if (accountDTO.getPhone() != null && !accountDTO.getPhone().isEmpty()) {
+            existingAccount.setPhone(accountDTO.getPhone());
+        }
+        if (accountDTO.getGender() != null) {
+            existingAccount.setGender(accountDTO.getGender());
+        }
+        if (accountDTO.getBirthdate() != null) {
+            existingAccount.setBirthdate(accountDTO.getBirthdate());
+        }
+
+        // Cập nhật vai trò nếu có thay đổi
+        if (role != null && !role.isEmpty()) {
+            existingAccount.setRole(roleRepository.findAllById(role));
+        }
+
+        // Cập nhật avatar mới nếu có
+        existingAccount.setAvatar(imageUrl);
+
+        // Lưu thay đổi vào database
+        Account updatedAccount = accountService.updateAccount(id, existingAccount);
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Account updated successfully!",
+                "account", updatedAccount
+        ));
     }
+
+
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Account> deleteAccount(@PathVariable int id) {
