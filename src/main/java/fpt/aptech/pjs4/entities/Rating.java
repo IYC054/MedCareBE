@@ -19,7 +19,7 @@ public class Rating {
     private Integer id;
     @ManyToOne
     @JoinColumn(name = "doctor_id", nullable = false)
-    private Account doctor_id;  // Người gửi tin nhắn
+    private Doctor doctor_id;  // Người gửi tin nhắn
 
     @Column(name = "description", nullable = false)
     private String description;  // Nội dung tin nhắn
@@ -27,5 +27,5 @@ public class Rating {
     private Integer rate;  // Nội dung tin nhắn
     @ManyToOne
     @JoinColumn(name = "patient_id", nullable = false)
-    private Account patient_id;  // Người nhận tin nhắn
+    private Patient patient_id;  // Người nhận tin nhắn
 }

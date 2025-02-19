@@ -40,7 +40,7 @@ public class SecurityConfig {
             "/api/doctors/**",
             "/api/vip-appointments/**",
             "/api/account/find",
-            "/api/rates",
+            "/api/rates/**",
     };
 
     private  final String[] PUBLIC_ENPOINT_POST={
