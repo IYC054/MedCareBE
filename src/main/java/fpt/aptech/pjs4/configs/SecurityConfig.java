@@ -39,11 +39,13 @@ public class SecurityConfig {
             "/api/appointment/**",
             "/api/vip-appointments/**",
             "/api/account/find",
+            "/api/rates",
     };
 
     private  final String[] PUBLIC_ENPOINT_POST={
             "/api/account/token",
             "/api/account/register",
+            "/api/account",
             "/api/account/find",
             "/api/auth/send",
             "/api/auth/forgot-password",

@@ -98,12 +98,9 @@ public class AccountController {
 
             return apiResponse;
 
-
         } catch (IOException e) {
-            System.err.println("❌ Lỗi tải ảnh đại diện: " + e.getMessage());
             throw new RuntimeException("Failed to upload avatar", e);
         } catch (Exception e) {
-            System.err.println("❌ Lỗi xử lý yêu cầu: " + e.getMessage());
             throw new RuntimeException(e);
         }
     }

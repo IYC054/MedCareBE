@@ -102,7 +102,7 @@ public class PaymentController {
         Payment payment = new Payment();
         payment.setAmount(paymentDTO.getAmount());
         payment.setPaymentMethod(paymentDTO.getPaymentMethod());
-        payment.setStatus("Chờ xử lý");
+        payment.setStatus(paymentDTO.getStatus());
         payment.setTransactionDescription(paymentDTO.getTransactionDescription());
         payment.setTransactionDate(transactionDate);
 
