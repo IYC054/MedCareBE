@@ -40,6 +40,7 @@ public class SecurityConfig {
             "/api/doctors/**",
             "/api/vip-appointments/**",
             "/api/account/find",
+            "/api/rates/**",
     };
 
     private  final String[] PUBLIC_ENPOINT_POST={
@@ -56,6 +57,7 @@ public class SecurityConfig {
             "/api/payments/momo",
             "/api/payments/confirm-payment",
             "/api/appointment/**",
+            "/api/rates/**",
             "/api/rates",
 
     };
