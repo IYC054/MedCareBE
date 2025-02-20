@@ -50,7 +50,7 @@ public class PatientFileController {
             @RequestParam("patients_profile_id") Integer patientsId,
             @RequestParam("doctors_id") Integer doctorId,
             @RequestParam(value = "appointment_id" ,required = false) Integer appointmentId,
-            @RequestParam(value = "vipappointment_id", required = false) Integer vipappointmentId,
+//            @RequestParam(value = "vipappointment_id", required = false) Integer vipappointmentId,
 
             @RequestParam(value = "url_image", required = false) List<MultipartFile> files) {
         try {
@@ -75,16 +75,16 @@ public class PatientFileController {
             if (appointment == null) {
                 throw new IllegalArgumentException("Cuộc hẹn không tồn tại.");
             }
-            VipAppointment vipappointment = vipAppointmentService.getVIPAppointmentById(vipappointmentId);
-            if (vipappointment == null) {
-                throw new IllegalArgumentException("Cuộc hẹn không tồn tại.");
-            }
+//            VipAppointment vipappointment = vipAppointmentService.getVIPAppointmentById(vipappointmentId);
+//            if (vipappointment == null) {
+//                throw new IllegalArgumentException("Cuộc hẹn không tồn tại.");
+//            }
             // Tạo `PatientFile`
             PatientFile patientFile = new PatientFile();
             patientFile.setPatientsInformation(patient);
             patientFile.setDoctor(doctor);
             patientFile.setAppointment(appointment);
-            patientFile.setVipappointment(vipappointment);
+//            patientFile.setVipappointment(vipappointment);
             PatientFile createdPatientFile = patientFilesService.createPatientFile(patientFile);
 
             // Xử lý tệp nếu có

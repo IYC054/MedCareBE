@@ -3,70 +3,83 @@
 <head>
     <title>Chi tiết cuộc hẹn</title>
     <style>
-        /* Đặt nền cho toàn bộ trang */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f7f6; /* Màu nền nhẹ nhàng */
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
             margin: 0;
-            padding: 0;
+            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
         }
 
-        /* Tạo vùng chứa thông tin */
-        .appointment-container {
-            background-color: #ffffff; /* Nền trắng */
+        .bill-container {
+            background: #fff;
             padding: 20px;
-            border-radius: 10px; /* Bo góc */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Hiệu ứng bóng */
-            width: 60%;
-            max-width: 600px;
+            border-radius: 10px;
+            width: 350px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
             text-align: center;
+            position: relative;
+            border: 1px solid #ccc;
         }
 
-        h1 {
-            color: #333333;
-            margin-bottom: 20px;
-        }
-
-        /* Định dạng các đoạn thông tin */
-        p {
-            font-size: 16px;
-            margin: 10px 0;
-            color: #555555;
-        }
-
-        strong {
-            color: #007bff; /* Màu cho các từ khóa mạnh */
-        }
-
-        /* Phần thông báo khi không có cuộc hẹn */
-        .no-appointment {
+        .bill-header {
             font-size: 18px;
-            color: #f44336; /* Màu đỏ cho thông báo lỗi */
-            margin-top: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .bill-content p {
+            font-size: 14px;
+            margin: 5px 0;
+        }
+
+        .bill-footer {
+            border-top: 1px dashed #aaa;
+            padding-top: 10px;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .print-btn {
+            background: #007bff;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .print-btn:hover {
+            background: #0056b3;
         }
     </style>
 </head>
 <body>
 
-<div class="appointment-container" th:if="${appointment != null}">
-    <h1>Thông tin cuộc hẹn</h1>
-    <p><strong>Mã phiếu:</strong> <span th:text="${appointment.transactionCode}"></span></p>
-    <p><strong>Bệnh nhân:</strong> <span th:text="${appointment.patientProfileName}"></span></p>
-    <p><strong>Bác sĩ:</strong> <span th:text="${appointment.doctorName}"></span></p>
-    <p><strong>Ngày khám:</strong> <span th:text="${appointment.workDate}"></span></p>
-    <p><strong>Thời gian khám:</strong> <span th:text="${appointment.startTime} + ' - ' + ${appointment.endTime}"></span></p>
-    <p><strong>Trạng Thái:</strong> <span th:text="${appointment.status}"></span></p>
-    <p><strong>Loại khám:</strong> <span th:text="Thường"></span></p>
-
+<div class="bill-container" th:if="${appointment != null}">
+    <div class="bill-header">
+        🏥 PHIẾU KHÁM BỆNH
+    </div>
+    <div class="bill-content">
+        <p><strong>Mã phiếu:</strong> <span th:text="${appointment.transactionCode}"></span></p>
+        <p><strong>Bệnh nhân:</strong> <span th:text="${appointment.patientProfileName}"></span></p>
+        <p><strong>Bác sĩ:</strong> <span th:text="${appointment.doctorName}"></span></p>
+        <p><strong>Ngày khám:</strong> <span th:text="${appointment.workDate}"></span></p>
+        <p><strong>Thời gian:</strong> <span th:text="${appointment.startTime} + ' - ' + ${appointment.endTime}"></span></p>
+        <p><strong>Trạng thái:</strong> <span th:text="${appointment.status}"></span></p>
+        <p><strong>Loại khám:</strong> <span>Thường</span></p>
+    </div>
+    <div class="bill-footer">
+        Cảm ơn quý khách đã sử dụng dịch vụ! 💙
+    </div>
+    <button class="print-btn" onclick="window.print()">🖨 In hóa đơn</button>
 </div>
 
-<div class="no-appointment" th:if="${appointment == null}">
-    <p th:text="${message}"></p>
-</div>
 
 </body>
 </html>

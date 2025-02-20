@@ -57,7 +57,7 @@ public class PaymentController {
                 payment.setPaymentMethod("Momo");
                 payment.setTransactionDate(transactionDate);
                 payment.setAppointment(appointment);
-                payment.setStatus("Chờ xử lý");
+                payment.setStatus("Đã thanh toán");
                 payment.setTransactionDescription(orderInfo);
                 paymentService.createPayment(payment);
                 return ResponseEntity.ok("Payment confirmed successfully.");
@@ -102,7 +102,7 @@ public class PaymentController {
         Payment payment = new Payment();
         payment.setAmount(paymentDTO.getAmount());
         payment.setPaymentMethod(paymentDTO.getPaymentMethod());
-        payment.setStatus("Chờ xử lý");
+        payment.setStatus(paymentDTO.getStatus());
         payment.setTransactionDescription(paymentDTO.getTransactionDescription());
         payment.setTransactionDate(transactionDate);
 
