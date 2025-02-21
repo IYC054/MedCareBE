@@ -13,7 +13,7 @@ public class PatientsInformationDTO {
     private String birthdate;
     private String phone;
     private String gender;
-    private String codeBhyt;
+    private String identification_card;
     private String nation;
     private String address;
     private Integer accountid;

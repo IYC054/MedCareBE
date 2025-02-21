@@ -50,7 +50,7 @@ public class PatientInformationController {
         patientsInformation.setAddress(patientsInformationDTO.getAddress());
         patientsInformation.setPhone(patientsInformationDTO.getPhone());
         patientsInformation.setFullname(patientsInformationDTO.getFullname());
-        patientsInformation.setCodeBhyt(patientsInformationDTO.getCodeBhyt());
+        patientsInformation.setIdentificationCard(patientsInformationDTO.getIdentification_card());
         patientsInformation.setNation(patientsInformationDTO.getNation());
         PatientsInformation createdPatient = patientInformationService.addPatientInformation(patientsInformation);
         return ResponseEntity.status(201).body(createdPatient);
@@ -68,5 +68,10 @@ public class PatientInformationController {
     public ResponseEntity<Void> deletePatientInformation(@PathVariable int id) {
         patientInformationService.deletePatientInformation(id);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/card")
+    public ResponseEntity<?> deletePatientInformation(@RequestParam String identification_card) {
+        boolean check = patientInformationService.findidentificationCard(identification_card);
+        return ResponseEntity.ok(check);
     }
 }

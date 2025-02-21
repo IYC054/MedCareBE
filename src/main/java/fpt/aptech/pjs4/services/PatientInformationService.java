@@ -12,5 +12,5 @@ public interface PatientInformationService {
     void deletePatientInformation(int id);
     PatientsInformation addPatientInformation(PatientsInformation patientsInformation);
     List<PatientsInformation> findPatientsByAccountId(Integer accountId);
-
+    boolean findidentificationCard(String identificationCard);
 }
