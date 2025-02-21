@@ -34,12 +34,8 @@ public class Specialty {
     private String image;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Doctor.class)
     @JoinColumn(name = "doctor_id")
     private Doctor doctor;
-    @JsonProperty("doctor_id")
-    public Integer getDoctorId() {
-        return doctor != null ? doctor.getId() : null;
-    }
+
 }
