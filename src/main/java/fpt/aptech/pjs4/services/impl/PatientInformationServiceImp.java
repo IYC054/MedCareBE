@@ -48,6 +48,6 @@ public class PatientInformationServiceImp implements PatientInformationService {
 
     @Override
     public boolean findidentificationCard(String identificationCard) {
-        return false;
+        return patientsInformationRepository.findidentificationCard(identificationCard);
     }
 }

@@ -39,4 +39,7 @@ public class Doctor {
     )
     private List<Specialty> specialties;
 
+    @Column(name = "vip")
+    private Boolean vip;
+
 }
