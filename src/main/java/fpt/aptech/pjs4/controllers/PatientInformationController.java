@@ -71,7 +71,8 @@ public class PatientInformationController {
     }
     @GetMapping("/card")
     public ResponseEntity<?> deletePatientInformation(@RequestParam String identification_card) {
-        boolean check = patientInformationService.findidentificationCard(identification_card);
-        return ResponseEntity.ok(check);
+        boolean exists = patientInformationService.findidentificationCard(identification_card);
+        return ResponseEntity.ok(exists);
     }
+
 }

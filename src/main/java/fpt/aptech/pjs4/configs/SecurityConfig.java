@@ -58,6 +58,7 @@ public class SecurityConfig {
             "/api/payments/momo",
             "/api/payments/confirm-payment",
             "/api/appointment/**",
+            "/api/rates/**",
             "/api/rates",
 
     };

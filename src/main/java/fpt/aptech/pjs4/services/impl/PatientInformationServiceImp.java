@@ -8,10 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Service
 public class PatientInformationServiceImp implements PatientInformationService {
     @Autowired
     private PatientsInformationRepository patientsInformationRepository;
+
     @Override
     public List<PatientsInformation> getAllPatientsInformation() {
         return patientsInformationRepository.findAll();
@@ -23,7 +25,7 @@ public class PatientInformationServiceImp implements PatientInformationService {
     }
 
     @Override
-    public PatientsInformation updatePatientInformation(int id,PatientsInformation patientsInformation) {
+    public PatientsInformation updatePatientInformation(int id, PatientsInformation patientsInformation) {
         if (patientsInformationRepository.existsById(id)) {
             patientsInformation.setId(id);
             return patientsInformationRepository.save(patientsInformation);
@@ -48,6 +50,7 @@ public class PatientInformationServiceImp implements PatientInformationService {
 
     @Override
     public boolean findidentificationCard(String identificationCard) {
-        return patientsInformationRepository.findidentificationCard(identificationCard);
+        return patientsInformationRepository.findidentificationCard(identificationCard) != null;
     }
+
 }
