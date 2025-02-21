@@ -8,7 +8,9 @@ import java.util.List;
 
 public interface PatientsInformationRepository extends JpaRepository<PatientsInformation, Integer> {
     List<PatientsInformation> findByAccountId(Integer accountId);
+
     @Query("SELECT p FROM PatientsInformation p WHERE p.identificationCard = :identificationCard")
-    boolean findidentificationCard(String identificationCard);
+    PatientsInformation findidentificationCard(String identificationCard);
+
 
 }
