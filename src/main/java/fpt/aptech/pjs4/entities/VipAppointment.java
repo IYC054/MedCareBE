@@ -66,14 +66,14 @@ public class VipAppointment {
     @Column(name = "amount", nullable = false, precision = 15, scale = 2)
     private BigDecimal amount;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
+    @ManyToOne(targetEntity = PatientsInformation.class)
+//    @JsonIgnore
     @JoinColumn(name = "patientprofile_id", nullable = false)
     private PatientsInformation patientprofile;
-    @JsonProperty("patientprofile_id")
-    public Integer getPatientProfileId() {
-        return patientprofile != null ? patientprofile.getId() : null;
-    }
+//    @JsonProperty("patientprofile_id")
+//    public Integer getPatientProfileId() {
+//        return patientprofile != null ? patientprofile.getId() : null;
+//    }
     @Size(max = 100)
     @NotNull
     @Nationalized

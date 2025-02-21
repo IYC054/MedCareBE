@@ -45,4 +45,9 @@ public class PatientInformationServiceImp implements PatientInformationService {
     public List<PatientsInformation> findPatientsByAccountId(Integer accountId) {
         return patientsInformationRepository.findByAccountId(accountId);
     }
+
+    @Override
+    public boolean findidentificationCard(String identificationCard) {
+        return false;
+    }
 }

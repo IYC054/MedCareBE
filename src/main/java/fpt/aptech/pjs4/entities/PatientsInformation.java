@@ -38,10 +38,7 @@ public class PatientsInformation {
     @Column(name = "gender", length = 10)
     private String gender;
 
-    @Size(max = 20)
-    @Nationalized
-    @Column(name = "code_bhyt", length = 20)
-    private String codeBhyt;
+
 
     @Size(max = 20)
     @Nationalized
@@ -58,6 +55,12 @@ public class PatientsInformation {
     @JsonIgnore
     @JoinColumn(name = "account_id")
     private Account account;
+
+    @Size(max = 20)
+    @Nationalized
+    @Column(name = "identification_card", length = 20)
+    private String identificationCard;
+
     @JsonProperty("account_id")
     public Integer getAppointmentId() {
         return account != null ? account.getId() : null;
