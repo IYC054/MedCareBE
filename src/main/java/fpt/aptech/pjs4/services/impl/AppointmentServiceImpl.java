@@ -9,12 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
 public class AppointmentServiceImpl implements AppointmentService {
     @Autowired
     private AppointmentRepository appointmentRepository;
+
     @Override
     public Appointment createAppointment(Appointment appointment) {
         return appointmentRepository.save(appointment);
@@ -66,6 +68,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     public List<Appointment> getDoctorByidDoctor(int doctorid) {
         return appointmentRepository.findAppointmentByDoctorId(doctorid);
     }
+
     @Transactional
     @Override
     public Appointment updateAppointmentStatusOnly(int id, String status) {
@@ -86,5 +89,10 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public List<Appointment> getAllAppointmentsByPatient(int patientId) {
         return appointmentRepository.findAppointmentByPatientId(patientId);
+    }
+
+    @Override
+    public boolean isWorkDateBooked(LocalDate workDate) {
+        return appointmentRepository.existsByWorkDate(workDate);
     }
 }

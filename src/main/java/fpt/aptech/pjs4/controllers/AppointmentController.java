@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.time.LocalDate;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -138,6 +139,10 @@ public class AppointmentController {
         }
     }
 
-
+    @GetMapping("/check")
+    public ResponseEntity<Boolean> checkWorkDate(@RequestParam LocalDate workDate) {
+        boolean exists = appointmentService.isWorkDateBooked(workDate);
+        return ResponseEntity.ok(exists);
+    }
 
 }
