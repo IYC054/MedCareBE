@@ -12,4 +12,6 @@ public interface SpecialtyRepository extends JpaRepository<Specialty, Integer> {
     List<Specialty> findSpecialtiesByDoctorId(@Param("doctorId") Integer doctorId);
     @Query("SELECT s FROM Specialty s WHERE s.id = :id")
     Specialty findSpecialtyById(@Param("id") int id);
+
+
 }
