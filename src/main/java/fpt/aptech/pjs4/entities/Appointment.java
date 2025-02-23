@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import jakarta.persistence.*;
@@ -14,6 +15,7 @@ import jakarta.persistence.*;
 @Setter
 @Entity
 @Table(name = "appointments")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Appointment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

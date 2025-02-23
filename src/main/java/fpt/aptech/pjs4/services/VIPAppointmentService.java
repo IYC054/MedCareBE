@@ -4,6 +4,8 @@ import fpt.aptech.pjs4.DTOs.AppointmentDetailDTO;
 import fpt.aptech.pjs4.entities.Appointment;
 import fpt.aptech.pjs4.entities.VipAppointment;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 public interface VIPAppointmentService {
@@ -15,5 +17,6 @@ public interface VIPAppointmentService {
     public AppointmentDetailDTO getvipAppointmentDetail(int appointmentId);
     List<VipAppointment> getAllVipAppointmentsByPatient(int patientId);
     void deleteAppointment(int id);
-
+    VipAppointment updateDoctor(Integer appointmentId, Integer doctorId) ;
+    String updateVipAppointment(Integer id, LocalDate workDate, LocalTime startTime, LocalTime endTime);
 }

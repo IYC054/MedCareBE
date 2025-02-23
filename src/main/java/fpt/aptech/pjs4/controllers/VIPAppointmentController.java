@@ -7,10 +7,15 @@ import fpt.aptech.pjs4.services.PatientInformationService;
 import fpt.aptech.pjs4.services.PatientService;
 import fpt.aptech.pjs4.services.VIPAppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/vip-appointments")
@@ -78,5 +83,26 @@ public class VIPAppointmentController {
     public ResponseEntity<List<VipAppointment>> getAppointmentByPatientId(@PathVariable int id) {
         List<VipAppointment> appointment = vipAppointmentService.getAllVipAppointmentsByPatient(id);
         return ResponseEntity.ok(appointment);
+    }
+    @PutMapping("/{id}/update-doctor")
+    public ResponseEntity<VipAppointment> updateDoctor(
+            @PathVariable Integer id,
+            @RequestParam Integer doctorId) {
+
+        VipAppointment updatedAppointment = vipAppointmentService.updateDoctor(id, doctorId);
+        return ResponseEntity.ok(updatedAppointment);
+    }
+    @PutMapping("/{id}/update-time")
+    public ResponseEntity<String> updateVipAppointment(
+            @PathVariable Integer id,
+            @RequestBody Map<String, String> request) {
+
+        LocalDate workDate = LocalDate.parse(request.get("workDate"));
+        LocalTime startTime = LocalTime.parse(request.get("startTime"));
+        LocalTime endTime = LocalTime.parse(request.get("endTime"));
+
+        String message = vipAppointmentService.updateVipAppointment(id, workDate, startTime, endTime);
+
+        return ResponseEntity.ok(message);
     }
 }
