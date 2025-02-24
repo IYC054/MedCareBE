@@ -1,28 +1,23 @@
-package fpt.aptech.pjs4.entities;
+package fpt.aptech.pjs4.entities
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.persistence.*
+import jakarta.validation.constraints.NotNull
 
-@Getter
-@Setter
 @Entity
 @Table(name = "doctors_specialties")
-public class DoctorsSpecialty {
+open class DoctorsSpecialty {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    private Integer id;
+    open var id: Int? = null
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "doctor_id", nullable = false)
-    private Doctor doctor;
+    open var doctor: Doctor? = null
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "specialty_id", nullable = false)
-    private Specialty specialty;
-
+    open var specialty: Specialty? = null
 }

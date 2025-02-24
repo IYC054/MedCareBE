@@ -6,9 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "doctors")
@@ -43,7 +41,5 @@ public class Doctor {
 
     @Column(name = "vip")
     private Boolean vip;
-
-
 
 }

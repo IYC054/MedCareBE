@@ -1,7 +1,6 @@
 package fpt.aptech.pjs4.controllers;
 
 import fpt.aptech.pjs4.DTOs.DoctorworkingDTO;
-import fpt.aptech.pjs4.entities.Doctor;
 import fpt.aptech.pjs4.entities.Doctorworking;
 import fpt.aptech.pjs4.repositories.DoctorWorkingHourRepository;
 import fpt.aptech.pjs4.services.DoctorWorkingHourService;
@@ -10,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController

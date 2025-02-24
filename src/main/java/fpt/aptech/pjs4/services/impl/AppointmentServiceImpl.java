@@ -2,7 +2,6 @@ package fpt.aptech.pjs4.services.impl;
 
 import fpt.aptech.pjs4.DTOs.AppointmentDetailDTO;
 import fpt.aptech.pjs4.entities.Appointment;
-import fpt.aptech.pjs4.entities.Doctor;
 import fpt.aptech.pjs4.repositories.AppointmentRepository;
 import fpt.aptech.pjs4.services.AppointmentService;
 import org.springframework.beans.factory.annotation.Autowired;

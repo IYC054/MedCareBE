@@ -38,7 +38,6 @@ public class VipAppointment {
         return doctor != null ? patient.getId() : null;
     }
     @ManyToOne(targetEntity = Doctor.class)
-//    @JsonIgnore
     @JoinColumn(name = "doctor_id", nullable = false)
     private Doctor doctor;
 //    @JsonProperty("doctor_id")

@@ -5,7 +5,7 @@
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #f8f9fa;
+            background-color: black;
             margin: 0;
             padding: 20px;
             display: flex;
@@ -16,10 +16,11 @@
 
         .bill-container {
             background: #fff;
-            padding: 20px;
+            padding: 50px;
             border-radius: 10px;
-            width: 500px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            width: 800px;
+            min-height: 500px;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
             text-align: center;
             position: relative;
             border: 1px solid #ccc;
@@ -28,30 +29,43 @@
         .bill-header {
             font-size: 24px;
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
 
-        .bill-content p {
-            font-size: 20px;
-            margin: 5px 0;
+        .bill-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .bill-table th, .bill-table td {
+            border: 1px solid #ccc;
+            padding: 15px;
+            font-size: 18px;
+            text-align: left;
+        }
+
+        .bill-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
         }
 
         .bill-footer {
             border-top: 1px dashed #aaa;
             padding-top: 10px;
             font-size: 18px;
-            margin-top: 10px;
+            margin-top: 20px;
         }
 
         .print-btn {
             background: #007bff;
             color: white;
-            padding: 10px;
+            padding: 15px;
             width: 100%;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 10px;
+            font-size: 18px;
         }
 
         .print-btn:hover {
@@ -65,21 +79,48 @@
     <div class="bill-header">
         🏥 PHIẾU KHÁM BỆNH
     </div>
-    <div class="bill-content">
-        <p><strong>Mã phiếu:</strong> <span th:text="${appointment.transactionCode}"></span></p>
-        <p><strong>Bệnh nhân:</strong> <span th:text="${appointment.patientProfileName}"></span></p>
-        <p><strong>Bác sĩ:</strong> <span th:text="${appointment.doctorName}"></span></p>
-        <p><strong>Ngày khám:</strong> <span th:text="${appointment.workDate}"></span></p>
-        <p><strong>Thời gian:</strong> <span th:text="${appointment.startTime} + ' - ' + ${appointment.endTime}"></span></p>
-        <p><strong>Trạng thái:</strong> <span th:text="${appointment.status}"></span></p>
-        <p><strong>Loại khám:</strong> <span>Thường</span></p>
-    </div>
+
+    <table class="bill-table">
+        <tr>
+            <th>Mã phiếu</th>
+            <td th:text="${appointment.transactionCode}"></td>
+        </tr>
+        <tr>
+            <th>Bệnh nhân</th>
+            <td th:text="${appointment.patientProfileName}"></td>
+        </tr>
+        <tr>
+            <th>Bác sĩ</th>
+            <td th:text="${appointment.doctorName}"></td>
+        </tr>
+        <tr>
+            <th>Ngày khám</th>
+            <td th:text="${appointment.workDate}"></td>
+        </tr>
+        <tr>
+            <th>Thời gian</th>
+            <td th:text="${appointment.startTime} + ' - ' + ${appointment.endTime}"></td>
+        </tr>
+        <tr>
+            <th>Trạng thái thanh toán</th>
+            <td th:text="${appointment.status}"></td>
+        </tr>
+        <tr>
+            <th>Trạng thái cuộc hẹn</th>
+            <td th:text="${appointment.appointmentStatus}"></td>
+        </tr>
+        <tr>
+            <th>Loại khám</th>
+            <td>Thường</td>
+        </tr>
+    </table>
+
     <div class="bill-footer">
         Cảm ơn quý khách đã sử dụng dịch vụ! 💙
     </div>
+
     <button class="print-btn" onclick="window.print()">🖨 In hóa đơn</button>
 </div>
-
 
 </body>
 </html>
