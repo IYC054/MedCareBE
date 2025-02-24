@@ -32,8 +32,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Intege
     Optional<AppointmentDetailDTO> findAppointmentDetailById(@Param("appointmentId") int appointmentId);
 
 
-    @Query("SELECT COUNT(a) > 0 FROM Appointment a WHERE a.worktime.workDate = :workDate")
-    boolean existsByWorkDate(@Param("workDate") LocalDate workDate);
+    @Query("SELECT COUNT(a) > 0 FROM Appointment a WHERE a.worktime.workDate = :workDate AND a.worktime.doctor.id = :doctorId")
+    boolean existsByWorkDate(@Param("workDate") LocalDate workDate , @Param("doctorId") int doctorId);
 
 
 }
