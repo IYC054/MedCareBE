@@ -140,8 +140,8 @@ public class AppointmentController {
     }
 
     @GetMapping("/check")
-    public ResponseEntity<Boolean> checkWorkDate(@RequestParam LocalDate workDate) {
-        boolean exists = appointmentService.isWorkDateBooked(workDate);
+    public ResponseEntity<Boolean> checkWorkDate(@RequestParam LocalDate workDate,@RequestParam int doctorId) {
+        boolean exists = appointmentService.isWorkDateBooked(workDate , doctorId);
         return ResponseEntity.ok(exists);
     }
 

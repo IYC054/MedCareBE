@@ -91,7 +91,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public boolean isWorkDateBooked(LocalDate workDate) {
-        return appointmentRepository.existsByWorkDate(workDate);
+    public boolean isWorkDateBooked(LocalDate workDate,int doctorId) {
+        return appointmentRepository.existsByWorkDate(workDate,doctorId);
     }
 }

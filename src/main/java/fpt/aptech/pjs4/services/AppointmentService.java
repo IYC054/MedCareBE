@@ -27,5 +27,5 @@ public interface AppointmentService {
 
     List<Appointment> getAllAppointmentsByPatient(int patientId);
 
-    boolean isWorkDateBooked(LocalDate workDate);
+    boolean isWorkDateBooked(LocalDate workDate , int doctorId);
 }
