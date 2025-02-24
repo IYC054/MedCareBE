@@ -37,14 +37,14 @@ public class VipAppointment {
     public Integer getPatientId() {
         return doctor != null ? patient.getId() : null;
     }
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
+    @ManyToOne(targetEntity = Doctor.class)
+//    @JsonIgnore
     @JoinColumn(name = "doctor_id", nullable = false)
     private Doctor doctor;
-    @JsonProperty("doctor_id")
-    public Integer getDoctorId() {
-        return doctor != null ? doctor.getId() : null;
-    }
+//    @JsonProperty("doctor_id")
+//    public Integer getDoctorId() {
+//        return doctor != null ? doctor.getId() : null;
+//    }
     @NotNull
     @Column(name = "work_date", nullable = false)
     private LocalDate workDate;

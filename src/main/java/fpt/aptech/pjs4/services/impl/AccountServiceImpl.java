@@ -73,7 +73,6 @@ public class AccountServiceImpl implements AccountService {
                 // thoi diem hien tai
                 .issueTime(new Date())
                 //  thời hạn token
-                .expirationTime(new Date(Instant.now().plus(10, ChronoUnit.HOURS).toEpochMilli()))
                 .claim("scope", buildScope(account))
                 .claim("id", account.getId())
                 .build();
