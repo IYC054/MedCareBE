@@ -59,6 +59,7 @@ public class SecurityConfig {
             "/api/payments/confirm-payment",
             "/api/appointment/**",
             "/api/rates/**",
+            "api/bhyt/check",
             "/api/rates",
 
     };
