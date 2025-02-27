@@ -14,12 +14,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/api/image/**")
                 .addResourceLocations("classpath:/static/image/");
     }
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/ws/**")
-                .allowedOrigins("http://localhost:5173") // Chỉnh sửa nếu cần
-                .allowedMethods("*")
-                .allowCredentials(true);
+        registry.addMapping("/ws/**").allowedOrigins("http://localhost:5173").allowedMethods("*");
     }
 }
 

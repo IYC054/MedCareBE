@@ -3,21 +3,20 @@ package fpt.aptech.pjs4.configs;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.*;
+
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws")
-                .setAllowedOriginPatterns("*")
-                .withSockJS();
+        registry.addEndpoint("/ws").setAllowedOrigins("*").withSockJS();
     }
-
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/topic", "/queue"); // Kênh nhận tin
-        registry.setApplicationDestinationPrefixes("/app"); // Kênh gửi tin
+        registry.enableSimpleBroker("/topic"); // Định tuyến tin nhắn đến client
+        registry.setApplicationDestinationPrefixes("/app"); // Nhận request từ client
     }
 }
+
 
 

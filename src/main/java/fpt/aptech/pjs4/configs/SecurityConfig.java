@@ -60,6 +60,7 @@ public class SecurityConfig {
             "/api/appointment/**",
             "/api/rates/**",
             "api/bhyt/check",
+            "/api/cvimage/**",
             "/api/rates",
 
     };
