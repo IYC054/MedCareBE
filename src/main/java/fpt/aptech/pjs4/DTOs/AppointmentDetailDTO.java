@@ -13,8 +13,9 @@ public class AppointmentDetailDTO {
     private LocalDate workDate;
     private LocalTime startTime;
     private LocalTime endTime;
+    private String AppointmentStatus;
 
-    public AppointmentDetailDTO(String patientProfileName, String doctorName, String transactionCode, LocalDate workDate, LocalTime startTime, LocalTime endTime, String status) {
+    public AppointmentDetailDTO(String patientProfileName, String doctorName, String transactionCode, LocalDate workDate, LocalTime startTime, LocalTime endTime, String status, String AppointmentStatus) {
         this.patientProfileName = patientProfileName;
         this.doctorName = doctorName;
         this.transactionCode = transactionCode;
@@ -22,5 +23,6 @@ public class AppointmentDetailDTO {
         this.startTime = startTime;
         this.endTime = endTime;
         this.status = status;
+        this.AppointmentStatus=AppointmentStatus;
     }
 }

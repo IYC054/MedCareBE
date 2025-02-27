@@ -64,10 +64,10 @@ public class PaymentApi {
         boolean autoCapture = true;
         String lang = "vi";
 
-        Payment paymenttrans = paymentService.getPaymentbyDescription(paymentRequest.getOrderInfo());
-        if (paymenttrans != null) {
-            return ResponseEntity.status(400).body("Payment already exists");
-        }
+//        Payment paymenttrans = paymentService.getPaymentbyDescription(paymentRequest.getOrderInfo());
+//        if (paymenttrans != null) {
+//            return ResponseEntity.status(400).body("Payment already exists");
+//        }
 
         try {
             // Build rawSignature

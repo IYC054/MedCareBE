@@ -1,10 +1,8 @@
 package fpt.aptech.pjs4.services.impl;
 
 import fpt.aptech.pjs4.DTOs.DoctorworkingDTO;
-import fpt.aptech.pjs4.entities.Account;
 import fpt.aptech.pjs4.entities.Doctor;
 import fpt.aptech.pjs4.entities.Doctorworking;
-import fpt.aptech.pjs4.repositories.AccountRepository;
 import fpt.aptech.pjs4.repositories.DoctorRepository;
 import fpt.aptech.pjs4.repositories.DoctorWorkingHourRepository;
 import fpt.aptech.pjs4.services.DoctorWorkingHourService;

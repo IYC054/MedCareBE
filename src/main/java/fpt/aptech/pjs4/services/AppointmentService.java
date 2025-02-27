@@ -2,7 +2,6 @@ package fpt.aptech.pjs4.services;
 
 import fpt.aptech.pjs4.DTOs.AppointmentDetailDTO;
 import fpt.aptech.pjs4.entities.Appointment;
-import fpt.aptech.pjs4.entities.Doctor;
 
 import java.time.LocalDate;
 import java.util.List;
