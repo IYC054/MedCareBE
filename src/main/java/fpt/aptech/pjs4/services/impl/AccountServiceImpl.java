@@ -1,6 +1,9 @@
 package fpt.aptech.pjs4.services.impl;
 
 
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.DocumentSnapshot;
+import com.google.cloud.firestore.Firestore;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -11,6 +14,7 @@ import fpt.aptech.pjs4.DTOs.request.AuthencicationRequest;
 import fpt.aptech.pjs4.DTOs.request.IntrospecRequest;
 import fpt.aptech.pjs4.DTOs.response.AuthencicationResponse;
 import fpt.aptech.pjs4.DTOs.response.IntrospecResponse;
+import fpt.aptech.pjs4.configs.FirebaseConfig;
 import fpt.aptech.pjs4.entities.Account;
 import fpt.aptech.pjs4.enums.Role;
 import fpt.aptech.pjs4.exceptions.AppException;
@@ -32,6 +36,7 @@ import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @Service
@@ -41,6 +46,25 @@ public class AccountServiceImpl implements AccountService {
 
     @NonFinal
     protected static final String SIGNER_KEY = "5e3b6f9e67e9f1e3b6ad775d9a1c9078c9078b72ad34d3e4e745fb6b64367861";
+
+    private final FirebaseConfig firebaseConfig;
+    public AccountServiceImpl(FirebaseConfig firebaseConfig) {
+        this.firebaseConfig = firebaseConfig;
+    }
+    public String getUserToken(String userId) {
+        Firestore db = firebaseConfig.getFirestore();
+        DocumentReference docRef = db.collection("user_data").document(userId);
+
+        try {
+            DocumentSnapshot document = docRef.get().get();
+            if (document.exists() && document.contains("token")) {
+                return document.getString("token");
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     @Override
     public AuthencicationResponse authenticate(AuthencicationRequest request) {

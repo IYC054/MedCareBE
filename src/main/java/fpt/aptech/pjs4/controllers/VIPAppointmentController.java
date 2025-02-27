@@ -2,10 +2,8 @@ package fpt.aptech.pjs4.controllers;
 
 import fpt.aptech.pjs4.DTOs.VipAppointmentDTO;
 import fpt.aptech.pjs4.entities.*;
-import fpt.aptech.pjs4.services.DoctorService;
-import fpt.aptech.pjs4.services.PatientInformationService;
-import fpt.aptech.pjs4.services.PatientService;
-import fpt.aptech.pjs4.services.VIPAppointmentService;
+import fpt.aptech.pjs4.services.*;
+import fpt.aptech.pjs4.services.impl.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +27,15 @@ public class VIPAppointmentController {
     private DoctorService doctorService;
     @Autowired
     private PatientInformationService patientInformationService;
+
+    private final AccountService accountService;
+    private final NotificationService notificationService;
+
+    public VIPAppointmentController(AccountService accountService,
+                                 NotificationService notificationService) {
+        this.accountService = accountService;
+        this.notificationService = notificationService;
+    }
     // Lấy danh sách tất cả lịch hẹn VIP
     @GetMapping
     public ResponseEntity<List<VipAppointment>> getAllVIPAppointments() {
@@ -70,6 +77,17 @@ public class VIPAppointmentController {
         appointment.setWorkDate(vipAppointmentDTO.getWorkDate());
         appointment.setPatientprofile(patientsInformation);
         VipAppointment createdAppointment = vipAppointmentService.createVIPAppointment(appointment);
+        // Lấy token từ Firestore
+        String userToken = accountService.getUserToken(vipAppointmentDTO.getFirestoreUserId());
+
+        // Nếu có token, gửi thông báo
+        if (userToken != null) {
+            notificationService.sendNotification(userToken, "Đặt lịch thành công",
+                    "Bạn đã đặt lịch khám VIP vào " + vipAppointmentDTO.getWorkDate() + " lúc "
+                            + vipAppointmentDTO.getStartTime() + ". Vui lòng đến đúng giờ để được hỗ trợ tốt nhất!");
+        }
+
+//        return ResponseEntity.status(201).body(createdAppointment);
         return ResponseEntity.ok(createdAppointment);
     }
 

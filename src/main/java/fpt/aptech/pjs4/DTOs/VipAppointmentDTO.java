@@ -20,4 +20,5 @@ public class VipAppointmentDTO {
     private String status;
     private BigDecimal amount;
     private String type;
+    private String firestoreUserId;
 }
