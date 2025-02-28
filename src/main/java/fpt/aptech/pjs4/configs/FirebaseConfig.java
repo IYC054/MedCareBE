@@ -22,7 +22,7 @@ public class FirebaseConfig{
 
         return FirebaseApp.initializeApp(options);
     }
-
+g
     public Firestore getFirestore() {
         return FirestoreClient.getFirestore();
     }
