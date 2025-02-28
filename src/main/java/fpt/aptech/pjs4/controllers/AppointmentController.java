@@ -1,5 +1,6 @@
 package fpt.aptech.pjs4.controllers;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
 import com.google.zxing.MultiFormatWriter;
@@ -9,6 +10,7 @@ import fpt.aptech.pjs4.DTOs.AppointmentDTO;
 import fpt.aptech.pjs4.configs.QRCodeService;
 import fpt.aptech.pjs4.entities.*;
 import fpt.aptech.pjs4.services.*;
+import fpt.aptech.pjs4.services.impl.NotificationService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +39,16 @@ public class AppointmentController {
     private DoctorWorkingHourService doctorWorkingHourService;
     @Autowired
     private PatientInformationService patientInformationService;
+
+    private final AccountService accountService;
+    private final NotificationService notificationService;
+
+    public AppointmentController(AccountService accountService,
+                                 NotificationService notificationService) {
+        this.accountService = accountService;
+        this.notificationService = notificationService;
+    }
+
     @PostMapping
     public ResponseEntity<Appointment> createAppointment(@RequestBody AppointmentDTO appointmentrequest) {
         Patient patient = patientService.getPatientById(appointmentrequest.getPatientId());
@@ -52,6 +64,17 @@ public class AppointmentController {
         appointment.setWorktime(worktime);
         appointment.setPatientprofile(patientsInformation);
         Appointment createdAppointment = appointmentService.createAppointment(appointment);
+
+
+        // Lấy token từ Firestore
+        String userToken = accountService.getUserToken(appointmentrequest.getFirestoreUserId());
+
+        // Nếu có token, gửi thông báo
+        if (userToken != null) {
+            notificationService.sendNotification(userToken, "Đặt lịch thành công",
+                    "Bạn đã đặt lịch khám thường vào " + worktime.getWorkDate());
+        }
+
         return ResponseEntity.status(201).body(createdAppointment);
     }
 
