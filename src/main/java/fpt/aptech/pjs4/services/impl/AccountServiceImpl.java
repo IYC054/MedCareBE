@@ -237,7 +237,8 @@ public class AccountServiceImpl implements AccountService {
 //        return null;
 //    }
 @Override
-@PostAuthorize("returnObject.email == authentication.name")
+//@PostAuthorize("returnObject.email == authentication.name")
+@PostAuthorize("returnObject.email == authentication.name or hasRole('ADMIN')")
 public Account updateAccount(int id, Account account) {
     Account existingAccount = getAccountById(id);
 
