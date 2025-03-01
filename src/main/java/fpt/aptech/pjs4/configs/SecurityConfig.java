@@ -41,6 +41,8 @@ public class SecurityConfig {
             "/api/vip-appointments/**",
             "/api/account/find",
             "/api/rates/**",
+            "/api/messages/**",
+            "api/chat/**"
     };
 
     private  final String[] PUBLIC_ENPOINT_POST={
@@ -65,6 +67,8 @@ public class SecurityConfig {
             "/api/rates",
             "/api/account/**",
             "/api/vip-appointments/**",
+            "/api/messages/**",
+            "api/chat/**"
 
     };
     private  final String[] PUBLIC_ENPOINT_UPDATE={

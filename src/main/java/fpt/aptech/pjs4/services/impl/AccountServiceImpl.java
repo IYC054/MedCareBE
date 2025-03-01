@@ -8,14 +8,11 @@ import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
-import fpt.aptech.pjs4.DTOs.Introspect;
 import fpt.aptech.pjs4.DTOs.request.AuthencicationRequest;
-import fpt.aptech.pjs4.DTOs.request.IntrospecRequest;
 import fpt.aptech.pjs4.DTOs.response.AuthencicationResponse;
-import fpt.aptech.pjs4.DTOs.response.IntrospecResponse;
 import fpt.aptech.pjs4.configs.FirebaseConfig;
 import fpt.aptech.pjs4.entities.Account;
+import fpt.aptech.pjs4.enums.Status;
 import fpt.aptech.pjs4.enums.Role;
 import fpt.aptech.pjs4.exceptions.AppException;
 import fpt.aptech.pjs4.exceptions.ErrorCode;
@@ -32,9 +29,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.text.ParseException;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
@@ -186,6 +180,7 @@ public class AccountServiceImpl implements AccountService {
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         HashSet<String> roles = new HashSet<>();
         roles.add(Role.PATIENTS.name());
+        account.setStatus(Status.ONLINE);
         //account.setRole(roles);
         return accountRepository.save(account);
     }
@@ -354,4 +349,27 @@ public Account updateAccount(int id, Account account) {
 //            throw new RuntimeException(e);
 //        }
 //    }
+
+    //for chat
+    @Override
+    public void addConnectedAccount(Account account) {
+        var storedAccount = accountRepository.findAccountByEmail(account.getEmail()).orElse(null);
+        if (storedAccount != null) {
+            storedAccount.setStatus(Status.ONLINE);
+            accountRepository.save(storedAccount);
+        }
+    }
+    @Override
+    public void disconnect(Account account) {
+        var storedAccount = accountRepository.findAccountByEmail(account.getEmail()).orElse(null);
+        if (storedAccount != null) {
+            storedAccount.setStatus(Status.OFFLINE);
+            accountRepository.save(storedAccount);
+        }
+    }
+
+    @Override
+    public List<Account> findConnectedAccount() {
+        return accountRepository.findAllByStatus(Status.ONLINE);
+    }
 }

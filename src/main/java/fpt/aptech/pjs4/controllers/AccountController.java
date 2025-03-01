@@ -19,6 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,12 +46,18 @@ public class AccountController {
     private RoleRepository roleRepository;
     @Autowired
     private PatientService patientService;
+    @Autowired
+    private SimpMessagingTemplate messagingTemplate; // Để gửi message qua WebSocket
 
     @GetMapping("/find")
     public ResponseEntity<Boolean> findByEmail(@RequestParam String email) {
         boolean exists = accountService.getAccountExists(email); // ✅ Lấy kết quả thực tế
         return ResponseEntity.ok(exists);
     }
+
+
+//    @MessageMapping("/user.addUser")
+//    @SendTo("/user/topic")
     @PostMapping("/register")
     public APIResponse<Account> createAccount2(@ModelAttribute AccountDTO accountDTO,
                                               @RequestParam List<String> role,
@@ -91,6 +100,10 @@ public class AccountController {
             // Lưu account
             APIResponse<Account> apiResponse = new APIResponse<>();
             Account account1 = accountService.createAccount(account);
+
+            // Gửi thông báo WebSocket
+            messagingTemplate.convertAndSend("/user/public", account1);
+
             apiResponse.setResult(account1);
             apiResponse.setMessage("Account created successfully!");
             if (role.contains("PATIENTS")) {
@@ -148,6 +161,10 @@ public class AccountController {
             // Lưu account
             APIResponse<Account> apiResponse = new APIResponse<>();
             Account account1 = accountService.createAccount(account);
+
+            // Gửi thông báo WebSocket
+            messagingTemplate.convertAndSend("/user/public", account1);
+
             apiResponse.setResult(account1);
             apiResponse.setMessage("Account created successfully!");
             if (role.contains("PATIENTS")) {
