@@ -62,6 +62,7 @@ public class SecurityConfig {
             "api/bhyt/check",
             "/api/cvimage/**",
             "/api/rates",
+            "/api/patientsprofile",
 
     };
     private  final String[] PUBLIC_ENPOINT_UPDATE={
