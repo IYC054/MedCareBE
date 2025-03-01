@@ -74,6 +74,11 @@ public class AppointmentController {
             notificationService.sendNotification(userToken, "Đặt lịch thành công",
                     "Bạn đã đặt lịch khám thường vào " + worktime.getWorkDate());
         }
+        String doctortoken = accountService.getDoctorTokenByEmail(appointmentrequest.getDoctorEmail());
+        if (doctortoken != null) {
+            notificationService.sendNotification(doctortoken, "Thông báo",
+                    "Bạn có 1 cuộc hẹn vào " + worktime.getWorkDate());
+        }
 
         return ResponseEntity.status(201).body(createdAppointment);
     }

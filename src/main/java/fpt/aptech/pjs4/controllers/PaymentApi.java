@@ -49,9 +49,12 @@ public class PaymentApi {
     private PaymentService paymentService;
     @PostMapping("/momo")
     public ResponseEntity<?> payWithMomo(@RequestBody PaymentRequest paymentRequest) {
-        String accessKey = "LAUsmdNYCswc4xt3";
-        String secretKey = "v4mYTJVM8M7pSUemgFTTqon3PopWekkD";
-        String partnerCode = "MOMOEXFT20240911";
+//        String accessKey = "LAUsmdNYCswc4xt3";
+//        String secretKey = "v4mYTJVM8M7pSUemgFTTqon3PopWekkD";
+//        String partnerCode = "MOMOEXFT20240911";
+        String accessKey = "mukihs6i0gwJ7hsq";
+        String secretKey = "yKncdYiiEfUPOUjLLe339ePqrYbHV4Kf";
+        String partnerCode = "MOMOELHN20241211";
         String orderInfo = paymentRequest.getOrderInfo();
         String redirectUrl = "http://localhost:5173/payment-success?doctor="+paymentRequest.getDoctorId() + "&work="+ paymentRequest.getWorkId() +"&specialty="+ paymentRequest.getSpecialtyId() +"&profile=" +paymentRequest.getProfileId();
         String ipnUrl = "http://localhost:5173/payment-success?doctor="+paymentRequest.getDoctorId() + "&work="+ paymentRequest.getWorkId() +"&specialty="+ paymentRequest.getSpecialtyId() +"&profile=" +paymentRequest.getProfileId();
@@ -134,9 +137,9 @@ public class PaymentApi {
             @RequestParam BigDecimal amount,
             @RequestParam String orderInfo) {
 
-        String accessKey = "LAUsmdNYCswc4xt3";
-        String secretKey = "v4mYTJVM8M7pSUemgFTTqon3PopWekkD";
-        String partnerCode = "MOMOEXFT20240911";
+        String accessKey = "mukihs6i0gwJ7hsq";
+        String secretKey = "yKncdYiiEfUPOUjLLe339ePqrYbHV4Kf";
+        String partnerCode = "MOMOELHN20241211";
         String redirectUrl = "medcaremobile://payment-success";
         String ipnUrl = "medcaremobile://payment-success";
         String requestType = "captureWallet";

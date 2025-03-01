@@ -13,5 +13,7 @@ public class AppointmentDTO {
     private Integer worktimeId;
     private Integer patientProfileId;
     private String firestoreUserId;
+    private String doctorEmail;
+
     // Getters and setters
 }

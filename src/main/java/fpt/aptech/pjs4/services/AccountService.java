@@ -15,6 +15,7 @@ import java.util.Map;
 
 public interface AccountService {
     String getUserToken(String userId);
+    String getDoctorTokenByEmail(String doctorEmail);
     Account createAccount(Account account);
 
     //    protected static final String SIGNER_KEY = "jxNGPYNsP81q9q4AnUtVIkA6oKsjP8657q4PfkXz2e+tfqofPtrJTLW9dtgOJrUc";
