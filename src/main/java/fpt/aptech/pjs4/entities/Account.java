@@ -1,6 +1,7 @@
 package fpt.aptech.pjs4.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import fpt.aptech.pjs4.enums.Status;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -8,7 +9,6 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
 
 @Entity
@@ -54,7 +54,14 @@ public class Account {
     @Column(name = "last_feedback_time", nullable = true)
     private LocalDateTime lastFeedbackTime;
 
+    @Column(name = "status")
+    private Status status;
+
     @JsonIgnore
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Feedback> feedbacks;
+
+    public Account(Integer senderId) {
+        this.id = senderId;
+    }
 }

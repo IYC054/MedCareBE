@@ -5,6 +5,7 @@ import fpt.aptech.pjs4.entities.PatientFile;
 import fpt.aptech.pjs4.repositories.PatientFileRepository;
 import fpt.aptech.pjs4.services.PatientFileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
