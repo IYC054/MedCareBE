@@ -44,9 +44,11 @@ public class AccountServiceImpl implements AccountService {
     protected static final String SIGNER_KEY = "5e3b6f9e67e9f1e3b6ad775d9a1c9078c9078b72ad34d3e4e745fb6b64367861";
 
     private final FirebaseConfig firebaseConfig;
+
     public AccountServiceImpl(FirebaseConfig firebaseConfig) {
         this.firebaseConfig = firebaseConfig;
     }
+
     public String getUserToken(String userId) {
         Firestore db = firebaseConfig.getFirestore();
         DocumentReference docRef = db.collection("user_data").document(userId);
@@ -61,6 +63,7 @@ public class AccountServiceImpl implements AccountService {
         }
         return null;
     }
+
     @Override
     public String checkEmailExists(String email) {
         Firestore db = firebaseConfig.getFirestore();
@@ -170,14 +173,14 @@ public class AccountServiceImpl implements AccountService {
         // một tập hợp hoặc danh sách mà không cần phải lo lắng về dấu phân
         // cách hay việc xử lý dấu phẩy ở cuối chuỗi
         StringJoiner stringJoiner = new StringJoiner(" ");
-       if (!CollectionUtils.isEmpty(account.getRole())) {
-            account.getRole().forEach(role->{
+        if (!CollectionUtils.isEmpty(account.getRole())) {
+            account.getRole().forEach(role -> {
                 stringJoiner.add(role.getName());
-                if(!CollectionUtils.isEmpty(role.getPermissions())) {
+                if (!CollectionUtils.isEmpty(role.getPermissions())) {
                     role.getPermissions().forEach(permission -> stringJoiner.add(permission.getName()));
                 }
             });
-       }
+        }
         return stringJoiner.toString();
     }
 
@@ -231,7 +234,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     // chỉ User Id nào mới truy cập id đó được thôi và Role Admin
     // email trong entity so sanh voi email trong token
-    @PostAuthorize("returnObject.email == authentication.name or hasRole('ADMIN')")
+    @PostAuthorize("returnObject.email == authentication.name or hasRole('ADMIN') or hasRole('DOCTOR') or hasRole('PATIENTS')")
     public Account getAccountById(int id) {
         Account account = accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Ko tìm thấy user"));
         return account;
@@ -239,7 +242,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     // chỉ có Role Admin mới truy cập đc vào method này
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('DOCTOR') or hasRole('PATIENTS')")
     public List<Account> getAllAccounts() {
         return accountRepository.findAll();
     }
@@ -254,7 +257,7 @@ public class AccountServiceImpl implements AccountService {
 //        if (accountRepository.existsById(id)) {
 //            account.setId(id);
 
-//    @Override
+    //    @Override
 //    @PostAuthorize("returnObject.email == authentication.name")
 //    public Account updateAccount(int id, Account account) {
 //        Account account1 = getAccountById(id);
@@ -269,45 +272,45 @@ public class AccountServiceImpl implements AccountService {
 //        }
 //        return null;
 //    }
-@Override
+    @Override
 //@PostAuthorize("returnObject.email == authentication.name")
-@PostAuthorize("returnObject.email == authentication.name or hasRole('ADMIN')")
-public Account updateAccount(int id, Account account) {
-    Account existingAccount = getAccountById(id);
+    @PostAuthorize("returnObject.email == authentication.name or hasRole('ADMIN')")
+    public Account updateAccount(int id, Account account) {
+        Account existingAccount = getAccountById(id);
 
 
-    if (existingAccount == null) {
-        throw new AppException(ErrorCode.USER_EXITED);
-    }
-
-    // Giữ nguyên ID của tài khoản
-    account.setId(id);
-
-    // Kiểm tra nếu mật khẩu mới được cung cấp, mã hóa trước khi lưu
-    if (account.getPassword() != null && !account.getPassword().isEmpty()) {
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-        // Nếu mật khẩu mới khác với mật khẩu cũ thì mới cập nhật
-        if (!passwordEncoder.matches(account.getPassword(), existingAccount.getPassword())) {
-            account.setPassword(passwordEncoder.encode(account.getPassword()));
-        } else {
-            throw new AppException(ErrorCode.CHECK_UPDATEPASS);
+        if (existingAccount == null) {
+            throw new AppException(ErrorCode.USER_EXITED);
         }
-    } else {
-        // Nếu không nhập mật khẩu mới, giữ nguyên mật khẩu cũ
-        account.setPassword(existingAccount.getPassword());
+
+        // Giữ nguyên ID của tài khoản
+        account.setId(id);
+
+        // Kiểm tra nếu mật khẩu mới được cung cấp, mã hóa trước khi lưu
+        if (account.getPassword() != null && !account.getPassword().isEmpty()) {
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+            // Nếu mật khẩu mới khác với mật khẩu cũ thì mới cập nhật
+            if (!passwordEncoder.matches(account.getPassword(), existingAccount.getPassword())) {
+                account.setPassword(passwordEncoder.encode(account.getPassword()));
+            } else {
+                throw new AppException(ErrorCode.CHECK_UPDATEPASS);
+            }
+        } else {
+            // Nếu không nhập mật khẩu mới, giữ nguyên mật khẩu cũ
+            account.setPassword(existingAccount.getPassword());
+        }
+
+        // Giữ nguyên avatar nếu không cập nhật mới
+        if (account.getAvatar() == null || account.getAvatar().isEmpty()) {
+            account.setAvatar(existingAccount.getAvatar());
+        }
+
+        // Giữ nguyên các thông tin không thay đổi
+        account.setRole(existingAccount.getRole());
+
+        return accountRepository.save(account);
     }
-
-    // Giữ nguyên avatar nếu không cập nhật mới
-    if (account.getAvatar() == null || account.getAvatar().isEmpty()) {
-        account.setAvatar(existingAccount.getAvatar());
-    }
-
-    // Giữ nguyên các thông tin không thay đổi
-    account.setRole(existingAccount.getRole());
-
-    return accountRepository.save(account);
-}
 
 
     @Override
@@ -318,10 +321,10 @@ public Account updateAccount(int id, Account account) {
 
     @Override
     // lấy thông tin infor của chủ token
-    public Account getMyInfor(){
+    public Account getMyInfor() {
         var context = SecurityContextHolder.getContext(); // thong tin infor cua token
         String email = context.getAuthentication().getName();
-        Account byUserEmail= accountRepository.findAccountByEmail(email).orElseThrow(()->new AppException(ErrorCode.USER_EXITED));
+        Account byUserEmail = accountRepository.findAccountByEmail(email).orElseThrow(() -> new AppException(ErrorCode.USER_EXITED));
         Account userResponse = new Account();
         userResponse.setEmail(byUserEmail.getEmail());
         userResponse.setName(byUserEmail.getName());
@@ -396,6 +399,7 @@ public Account updateAccount(int id, Account account) {
             accountRepository.save(storedAccount);
         }
     }
+
     @Override
     public void disconnect(Account account) {
         var storedAccount = accountRepository.findAccountByEmail(account.getEmail()).orElse(null);
