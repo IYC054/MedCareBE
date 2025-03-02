@@ -42,6 +42,7 @@ public class SecurityConfig {
             "/api/vip-appointments/**",
             "/api/account/find",
             "/api/rates/**",
+            "/api/account/check-email",
             "/api/messages/**",
             "api/chat/**"
     };

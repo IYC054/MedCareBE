@@ -3,6 +3,9 @@ package fpt.aptech.pjs4.services.impl;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.UserRecord;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -52,6 +55,21 @@ public class AccountServiceImpl implements AccountService {
             DocumentSnapshot document = docRef.get().get();
             if (document.exists() && document.contains("token")) {
                 return document.getString("token");
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    @Override
+    public String checkEmailExists(String email) {
+        Firestore db = firebaseConfig.getFirestore();
+        DocumentReference docRef = db.collection("user_data").document(email);
+
+        try {
+            DocumentSnapshot document = docRef.get().get();
+            if (document.exists() && document.contains("email")) {
+                return document.getString("email");
             }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();

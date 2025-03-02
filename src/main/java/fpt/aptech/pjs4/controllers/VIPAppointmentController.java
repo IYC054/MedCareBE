@@ -55,8 +55,14 @@ public class VIPAppointmentController {
         return ResponseEntity.ok(doctors);
     }
     @PutMapping("/status/{id}")
-    public ResponseEntity<VipAppointment> updateAppointmentStatus(@PathVariable int id, @RequestBody Appointment appointment) {
+    public ResponseEntity<VipAppointment> updateAppointmentStatus(@PathVariable int id, @RequestBody Appointment appointment, @RequestParam String doctorEmail) {
         String status = appointment.getStatus();
+        String doctortoken = accountService.getDoctorTokenByEmail(doctorEmail);
+
+        if (doctortoken != null) {
+            notificationService.sendNotification(doctortoken, "Thông báo",
+                    "Đã có cuộc hẹn bị huỷ");
+        }
         VipAppointment updatedAppointment = vipAppointmentService.updateVipAppointmentStatusOnly(id, status);
         return ResponseEntity.ok(updatedAppointment);
     }

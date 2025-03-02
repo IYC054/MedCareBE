@@ -1,5 +1,8 @@
 package fpt.aptech.pjs4.controllers;
 
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.*;
+import com.google.firebase.cloud.FirestoreClient;
 import com.nimbusds.jose.JOSEException;
 import fpt.aptech.pjs4.DTOs.APIResponse;
 import fpt.aptech.pjs4.DTOs.AccountDTO;
@@ -33,6 +36,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 
 @CrossOrigin(origins = "http://localhost:5173")
 @RestController
@@ -180,6 +184,25 @@ public class AccountController {
         }
     }
 
+    @GetMapping("/check-email")
+    public ResponseEntity<Boolean> checkEmailExists(@RequestParam String email) {
+        Firestore db = FirestoreClient.getFirestore();
+        CollectionReference users = db.collection("user_data");
+
+        // 🔍 Tìm kiếm email trong Firestore
+        Query query = users.whereEqualTo("email", email);
+        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+
+        try {
+            List<QueryDocumentSnapshot> documents = querySnapshot.get().getDocuments();
+            boolean exists = !documents.isEmpty(); // Nếu có document => email tồn tại
+            System.out.println("📌 Kiểm tra email: " + email + " - Tồn tại: " + exists);
+            return ResponseEntity.ok(exists);
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(false); // Lỗi server
+        }
+    }
 
 
     @GetMapping("/{id}")

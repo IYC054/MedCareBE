@@ -118,8 +118,13 @@ public class AppointmentController {
         return ResponseEntity.ok(updatedAppointment);
     }
     @PutMapping("/status/{id}")
-    public ResponseEntity<Appointment> updateAppointmentStatus(@PathVariable int id, @RequestBody Appointment appointment) {
+    public ResponseEntity<Appointment> updateAppointmentStatus(@PathVariable int id, @RequestBody Appointment appointment, @RequestParam String doctorEmail) {
         String status = appointment.getStatus();
+        String doctortoken = accountService.getDoctorTokenByEmail(doctorEmail);
+        if (doctortoken != null) {
+            notificationService.sendNotification(doctortoken, "Thông báo",
+                    "Đã có cuộc hẹn bị huỷ");
+        }
         Appointment updatedAppointment = appointmentService.updateAppointmentStatusOnly(id, status);
         return ResponseEntity.ok(updatedAppointment);
     }
