@@ -18,5 +18,4 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     @Query("SELECT a FROM Account a WHERE a.email = :email")
     Account findByEmail(@Param("email") String email);
 
-    List<Account> findAllByStatus(Status status);
 }

@@ -15,7 +15,6 @@ import java.util.Map;
 
 public interface AccountService {
     void addConnectedAccount(Account account);
-    List<Account> findConnectedAccount();
     void disconnect(Account account);
     String getUserToken(String userId);
     String getDoctorTokenByEmail(String doctorEmail);
