@@ -35,8 +35,5 @@ public class AccountWebSocketController {
         return account; // Trả về thông tin tài khoản mới để gửi qua WebSocket
     }
 
-    @GetMapping("/users")
-    public ResponseEntity<List<Account>> findConnectedAccounts() {
-        return ResponseEntity.ok(accountService.findConnectedAccount());
-    }
+
 }

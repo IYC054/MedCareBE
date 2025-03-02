@@ -200,7 +200,7 @@ public class AccountServiceImpl implements AccountService {
         account.setPassword(passwordEncoder.encode(account.getPassword()));
         HashSet<String> roles = new HashSet<>();
         roles.add(Role.PATIENTS.name());
-        account.setStatus(Status.ONLINE);
+
         //account.setRole(roles);
         return accountRepository.save(account);
     }
@@ -375,7 +375,6 @@ public Account updateAccount(int id, Account account) {
     public void addConnectedAccount(Account account) {
         var storedAccount = accountRepository.findAccountByEmail(account.getEmail()).orElse(null);
         if (storedAccount != null) {
-            storedAccount.setStatus(Status.ONLINE);
             accountRepository.save(storedAccount);
         }
     }
@@ -383,13 +382,9 @@ public Account updateAccount(int id, Account account) {
     public void disconnect(Account account) {
         var storedAccount = accountRepository.findAccountByEmail(account.getEmail()).orElse(null);
         if (storedAccount != null) {
-            storedAccount.setStatus(Status.OFFLINE);
             accountRepository.save(storedAccount);
         }
     }
 
-    @Override
-    public List<Account> findConnectedAccount() {
-        return accountRepository.findAllByStatus(Status.ONLINE);
-    }
+
 }
