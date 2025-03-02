@@ -86,7 +86,11 @@ public class VIPAppointmentController {
                     "Bạn đã đặt lịch khám VIP vào " + vipAppointmentDTO.getWorkDate() + " lúc "
                             + vipAppointmentDTO.getStartTime() + ". Vui lòng đến đúng giờ để được hỗ trợ tốt nhất!");
         }
-
+        String doctortoken = accountService.getDoctorTokenByEmail(vipAppointmentDTO.getDoctorEmail());
+        if (doctortoken != null) {
+            notificationService.sendNotification(doctortoken, "Thông báo",
+                    "Bạn có 1 cuộc hẹn vào " + vipAppointmentDTO.getStartTime() + "-" + vipAppointmentDTO.getEndTime());
+        }
 //        return ResponseEntity.status(201).body(createdAppointment);
         return ResponseEntity.ok(createdAppointment);
     }

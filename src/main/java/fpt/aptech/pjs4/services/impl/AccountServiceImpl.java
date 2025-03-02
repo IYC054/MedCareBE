@@ -1,9 +1,8 @@
 package fpt.aptech.pjs4.services.impl;
 
 
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.DocumentSnapshot;
-import com.google.cloud.firestore.Firestore;
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.*;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -53,6 +52,27 @@ public class AccountServiceImpl implements AccountService {
             DocumentSnapshot document = docRef.get().get();
             if (document.exists() && document.contains("token")) {
                 return document.getString("token");
+            }
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    @Override
+    public String getDoctorTokenByEmail(String doctorEmail) {
+        Firestore db = firebaseConfig.getFirestore();
+        CollectionReference usersRef = db.collection("user_data");
+
+        try {
+            Query query = usersRef.whereEqualTo("email", doctorEmail);
+            ApiFuture<QuerySnapshot> querySnapshot = query.get();
+            List<QueryDocumentSnapshot> documents = querySnapshot.get().getDocuments();
+
+            if (!documents.isEmpty()) {
+                DocumentSnapshot doctorDoc = documents.get(0); // Lấy bác sĩ đầu tiên tìm thấy
+                if (doctorDoc.contains("token")) {
+                    return doctorDoc.getString("token");
+                }
             }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
