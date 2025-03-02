@@ -1,10 +1,13 @@
 package fpt.aptech.pjs4.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Entity
 @Table(name = "messages")
@@ -21,23 +24,22 @@ public class Message {
 
     @ManyToOne
     @JoinColumn(name = "sender_id")
+    @JsonIgnoreProperties({"messagesSent", "messagesReceived"})
     private Account sender;  // Người gửi tin nhắn
 
     @ManyToOne
     @JoinColumn(name = "receiver_id")
+    @JsonIgnoreProperties({"messagesSent", "messagesReceived"})
     private Account receiver;  // Người nhận tin nhắn
 
-//    @Column(name = "message_text", nullable = false)
-//    private String message;  // Nội dung tin nhắn
-
-
-//    @Size(max = 100)
-//    @Column(name = "image_url", length = 100)
-//    private String image;  // URL của hình ảnh (nếu có)
 
     @Column(name = "content")
     private String content;
 
     @Column(name = "sent_at")
-    private LocalDateTime sentAt = LocalDateTime.now();  // Thời gian gửi tin nhắn
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime sentAt = LocalDateTime.now();
+    public String getSentAtFormatted() {
+        return sentAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
 }

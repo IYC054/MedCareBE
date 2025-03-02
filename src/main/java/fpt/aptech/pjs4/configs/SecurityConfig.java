@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+
 import javax.crypto.spec.SecretKeySpec;
 import java.util.List;
 
@@ -20,9 +21,9 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    protected static  final String SIGNER_KEY="5e3b6f9e67e9f1e3b6ad775d9a1c9078c9078b72ad34d3e4e745fb6b64367861";
+    protected static final String SIGNER_KEY = "5e3b6f9e67e9f1e3b6ad775d9a1c9078c9078b72ad34d3e4e745fb6b64367861";
 
-    private  final String[] PUBLIC_ENPOINT_GET={
+    private final String[] PUBLIC_ENPOINT_GET = {
             "/api/image/**",
             "/api/news/**",
             "/api/doctors/**",
@@ -45,7 +46,7 @@ public class SecurityConfig {
             "api/chat/**"
     };
 
-    private  final String[] PUBLIC_ENPOINT_POST={
+    private final String[] PUBLIC_ENPOINT_POST = {
             "/api/account/token",
             "/api/account/register",
             "/api/account",
@@ -72,18 +73,19 @@ public class SecurityConfig {
             "api/chat/**"
 
     };
-    private  final String[] PUBLIC_ENPOINT_UPDATE={
+    private final String[] PUBLIC_ENPOINT_UPDATE = {
             "/api/appointment/**",
             "/api/vip-appointments/**",
             "/api/payments/**",
             "/api/account/**",
 
     };
-    private  final String[] PUBLIC_ENPOINT_DELETE={
+    private final String[] PUBLIC_ENPOINT_DELETE = {
             "/api/vip-appointments/**",
             "/api/payments/**",
 
     };
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
@@ -108,8 +110,8 @@ public class SecurityConfig {
                                 .anyRequest().authenticated())
                 .oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(
-                                jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
-                                        .jwtAuthenticationConverter(jwtAuthenticationConverter()))
+                                        jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())
+                                                .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                 )
                 .csrf(csrfConfigurer -> csrfConfigurer.disable());
@@ -117,17 +119,18 @@ public class SecurityConfig {
     }
 
     @Bean
-    JwtAuthenticationConverter jwtAuthenticationConverter(){
+    JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
         jwtGrantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
         converter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
         return converter;
     }
+
     @Bean
-    JwtDecoder jwtDecoder(){
+    JwtDecoder jwtDecoder() {
         SecretKeySpec secretKeySpec = new SecretKeySpec(SIGNER_KEY.getBytes(), "HS512");
-        return  NimbusJwtDecoder
+        return NimbusJwtDecoder
                 .withSecretKey(secretKeySpec)
                 .macAlgorithm(MacAlgorithm.HS512)
                 .build();

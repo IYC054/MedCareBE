@@ -17,25 +17,20 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON;
 @EnableWebSocketMessageBroker
 @EnableWebSocket
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/user"); // Định tuyến tin nhắn đến client
-        registry.setApplicationDestinationPrefixes("/app"); // Nhận request từ client
-        registry.setUserDestinationPrefix(("/user"));
+        registry.enableSimpleBroker("/queue", "/topic");
+        registry.setApplicationDestinationPrefixes("/app");
+        registry.setUserDestinationPrefix("/user"); // 🔥 Bắt buộc phải có
     }
-
-//    @Override
-//    public void registerStompEndpoints(StompEndpointRegistry registry) {
-////        registry.addEndpoint("/ws").setAllowedOrigins("*").withSockJS();
-//        registry.addEndpoint("/ws")
-//                .setAllowedOriginPatterns("*") // Dùng setAllowedOriginPatterns thay vì setAllowedOrigins
-//                .withSockJS();
-//    }
-@Override
-public void registerStompEndpoints(StompEndpointRegistry registry) {
-    registry.addEndpoint("/ws")
-            .setAllowedOriginPatterns("*");
-}
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/ws")
+                .addInterceptors(new WebSocketInterceptor())
+                .setAllowedOriginPatterns("*");
+    }
 
     @Override
     public boolean configureMessageConverters(List<MessageConverter> messageConverters) {

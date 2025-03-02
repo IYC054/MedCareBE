@@ -1,4 +1,5 @@
 package fpt.aptech.pjs4.configs;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
@@ -14,8 +15,16 @@ public class WebSocketEventListener {
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        logger.info("🔗 WebSocket Connected: " + headerAccessor.getSessionId());
+        String userId = headerAccessor.getFirstNativeHeader("userId"); // Lấy từ header của WebSocket
+
+        if (userId != null) {
+            headerAccessor.getSessionAttributes().put("userId", userId); // Lưu vào session
+            System.out.println("✅ WebSocket Connected: userId = " + userId);
+        } else {
+            System.out.println("⚠️ Không tìm thấy userId trong header!");
+        }
     }
+
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
