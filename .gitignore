@@ -35,3 +35,4 @@ out/
 
 ### VS Code ###
 .vscode/
+/src/main/resources/notidemo-47adf-firebase-adminsdk-fbsvc-50a3eccb8f.json

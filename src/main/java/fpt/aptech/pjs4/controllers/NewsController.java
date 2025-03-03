@@ -1,5 +1,9 @@
 package fpt.aptech.pjs4.controllers;
 
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.*;
+import com.google.firebase.cloud.FirestoreClient;
+import fpt.aptech.pjs4.DTOs.Notification;
 import fpt.aptech.pjs4.entities.News;
 import fpt.aptech.pjs4.services.NewsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +17,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 @RequestMapping("api/news")
@@ -129,5 +135,22 @@ public class NewsController {
     public ResponseEntity<Void> deleteNews(@PathVariable int id) {
         newsService.deleteNews(id);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/noti/{userId}")
+    public List<Notification> getNotifications(@PathVariable String userId) throws ExecutionException, InterruptedException {
+        Firestore db = FirestoreClient.getFirestore();
+        CollectionReference notificationsRef = db.collection("notifications");
+
+        // Lọc theo userId
+        Query query = notificationsRef.whereEqualTo("userId", userId).orderBy("timestamp", Query.Direction.DESCENDING);
+        ApiFuture<QuerySnapshot> querySnapshot = query.get();
+
+        List<Notification> notifications = new ArrayList<>();
+        for (DocumentSnapshot doc : querySnapshot.get().getDocuments()) {
+            Notification notification = doc.toObject(Notification.class);
+            notifications.add(notification);
+        }
+
+        return notifications;
     }
 }
