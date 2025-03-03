@@ -1,6 +1,5 @@
 package fpt.aptech.pjs4.services.impl;
 
-import fpt.aptech.pjs4.DTOs.PatientDTO;
 import fpt.aptech.pjs4.entities.Account;
 import fpt.aptech.pjs4.entities.Patient;
 import fpt.aptech.pjs4.repositories.AccountRepository;

@@ -3,9 +3,6 @@ package fpt.aptech.pjs4.services.impl;
 
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.UserRecord;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -14,7 +11,6 @@ import fpt.aptech.pjs4.DTOs.request.AuthencicationRequest;
 import fpt.aptech.pjs4.DTOs.response.AuthencicationResponse;
 import fpt.aptech.pjs4.configs.FirebaseConfig;
 import fpt.aptech.pjs4.entities.Account;
-import fpt.aptech.pjs4.enums.Status;
 import fpt.aptech.pjs4.enums.Role;
 import fpt.aptech.pjs4.exceptions.AppException;
 import fpt.aptech.pjs4.exceptions.ErrorCode;

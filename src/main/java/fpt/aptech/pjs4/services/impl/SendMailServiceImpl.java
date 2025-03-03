@@ -1,8 +1,6 @@
 package fpt.aptech.pjs4.services.impl;
 
 
-import fpt.aptech.pjs4.entities.Account;
-import fpt.aptech.pjs4.entities.Feedback;
 import fpt.aptech.pjs4.entities.SendMail;
 import fpt.aptech.pjs4.repositories.SendMailReponsitory;
 import fpt.aptech.pjs4.services.SendMailService;
@@ -11,7 +9,6 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service

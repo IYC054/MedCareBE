@@ -1,7 +1,5 @@
 package fpt.aptech.pjs4.DTOs.request;
 
-import fpt.aptech.pjs4.entities.Account;
-
 public class AuthencicationRequest {
     private String email;
     private String password;

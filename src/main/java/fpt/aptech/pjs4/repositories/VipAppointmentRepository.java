@@ -1,8 +1,6 @@
 package fpt.aptech.pjs4.repositories;
 
 import fpt.aptech.pjs4.DTOs.AppointmentDetailDTO;
-import fpt.aptech.pjs4.entities.Account;
-import fpt.aptech.pjs4.entities.Appointment;
 import fpt.aptech.pjs4.entities.VipAppointment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

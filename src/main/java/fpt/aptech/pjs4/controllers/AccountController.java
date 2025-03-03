@@ -3,15 +3,11 @@ package fpt.aptech.pjs4.controllers;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
-import com.nimbusds.jose.JOSEException;
 import fpt.aptech.pjs4.DTOs.APIResponse;
 import fpt.aptech.pjs4.DTOs.AccountDTO;
-import fpt.aptech.pjs4.DTOs.AuthLoginToken;
 import fpt.aptech.pjs4.DTOs.Introspect;
 import fpt.aptech.pjs4.DTOs.request.AuthencicationRequest;
-import fpt.aptech.pjs4.DTOs.request.IntrospecRequest;
 import fpt.aptech.pjs4.DTOs.response.AuthencicationResponse;
-import fpt.aptech.pjs4.DTOs.response.IntrospecResponse;
 import fpt.aptech.pjs4.entities.Account;
 import fpt.aptech.pjs4.entities.Role;
 import fpt.aptech.pjs4.repositories.RoleRepository;
@@ -22,19 +18,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import java.io.File;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
@@ -64,8 +57,8 @@ public class AccountController {
 //    @SendTo("/user/topic")
     @PostMapping("/register")
     public APIResponse<Account> createAccount2(@ModelAttribute AccountDTO accountDTO,
-                                              @RequestParam List<String> role,
-                                              @RequestPart(value = "avatar", required = false) MultipartFile image) { // Chú ý: required = false
+                                               @RequestParam List<String> role,
+                                               @RequestPart(value = "avatar", required = false) MultipartFile image) { // Chú ý: required = false
         try {
             // Lưu hình ảnh
             String imageUrl = null;
@@ -92,7 +85,8 @@ public class AccountController {
             account.setPassword(accountDTO.getPassword());
             account.setPhone(accountDTO.getPhone());
             account.setGender(accountDTO.getGender());
-            account.setBirthdate(accountDTO.getBirthdate());
+            account.setBirthdate(LocalDate.parse(accountDTO.getBirthdate()));
+
 
             // Lấy danh sách vai trò
             List<Role> roles = roleRepository.findAllById(role);
@@ -106,7 +100,7 @@ public class AccountController {
             Account account1 = accountService.createAccount(account);
 
             // Gửi thông báo WebSocket
-            messagingTemplate.convertAndSend("/user/public", account1);
+//            messagingTemplate.convertAndSend("/user/public", account1);
 
             apiResponse.setResult(account1);
             apiResponse.setMessage("Account created successfully!");
@@ -153,7 +147,7 @@ public class AccountController {
             account.setPassword(accountDTO.getPassword());
             account.setPhone(accountDTO.getPhone());
             account.setGender(accountDTO.getGender());
-            account.setBirthdate(accountDTO.getBirthdate());
+            account.setBirthdate(LocalDate.parse(accountDTO.getBirthdate()));
 
             // Lấy danh sách vai trò
             List<Role> roles = roleRepository.findAllById(role);
@@ -167,7 +161,7 @@ public class AccountController {
             Account account1 = accountService.createAccount(account);
 
             // Gửi thông báo WebSocket
-            messagingTemplate.convertAndSend("/user/public", account1);
+//            messagingTemplate.convertAndSend("/user/public", account1);
 
             apiResponse.setResult(account1);
             apiResponse.setMessage("Account created successfully!");
@@ -272,7 +266,8 @@ public class AccountController {
             existingAccount.setGender(accountDTO.getGender());
         }
         if (accountDTO.getBirthdate() != null) {
-            existingAccount.setBirthdate(accountDTO.getBirthdate());
+            existingAccount.setBirthdate(LocalDate.parse(accountDTO.getBirthdate()));
+
         }
 
         // Cập nhật vai trò nếu có thay đổi
