@@ -134,7 +134,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void resetPassword(String email, String newPassword) {
         // Tìm người dùng và cập nhật mật khẩu
-        Account account = accountRepository.findByEmail(email);
+        Account account = accountRepository.findByEmailreset(email);
 
         // Hash mật khẩu trước khi lưu
         String encodedPassword = new BCryptPasswordEncoder().encode(newPassword);

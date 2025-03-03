@@ -51,36 +51,40 @@ public class AppointmentController {
 
     @PostMapping
     public ResponseEntity<Appointment> createAppointment(@RequestBody AppointmentDTO appointmentrequest) {
-        Patient patient = patientService.getPatientById(appointmentrequest.getPatientId());
-        Doctor doctor = doctorService.getDoctorById(appointmentrequest.getDoctorId());
-        Doctorworking worktime = doctorWorkingHourService.getWorkingHour(appointmentrequest.getWorktimeId());
-        PatientsInformation patientsInformation = patientInformationService.getPatientsInformationById(appointmentrequest.getPatientProfileId());
-        Appointment appointment = new Appointment();
-        appointment.setPatient(patient);
-        appointment.setDoctor(doctor);
-        appointment.setType(appointmentrequest.getType());
-        appointment.setStatus(appointmentrequest.getStatus());
-        appointment.setAmount(appointmentrequest.getAmount());
-        appointment.setWorktime(worktime);
-        appointment.setPatientprofile(patientsInformation);
-        Appointment createdAppointment = appointmentService.createAppointment(appointment);
+        try {
+            Patient patient = patientService.getPatientById(appointmentrequest.getPatientId());
+            Doctor doctor = doctorService.getDoctorById(appointmentrequest.getDoctorId());
+            Doctorworking worktime = doctorWorkingHourService.getWorkingHour(appointmentrequest.getWorktimeId());
+            PatientsInformation patientsInformation = patientInformationService.getPatientsInformationById(appointmentrequest.getPatientProfileId());
+            Appointment appointment = new Appointment();
+            appointment.setPatient(patient);
+            appointment.setDoctor(doctor);
+            appointment.setType(appointmentrequest.getType());
+            appointment.setStatus(appointmentrequest.getStatus());
+            appointment.setAmount(appointmentrequest.getAmount());
+            appointment.setWorktime(worktime);
+            appointment.setPatientprofile(patientsInformation);
+            Appointment createdAppointment = appointmentService.createAppointment(appointment);
 
 
-        // Lấy token từ Firestore
-        String userToken = accountService.getUserToken(appointmentrequest.getFirestoreUserId());
+            // Lấy token từ Firestore
+            String userToken = accountService.getUserToken(appointmentrequest.getFirestoreUserId());
 
-        // Nếu có token, gửi thông báo
-        if (userToken != null) {
-            notificationService.sendNotification(userToken, "Đặt lịch thành công",
-                    "Bạn đã đặt lịch khám thường vào " + worktime.getWorkDate());
+            // Nếu có token, gửi thông báo
+            if (userToken != null) {
+                notificationService.sendNotification(userToken, "Đặt lịch thành công",
+                        "Bạn đã đặt lịch khám thường vào " + worktime.getWorkDate());
+            }
+            String doctortoken = accountService.getDoctorTokenByEmail(appointmentrequest.getDoctorEmail());
+            if (doctortoken != null) {
+                notificationService.sendNotification(doctortoken, "Thông báo",
+                        "Bạn có 1 cuộc hẹn vào " + worktime.getWorkDate());
+            }
+
+            return ResponseEntity.status(201).body(createdAppointment);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
-        String doctortoken = accountService.getDoctorTokenByEmail(appointmentrequest.getDoctorEmail());
-        if (doctortoken != null) {
-            notificationService.sendNotification(doctortoken, "Thông báo",
-                    "Bạn có 1 cuộc hẹn vào " + worktime.getWorkDate());
-        }
-
-        return ResponseEntity.status(201).body(createdAppointment);
     }
 
     @GetMapping("/{id}")
