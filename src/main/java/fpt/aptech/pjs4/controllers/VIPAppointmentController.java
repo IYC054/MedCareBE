@@ -133,4 +133,10 @@ public class VIPAppointmentController {
 
         return ResponseEntity.ok(message);
     }
+
+    @GetMapping("/check")
+    public ResponseEntity<Boolean> checkWorkDate(@RequestParam LocalDate workDate,@RequestParam int doctorId) {
+        boolean exists = vipAppointmentService.isWorkDateBooked(workDate , doctorId);
+        return ResponseEntity.ok(exists);
+    }
 }

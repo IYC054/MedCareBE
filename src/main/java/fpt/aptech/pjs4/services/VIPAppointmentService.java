@@ -19,4 +19,5 @@ public interface VIPAppointmentService {
     void deleteAppointment(int id);
     VipAppointment updateDoctor(Integer appointmentId, Integer doctorId) ;
     String updateVipAppointment(Integer id, LocalDate workDate, LocalTime startTime, LocalTime endTime);
+    boolean isWorkDateBooked(LocalDate workDate , int doctorId);
 }
