@@ -137,9 +137,9 @@ public class PaymentApi {
             @RequestParam BigDecimal amount,
             @RequestParam String orderInfo) {
 
-        String accessKey = "mukihs6i0gwJ7hsq";
-        String secretKey = "yKncdYiiEfUPOUjLLe339ePqrYbHV4Kf";
-        String partnerCode = "MOMOELHN20241211";
+        String accessKey = "LAUsmdNYCswc4xt3";
+        String secretKey = "v4mYTJVM8M7pSUemgFTTqon3PopWekkD";
+        String partnerCode = "MOMOEXFT20240911";
         String redirectUrl = "medcaremobile://payment-success";
         String ipnUrl = "medcaremobile://payment-success";
         String requestType = "captureWallet";
@@ -150,10 +150,6 @@ public class PaymentApi {
         boolean autoCapture = true;
         String lang = "vi";
 
-        Payment paymenttrans = paymentService.getPaymentbyDescription(orderInfo);
-        if (paymenttrans != null) {
-            return ResponseEntity.status(400).body("Payment already exists");
-        }
 
         try {
             // Build rawSignature

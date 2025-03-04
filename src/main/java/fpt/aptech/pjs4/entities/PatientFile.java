@@ -31,12 +31,12 @@ public class PatientFile {
     @JoinColumn(name = "patients_information_id")
     private PatientsInformation patientsInformation;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY,targetEntity = Appointment.class)
     @JsonIgnore
     @JoinColumn(name = "appointment_id")
     private Appointment appointment;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = VipAppointment.class)
     @JsonIgnore
     @JoinColumn(name = "vipappointment_id")
     private VipAppointment vipappointment;

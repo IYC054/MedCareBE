@@ -92,7 +92,7 @@ public class AccountController {
                     account = new Account();
                     account.setEmail(email);
                     account.setName(name);
-                    account.setPassword("123");
+                    account.setPassword("123123");
 
                     Role patientRole = roleRepository.findByName("PATIENTS")
                             .orElseGet(() -> {
