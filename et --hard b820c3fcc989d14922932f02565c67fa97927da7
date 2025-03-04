@@ -1,0 +1,307 @@
+[33mcommit e9669db0d5f306b11d165d322eabcd1fb102bc93[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m)[m
+Author: jortboy2 <vonghung849@gmail.com>
+Date:   Sun Mar 2 20:53:24 2025 +0700
+
+    fix
+
+[33mcommit 5a5146ed44ecaadcecd5c8c6b07f754341bbfc9a[m
+Author: jortboy2 <vonghung849@gmail.com>
+Date:   Sun Mar 2 20:52:05 2025 +0700
+
+    fix
+
+[33mcommit 08f0b68c2e3c3c00648dbfb26c39db22d88c7449[m
+Merge: e29c680 782456b
+Author: tuann300724 <tuann300724@gmail.com>
+Date:   Sun Mar 2 13:50:57 2025 +0700
+
+    tian
+
+[33mcommit e29c68096ed574097df461571727d202667f1955[m
+Author: tuann300724 <tuann300724@gmail.com>
+Date:   Sun Mar 2 13:49:45 2025 +0700
+
+    tian
+
+[33mcommit 782456bbcb105f0ef9d577c29771d2567d6037bc[m
+Author: jortboy2 <vonghung849@gmail.com>
+Date:   Sat Mar 1 22:55:48 2025 +0700
+
+    Remove sensitive file from repository
+
+[33mcommit 7fe3cf82bbdada53af9e160ff4526bdab0b6ddbc[m
+Merge: 38ebd82 4d4d76b
+Author: jortboy2 <vonghung849@gmail.com>
+Date:   Sat Mar 1 22:54:34 2025 +0700
+
+    Merge branch 'main' of https://github.com/IYC054/MedCareBE
+
+[33mcommit 38ebd8217a149d8bf50faf61c3ca365fc484a0b3[m
+Author: jortboy2 <vonghung849@gmail.com>
+Date:   Sat Mar 1 22:54:25 2025 +0700
+
+    fix
+
+[33mcommit 4d4d76bcdcefab7b18e96259ee74105e233267c9[m
+Author: IYC <trieunhananh@gmail.com>
+Date:   Sat Mar 1 16:13:02 2025 +0700
+
+    iyc fix BE Chat
+
+[33mcommit 926b5e374c88c049232e2f2d14dac4b87a4e0209[m
+Merge: c119152 232c4e7
+Author: tuann300724 <tuann300724@gmail.com>
+Date:   Sat Mar 1 15:44:30 2025 +0700
+
+    tuan
+
+[33mcommit c119152c050e7dbdbd57618974907606381b0794[m
+Author: tuann300724 <tuann300724@gmail.com>
+Date:   Sat Mar 1 15:41:03 2025 +0700
+
+    tuan
+
+[33mcommit 232c4e798e3b911f1e0a29a7bb99a32e759fee9c[m
+Author: IYC <trieunhananh@gmail.com>
+Date:   Sat Mar 1 15:32:17 2025 +0700
+
+    iyc
+
+[33mcommit bb58d32899cd0bc601d2b8c6564d418cc51c005c[m
+Author: IYC <trieunhananh@gmail.com>
+Date:   Fri Feb 28 20:20:58 2025 +0700
+
+    iyc
+
+[33mcommit 2146849f178f453df5107fe5ad6abbe4f6fa3862[m
+Author: IYC <trieunhananh@gmail.com>
+Date:   Fri Feb 28 20:17:23 2025 +0700
+
+    iyc fix
+
+[33mcommit 13f6c0de514687f7244fcf7b0d0d3b277158971a[m
+Author: jortboy2 <vonghung849@gmail.com>
+Date:   Fri Feb 28 19:38:41 2025 +0700
+
+    fix
+
+[33mcommit b820c3fcc989d14922932f02565c67fa97927da7[m
+Merge: 3272344 f4c30ec
+Author: jortboy2 <vonghung849@gmail.com>
+Date:   Fri Feb 28 19:37:49 2025 +0700
+
+    fix
+
+[33mcommit 3272344b94f2e9f74363c75e48b28a5b38c0f8ae[m
+Author: jortboy2 <vonghung849@gmail.com>
+Date:   Fri Feb 28 18:58:28 2025 +0700
+
+    fix
+
+[33mcommit f4c30ec61819eb451f8b8ff5bc58f2f04c60d572[m
+Author: tuann300724 <tuann300724@gmail.com>
+Date:   Fri Feb 28 16:05:53 2025 +0700
+
+    ta
+
+[33mcommit 91121a6743db72ce4a1e7b5d6f6f2c223b025aa5[m
+Merge: 9bda8cb 7ae165e
+Author: tuann300724 <tuann300724@gmail.com>
+Date:   Fri Feb 28 12:15:48 2025 +0700
+
+    Merge branch 'main' of https://github.com/IYC054/MedCareBE
+
+[33mcommit 9bda8cb2be7741dfb365c269a2c8a66db86cdb9a[m
+Author: tuann300724 <tuann300724@gmail.com>
+Date:   Fri Feb 28 12:15:38 2025 +0700
+
+    tian
+
+[33mcommit 0d7099c3ed2be2f5e800fcb05cd06030325de0b3[m
+Merge: 50e08bd 7ae165e
+Author: jortboy2 <vonghung849@gmail.com>
+Date:   Thu Feb 27 23:03:16 2025 +0700
+
+    Merge branch 'main' of https://github.com/IYC054/MedCareBE
+
+[33mcommit 50e08bd76fe54a8ac0235243e9749edfa65ce12f[m
+Author: jortboy2 <vonghung849@gmail.com>
+Date:   Thu Feb 27 23:03:08 2025 +0700
+
+    fix
+
+[33mcommit 7ae165ee7169160e905d8b762d4b37aaa19c268b[m
+Author: IYC <trieunhananh@gmail.com>
+Date:   Thu Feb 27 21:48:18 2025 +0700
+
+    iyc push noti
+
+[33mcommit c61e4b727e1bf27349e3677e997958cf7e6e997e[m
+Merge: 43feee0 142e795
+Author: tuann300724 <tuann300724@gmail.com>
+Date:   Thu Feb 27 15:53:28 2025 +0700
+
+    t
+
+[33mcommit 43feee049dc0d7e395df6e901609671f48d782db[m
+Author: tuann300724 <tuann300724@gmail.com>
+Date:   Thu Feb 27 15:50:12 2025 +0700
+
+    t
+
+[33mcommit 142e79504cc7019fae26fb9aaf96422bfb9fa03e[m
+Author: jortboy2 <vonghung849@gmail.com>
+Date:   Wed Feb 26 18:31:08 2025 +0700
+
+    fix
+
+[33mcommit 2bde29f41b899dc9b9f7022279846a272a35c748[m
+Merge: 6736e8e 5541611
+Author: jortboy2 <vonghung849@gmail.com>
+Date:   Mon Feb 24 14:28:12 2025 +0700
+
+    Merge branch 'main' of https://github.com/IYC054/MedCareBE
+
+[33mcommit 6736e8ea52c125b4581b53d297afe28d8c4c96f3[m
+Author: jortboy2 <vonghung849@gmail.com>
+Date:   Mon Feb 24 14:28:04 2025 +0700
+
+    fix
+
+[33mcommit 5541611b7109250a72dff9d1afa61d9b4d4ce917[m
+Merge: f685c6c 7431a93
+Author: tuann300724 <tuann300724@gmail.com>
+Date:   Mon Feb 24 10:54:23 2025 +0700
+
+    Merge branch 'main' of https://github.com/IYC054/MedCareBE
+
+[33mcommit f685c6cc00ab731257c7250f5781187a98c2835d[m
+Author: tuann300724 <tuann300724@gmail.com>
+Date:   Mon Feb 24 10:54:17 2025 +0700
+
+    tuan
+
+[33mcommit 7431a93c48e14b12d9f3e9a9e75a440d1d64a95d[m
+Author: jortboy2 <vonghung849@gmail.com>
+Date:   Sun Feb 23 11:57:20 2025 +0700
+
+    fix
+
+[33mcommit 5668ca147d271747ea09d3564493af6be2cae9f3[m
+Merge: c73bb8b 8fbfc59
+Author: tuann300724 <tuann300724@gmail.com>
+Date:   Sat Feb 22 15:15:43 2025 +0700
+
+    Merge branch 'main' of https://github.com/IYC054/MedCareBE
+
+[33mcommit c73bb8bb35267783a27b8c7a003972c181031196[m
+Author: tuann300724 <tuann300724@gmail.com>
+Date:   Sat Feb 22 15:15:38 2025 +0700
+
+    tia
+
+[33mcommit 8fbfc59bc965f57a9c10a8653f2759be04ab73d2[m
+Author: jortboy2 <vonghung849@gmail.com>
+Date:   Sat Feb 22 15:12:13 2025 +0700
+
+    fix
+
+[33mcommit 7bf258d2b8aa231c98876c6543f00dcb5d125ef8[m
+Merge: c7862c0 12ac5ef
+Author: tuann300724 <tuann300724@gmail.com>
+Date:   Sat Feb 22 10:58:35 2025 +0700
+
+    tuan
+
+[33mcommit 12ac5ef85abf5a65dad29e45af5f8bf91f65c8e2[m
+Author: jortboy2 <vonghung849@gmail.com>
+Date:   Fri Feb 21 22:40:52 2025 +0700
+
+    fix
+
+[33mcommit c7862c04b5a2d89f64f08cef89324cb065017901[m
+Author: tuann300724 <tuann300724@gmail.com>
+Date:   Fri Feb 21 22:12:26 2025 +0700
+
+    ta
+
+[33mcommit ce9ec289011bd1104fbd7c6145b942771b81621b[m
+Merge: c6677ee c35b2b2
+Author: jortboy2 <vonghung849@gmail.com>
+Date:   Fri Feb 21 20:18:26 2025 +0700
+
+    fix
+
+[33mcommit c6677eee7844b81c338534208d310eb7ae8130cc[m
+Author: jortboy2 <vonghung849@gmail.com>
+Date:   Fri Feb 21 20:17:21 2025 +0700
+
+    fix
+
+[33mcommit c35b2b20c1ab4c24799737616faf7242530a6eff[m
+Author: tuann300724 <tuann300724@gmail.com>
+Date:   Fri Feb 21 20:16:21 2025 +0700
+
+    tuan
+
+[33mcommit 0a319f5db0e72d8e70a502eeee97a9783bfdd768[m
+Merge: 916f0c9 35dba06
+Author: tuann300724 <tuann300724@gmail.com>
+Date:   Fri Feb 21 16:07:48 2025 +0700
+
+    Merge branch 'main' of https://github.com/IYC054/MedCareBE
+
+[33mcommit 916f0c96adba57ce41dc5368588b98077196590b[m
+Author: tuann300724 <tuann300724@gmail.com>
+Date:   Fri Feb 21 16:07:39 2025 +0700
+
+    tuna
+
+[33mcommit 35dba06a18f5b78217bbe85fdbe23e6cf3cb9e97[m
+Author: jortboy2 <vonghung849@gmail.com>
+Date:   Fri Feb 21 16:04:11 2025 +0700
+
+    fix
+
+[33mcommit 72c92766d373ddcdcbef08196f49284f16d3e31f[m
+Merge: 3518052 1d4065f
+Author: tuann300724 <tuann300724@gmail.com>
+Date:   Thu Feb 20 20:21:41 2025 +0700
+
+    Merge branch 'main' of https://github.com/IYC054/MedCareBE
+
+[33mcommit 351805220c177f47ed15f4bbed07a34856515e90[m
+Author: tuann300724 <tuann300724@gmail.com>
+Date:   Thu Feb 20 20:21:35 2025 +0700
+
+    t
+
+[33mcommit 1d4065f9f9183dcde3496504c721cadb275904d8[m
+Author: jortboy2 <vonghung849@gmail.com>
+Date:   Wed Feb 19 23:57:13 2025 +0700
+
+    fix
+
+[33mcommit 07f7f075f4ac5ed712369dcae6dd18b70dc2b1b5[m
+Merge: cc130fb d7caa7f
+Author: jortboy2 <vonghung849@gmail.com>
+Date:   Wed Feb 19 22:52:29 2025 +0700
+
+    Merge branch 'main' of https://github.com/IYC054/MedCareBE
+
+[33mcommit cc130fbef586f908b1ce38925b17786debc56084[m
+Author: jortboy2 <vonghung849@gmail.com>
+Date:   Wed Feb 19 22:52:25 2025 +0700
+
+    fix
+
+[33mcommit d7caa7f718ff0271f24eaf8e1e22495e8720b44c[m
+Merge: bce107d cd16746
+Author: tuann300724 <tuann300724@gmail.com>
+Date:   Wed Feb 19 13:24:34 2025 +0700
+
+    Merge branch 'main' of https://github.com/IYC054/MedCareBE
+
+[33mcommit bce107d8419e76d1aa5d67d6b16d9a3cb14bfdb9[m
+Author: tuann300724 <tuann300724@gmail.com>
+Date:   Wed Feb 19 13:
