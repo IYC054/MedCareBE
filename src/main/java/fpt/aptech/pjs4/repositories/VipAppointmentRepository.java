@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,5 +23,8 @@ public interface VipAppointmentRepository extends JpaRepository<VipAppointment, 
             "JOIN ap.payments p " +
             "WHERE ap.id = :appointmentId")
     Optional<AppointmentDetailDTO> findVipAppointmentDetailById(@Param("appointmentId") int appointmentId);
+
+    @Query("SELECT COUNT(a) > 0 FROM VipAppointment a WHERE a.workDate = :workDate AND a.doctor.id = :doctorId")
+    boolean existsByWorkDate(@Param("workDate") LocalDate workDate , @Param("doctorId") int doctorId);
 
 }

@@ -21,6 +21,7 @@ public class VIPAppointmentServiceImpl implements VIPAppointmentService {
     private VipAppointmentRepository appointmentRepository;
     @Autowired
     private DoctorRepository doctorRepository;
+
     @Override
     public VipAppointment createVIPAppointment(VipAppointment vipAppointment) {
         return appointmentRepository.save(vipAppointment);
@@ -35,6 +36,7 @@ public class VIPAppointmentServiceImpl implements VIPAppointmentService {
     public VipAppointment getVIPAppointmentById(int id) {
         return appointmentRepository.findById(id).orElse(null);
     }
+
     @Transactional
     @Override
     public VipAppointment updateVipAppointmentStatusOnly(int id, String status) {
@@ -48,7 +50,8 @@ public class VIPAppointmentServiceImpl implements VIPAppointmentService {
             // Ghi lại chi tiết lỗi
             ex.printStackTrace();
             throw new RuntimeException("Lỗi khi lưu Appointment: " + ex.getMessage());
-        }    }
+        }
+    }
 
     @Override
     public List<VipAppointment> getAllVIPAppointments() {
@@ -105,5 +108,9 @@ public class VIPAppointmentServiceImpl implements VIPAppointmentService {
         return "Cập nhật thành công!";
     }
 
+    @Override
+    public boolean isWorkDateBooked(LocalDate workDate, int doctorId) {
+        return appointmentRepository.existsByWorkDate(workDate, doctorId);
+    }
 
 }
