@@ -6,8 +6,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Nationalized;
 
+import java.time.Instant;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -31,18 +33,26 @@ public class PatientFile {
     @JoinColumn(name = "patients_information_id")
     private PatientsInformation patientsInformation;
 
-    @ManyToOne(fetch = FetchType.LAZY,targetEntity = Appointment.class)
+    @ManyToOne()
     @JsonIgnore
     @JoinColumn(name = "appointment_id")
     private Appointment appointment;
 
-    @ManyToOne(fetch = FetchType.LAZY, targetEntity = VipAppointment.class)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     @JoinColumn(name = "vipappointment_id")
     private VipAppointment vipappointment;
 
     @OneToMany(mappedBy = "patientsFiles")
     private Set<FilesImage> filesImages = new LinkedHashSet<>();
+
+    @ColumnDefault("sysutcdatetime()")
+    @Column(name = "created_at")
+    private Instant createdAt;
+
+    @ColumnDefault("sysutcdatetime()")
+    @Column(name = "updated_at")
+    private Instant updatedAt;
 
     @JsonProperty("vipappointment_id")
     public Integer getVipAppointmentId() {

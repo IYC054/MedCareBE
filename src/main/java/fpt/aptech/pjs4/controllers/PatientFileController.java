@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -80,9 +81,12 @@ public class PatientFileController {
 //                throw new IllegalArgumentException("Cuộc hẹn không tồn tại.");
 //            }
             // Tạo `PatientFile`
+            Date date = new Date();
+
             PatientFile patientFile = new PatientFile();
             patientFile.setPatientsInformation(patient);
             patientFile.setDoctor(doctor);
+            patientFile.setCreatedAt(date.toInstant());
             patientFile.setDescription(patientFileDTO.getDescription());
             patientFile.setAppointment(appointment);
 //            patientFile.setVipappointment(vipappointment);
@@ -119,6 +123,7 @@ public class PatientFileController {
 public ResponseEntity<PatientFile> createPatientFileVIPapt(
         @RequestParam("patients_profile_id") Integer patientsId,
         @RequestParam("doctors_id") Integer doctorId,
+        @RequestBody PatientFileDTO patientFileDTO,
         @RequestParam(value = "vipappointment_id", required = false) Integer vipappointmentId,
 
         @RequestParam(value = "url_image", required = false) List<MultipartFile> files) {
@@ -145,9 +150,12 @@ public ResponseEntity<PatientFile> createPatientFileVIPapt(
         if (vipappointment == null) {
             throw new IllegalArgumentException("Cuộc hẹn không tồn tại.");
         }
+        Date date = new Date();
         // Tạo `PatientFile`
         PatientFile patientFile = new PatientFile();
         patientFile.setPatientsInformation(patient);
+        patientFile.setDescription(patientFileDTO.getDescription());
+        patientFile.setCreatedAt(date.toInstant());
         patientFile.setDoctor(doctor);
         patientFile.setVipappointment(vipappointment);
         PatientFile createdPatientFile = patientFilesService.createPatientFile(patientFile);
