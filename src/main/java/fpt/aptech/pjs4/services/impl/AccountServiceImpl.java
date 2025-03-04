@@ -403,6 +403,9 @@ public class AccountServiceImpl implements AccountService {
             accountRepository.save(storedAccount);
         }
     }
-
+    @Override
+    public Optional<Account> findByEmail(String email) {
+        return accountRepository.findByEmail(email);
+    }
 
 }

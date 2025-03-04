@@ -6,6 +6,7 @@ import fpt.aptech.pjs4.entities.Account;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface AccountService {
     void addConnectedAccount(Account account);
@@ -13,7 +14,8 @@ public interface AccountService {
     String getUserToken(String userId);
     String getDoctorTokenByEmail(String doctorEmail);
     Account createAccount(Account account);
-    public String checkEmailExists(String email);
+    Optional<Account> findByEmail(String email);
+    String checkEmailExists(String email);
     //    protected static final String SIGNER_KEY = "jxNGPYNsP81q9q4AnUtVIkA6oKsjP8657q4PfkXz2e+tfqofPtrJTLW9dtgOJrUc";
     //    @Override
     //    public Introspect introspect(Introspect request) {

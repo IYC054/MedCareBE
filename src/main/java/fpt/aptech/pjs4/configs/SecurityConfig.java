@@ -52,6 +52,7 @@ public class SecurityConfig {
             "/api/account/register",
             "/api/account",
             "/api/account/find",
+            "/api/account/google",
             "/api/auth/send",
             "/api/auth/forgot-password",
             "/api/auth/reset-password",

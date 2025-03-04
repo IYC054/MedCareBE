@@ -1,13 +1,22 @@
 package fpt.aptech.pjs4.controllers;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
+import com.nimbusds.jose.*;
+import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.MACVerifier;
+import com.nimbusds.jwt.JWTClaimsSet;
 import fpt.aptech.pjs4.DTOs.APIResponse;
 import fpt.aptech.pjs4.DTOs.AccountDTO;
 import fpt.aptech.pjs4.DTOs.Introspect;
 import fpt.aptech.pjs4.DTOs.request.AuthencicationRequest;
 import fpt.aptech.pjs4.DTOs.response.AuthencicationResponse;
+import fpt.aptech.pjs4.configs.TokenProvider;
 import fpt.aptech.pjs4.entities.Account;
 import fpt.aptech.pjs4.entities.Role;
 import fpt.aptech.pjs4.repositories.RoleRepository;
@@ -19,6 +28,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -45,6 +55,9 @@ public class AccountController {
     private PatientService patientService;
     @Autowired
     private SimpMessagingTemplate messagingTemplate; // Để gửi message qua WebSocket
+    @Autowired
+    private TokenProvider tokenProvider;
+    protected static final String SIGNER_KEY = "5e3b6f9e67e9f1e3b6ad775d9a1c9078c9078b72ad34d3e4e745fb6b64367861";
 
     @GetMapping("/find")
     public ResponseEntity<Boolean> findByEmail(@RequestParam String email) {
@@ -52,8 +65,69 @@ public class AccountController {
         return ResponseEntity.ok(exists);
     }
 
+    @PostMapping("/google")
+    public ResponseEntity<?> googleAuth(@RequestBody Map<String, String> request) {
+        String token = request.get("token");
+        if (token == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Missing token");
+        }
 
-//    @MessageMapping("/user.addUser")
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new GsonFactory())
+                .setAudience(Collections.singletonList("970946806223-8adh46gug50inbvcsmg82puc0qlnmrsh.apps.googleusercontent.com"))
+                .build();
+
+        try {
+            GoogleIdToken idToken = verifier.verify(token);
+            if (idToken != null) {
+                GoogleIdToken.Payload payload = idToken.getPayload();
+                String email = payload.getEmail();
+                String name = (String) payload.get("name");
+
+                Optional<Account> optionalAccount = accountService.findByEmail(email);
+                Account account;
+
+                if (optionalAccount.isPresent()) {
+                    account = optionalAccount.get();
+                } else {
+                    account = new Account();
+                    account.setEmail(email);
+                    account.setName(name);
+                    account.setPassword("123");
+
+                    Role patientRole = roleRepository.findByName("PATIENTS")
+                            .orElseGet(() -> {
+                                Role newRole = new Role();
+                                newRole.setName("PATIENTS");
+                                return roleRepository.save(newRole);
+                            });
+
+                    account.setRole(Collections.singletonList(patientRole));
+                    accountService.createAccount(account);
+                    patientService.createPatient(account.getId());
+                }
+
+                // 🔹 Tạo JWT token bằng generateToken
+                String jwtToken = generateToken(account);
+
+                // 🔹 Trả về thông tin tài khoản + JWT token
+                Map<String, Object> response = new HashMap<>();
+                response.put("id", account.getId());
+                response.put("email", account.getEmail());
+                response.put("name", account.getName());
+                response.put("role", account.getRole());
+                response.put("token", jwtToken); // Trả về token tại đây
+
+                return ResponseEntity.ok(response);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Google Token");
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication Failed");
+    }
+
+
+    //    @MessageMapping("/user.addUser")
 //    @SendTo("/user/topic")
     @PostMapping("/register")
     public APIResponse<Account> createAccount2(@ModelAttribute AccountDTO accountDTO,
@@ -362,4 +436,70 @@ public Map<String, Object> authentication(@RequestBody Introspect introspect) {
 //        // Gọi service để lấy toàn bộ claims từ token
 //        return accountService.getClaimsFromToken(token);
 //    }
+
+
+
+    private String generateToken(Account account) {
+        // tao header jwt chon thuat toan
+        JWSHeader jwsHeader = new JWSHeader(JWSAlgorithm.HS512);
+        // tap payload Data trong body
+        JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
+                // dai dien cho usser dang nhap
+                .subject(account.getEmail())
+                // xac nhan issure tu ai
+                .issuer("nghimathit.com")
+                // thoi diem hien tai
+                .issueTime(new Date())
+                //  thời hạn token
+                .claim("scope", buildScope(account))
+                .claim("id", account.getId())
+                .build();
+        Payload payload = new Payload(jwtClaimsSet.toJSONObject()); // chỉ nhận Json
+        JWSObject jwsObject = new JWSObject(jwsHeader, payload);
+        // ký token
+        try {
+            jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
+            return jwsObject.serialize();
+        } catch (JOSEException e) {
+//            log.error(" ko the tao token",e);
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public Map<String, Object> getClaimsFromToken(String token) {
+        try {
+            // Giải mã token
+            JWSObject jwsObject = JWSObject.parse(token);
+
+            // Xác minh chữ ký của token
+            if (!jwsObject.verify(new MACVerifier(SIGNER_KEY.getBytes()))) {
+                throw new RuntimeException("Token không hợp lệ");
+            }
+
+            // Lấy toàn bộ claims trong token
+            JWTClaimsSet claimsSet = JWTClaimsSet.parse(jwsObject.getPayload().toJSONObject());
+            return claimsSet.getClaims();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Lỗi khi xử lý token", e);
+        }
+    }
+
+    private String buildScope(Account account) {
+        // được sử dụng để kết nối các chuỗi lại với nhau (join strings)
+        // một cách dễ dàng, đặc biệt khi bạn cần kết hợp các phần tử của
+        // một tập hợp hoặc danh sách mà không cần phải lo lắng về dấu phân
+        // cách hay việc xử lý dấu phẩy ở cuối chuỗi
+        StringJoiner stringJoiner = new StringJoiner(" ");
+        if (!CollectionUtils.isEmpty(account.getRole())) {
+            account.getRole().forEach(role -> {
+                stringJoiner.add(role.getName());
+                if (!CollectionUtils.isEmpty(role.getPermissions())) {
+                    role.getPermissions().forEach(permission -> stringJoiner.add(permission.getName()));
+                }
+            });
+        }
+        return stringJoiner.toString();
+    }
 }
