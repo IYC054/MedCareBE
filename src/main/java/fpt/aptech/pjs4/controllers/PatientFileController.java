@@ -51,7 +51,7 @@ public class PatientFileController {
             @RequestParam("doctors_id") Integer doctorId,
             @RequestParam(value = "appointment_id" ,required = false) Integer appointmentId,
 //            @RequestParam(value = "vipappointment_id", required = false) Integer vipappointmentId,
-
+            @RequestBody PatientFileDTO patientFileDTO,
             @RequestParam(value = "url_image", required = false) List<MultipartFile> files) {
         try {
             // Tạo thư mục upload nếu chưa tồn tại
@@ -83,6 +83,7 @@ public class PatientFileController {
             PatientFile patientFile = new PatientFile();
             patientFile.setPatientsInformation(patient);
             patientFile.setDoctor(doctor);
+            patientFile.setDescription(patientFileDTO.getDescription());
             patientFile.setAppointment(appointment);
 //            patientFile.setVipappointment(vipappointment);
             PatientFile createdPatientFile = patientFilesService.createPatientFile(patientFile);
