@@ -22,7 +22,6 @@ public class RateController {
         return ResponseEntity.ok(ratings);
     }
 
-    // 📌 Lấy chi tiết rating theo ID
     @GetMapping("/{id}")
     public ResponseEntity<Rating> getRatingById(@PathVariable int id) {
         Rating rating = rateService.getRateById(id);
