@@ -72,7 +72,8 @@ public class SecurityConfig {
             "/api/account/**",
             "/api/vip-appointments/**",
             "/api/messages/**",
-            "api/chat/**"
+            "api/chat/**",
+            "/api/mail/**"
 
     };
     private final String[] PUBLIC_ENPOINT_UPDATE = {

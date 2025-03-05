@@ -6,8 +6,10 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Nationalized;
 
+import java.time.Instant;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -43,6 +45,14 @@ public class PatientFile {
 
     @OneToMany(mappedBy = "patientsFiles")
     private Set<FilesImage> filesImages = new LinkedHashSet<>();
+
+    @ColumnDefault("sysutcdatetime()")
+    @Column(name = "created_at")
+    private Instant createdAt;
+
+    @ColumnDefault("sysutcdatetime()")
+    @Column(name = "updated_at")
+    private Instant updatedAt;
 
     @JsonProperty("vipappointment_id")
     public Integer getVipAppointmentId() {

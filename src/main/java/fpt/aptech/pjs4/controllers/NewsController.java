@@ -19,6 +19,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -137,7 +138,7 @@ public class NewsController {
         return ResponseEntity.noContent().build();
     }
     @GetMapping("/noti/{userId}")
-    public List<Notification> getNotifications(@PathVariable String userId) throws ExecutionException, InterruptedException {
+    public List<Map<String, Object>> getNotifications(@PathVariable String userId) throws ExecutionException, InterruptedException {
         Firestore db = FirestoreClient.getFirestore();
         CollectionReference notificationsRef = db.collection("notifications");
 
@@ -145,12 +146,16 @@ public class NewsController {
         Query query = notificationsRef.whereEqualTo("userId", userId).orderBy("timestamp", Query.Direction.DESCENDING);
         ApiFuture<QuerySnapshot> querySnapshot = query.get();
 
-        List<Notification> notifications = new ArrayList<>();
+        List<Map<String, Object>> notifications = new ArrayList<>();
         for (DocumentSnapshot doc : querySnapshot.get().getDocuments()) {
-            Notification notification = doc.toObject(Notification.class);
-            notifications.add(notification);
+            Map<String, Object> data = doc.getData();
+            if (data != null) {
+                data.put("id", doc.getId()); // Thêm documentId vào dữ liệu trả về
+                notifications.add(data);
+            }
         }
 
         return notifications;
     }
+
 }
