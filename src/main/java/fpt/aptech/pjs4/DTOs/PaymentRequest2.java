@@ -13,5 +13,5 @@ public class PaymentRequest2 {
     private int profileId;
     private int specialtyId;
     private String doctorEmail;
-
+    private boolean BHYT;
 }

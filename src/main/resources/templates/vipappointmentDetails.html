@@ -113,6 +113,10 @@
             <th>Loại khám</th>
             <td>VIP</td>
         </tr>
+        <tr>
+            <th>BHYT</th>
+            <td th:text="${appointment.getBHYT() ? 'Có' : 'Không'}"></td>
+        </tr>
     </table>
 
     <div class="bill-footer">

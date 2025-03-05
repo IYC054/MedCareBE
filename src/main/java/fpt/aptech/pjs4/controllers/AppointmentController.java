@@ -64,6 +64,7 @@ public class AppointmentController {
             appointment.setAmount(appointmentrequest.getAmount());
             appointment.setWorktime(worktime);
             appointment.setPatientprofile(patientsInformation);
+            appointment.setBhyt(appointmentrequest.getBhyt());
             Appointment createdAppointment = appointmentService.createAppointment(appointment);
 
 

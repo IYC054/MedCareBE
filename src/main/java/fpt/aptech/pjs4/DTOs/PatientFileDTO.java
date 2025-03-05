@@ -13,4 +13,5 @@ public class PatientFileDTO {
     private Integer patientsInformationId; // ID của bệnh nhân
     private List<String> urlImages; // Danh sách URL của ảnh
     private Integer doctorId;
+    private String diagnosis;
 }

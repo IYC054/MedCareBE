@@ -14,8 +14,9 @@ public class AppointmentDetailDTO {
     private LocalTime startTime;
     private LocalTime endTime;
     private String AppointmentStatus;
+    private Boolean BHYT;
 
-    public AppointmentDetailDTO(String patientProfileName, String doctorName, String transactionCode, LocalDate workDate, LocalTime startTime, LocalTime endTime, String status, String AppointmentStatus) {
+    public AppointmentDetailDTO(String patientProfileName, String doctorName, String transactionCode, LocalDate workDate, LocalTime startTime, LocalTime endTime, String status, String AppointmentStatus, Boolean BHYT) {
         this.patientProfileName = patientProfileName;
         this.doctorName = doctorName;
         this.transactionCode = transactionCode;
@@ -24,5 +25,6 @@ public class AppointmentDetailDTO {
         this.endTime = endTime;
         this.status = status;
         this.AppointmentStatus=AppointmentStatus;
+        this.BHYT=BHYT;
     }
 }

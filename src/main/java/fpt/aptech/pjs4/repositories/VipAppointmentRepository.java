@@ -15,7 +15,7 @@ public interface VipAppointmentRepository extends JpaRepository<VipAppointment, 
     List<VipAppointment> findAppointmentByPatientId(int patientId);
     @Query("SELECT a FROM VipAppointment a WHERE a.doctor.id = :doctorId")
     List<VipAppointment> findAppointmentByDoctorId(int doctorId);
-    @Query("SELECT new fpt.aptech.pjs4.DTOs.AppointmentDetailDTO(pi.fullname, a_doctor.name, p.transactionCode, ap.workDate, ap.startTime, ap.endTime, p.status, ap.status) " +
+    @Query("SELECT new fpt.aptech.pjs4.DTOs.AppointmentDetailDTO(pi.fullname, a_doctor.name, p.transactionCode, ap.workDate, ap.startTime, ap.endTime, p.status, ap.status, ap.bhyt) " +
             "FROM VipAppointment ap " +
             "JOIN ap.patientprofile pi " +
             "JOIN ap.doctor d " +
