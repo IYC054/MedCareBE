@@ -1,6 +1,7 @@
 package fpt.aptech.pjs4.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,10 +28,7 @@ public class Doctor {
 
     @Column(name = "status", length = 20)
     private String status;
-    @Column(name = "cccd")
-    private String cccd;
-    @Column(name = "address")
-    private String address;
+
     @OneToMany(mappedBy = "doctorFile")
     private Set<CvImage> filesImages = new LinkedHashSet<>();
 
@@ -50,5 +48,13 @@ public class Doctor {
     @Column(name = "vip")
     private Boolean vip;
 
+
+    @Size(max = 255)
+    @Column(name = "cccd")
+    private String cccd;
+
+    @Size(max = 255)
+    @Column(name = "address")
+    private String address;
 
 }
