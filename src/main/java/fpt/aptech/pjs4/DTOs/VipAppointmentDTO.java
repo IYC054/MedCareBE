@@ -22,5 +22,6 @@ public class VipAppointmentDTO {
     private String type;
     private String firestoreUserId;
     private String doctorEmail;
+    private Boolean bhyt;
 
 }

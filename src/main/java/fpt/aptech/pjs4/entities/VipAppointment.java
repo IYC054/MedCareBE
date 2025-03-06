@@ -79,5 +79,6 @@ public class VipAppointment {
     @Column(name = "type", nullable = false, length = 100)
     private String type;
 
-
+    @Column(name = "BHYT")
+    private Boolean bhyt;
 }

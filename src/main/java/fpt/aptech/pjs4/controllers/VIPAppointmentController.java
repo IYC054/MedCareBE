@@ -86,6 +86,8 @@ public class VIPAppointmentController {
         appointment.setType(vipAppointmentDTO.getType());
         appointment.setWorkDate(vipAppointmentDTO.getWorkDate());
         appointment.setPatientprofile(patientsInformation);
+        appointment.setBhyt(vipAppointmentDTO.getBhyt());
+
         VipAppointment createdAppointment = vipAppointmentService.createVIPAppointment(appointment);
         // Lấy token từ Firestore
         String userToken = accountService.getUserToken(vipAppointmentDTO.getFirestoreUserId());

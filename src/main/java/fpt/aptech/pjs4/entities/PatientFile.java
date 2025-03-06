@@ -54,6 +54,11 @@ public class PatientFile {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
+    @Size(max = 100)
+    @Nationalized
+    @Column(name = "diagnosis", length = 100)
+    private String diagnosis;
+
     @JsonProperty("vipappointment_id")
     public Integer getVipAppointmentId() {
         return vipappointment != null ? vipappointment.getId() : null;

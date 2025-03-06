@@ -56,8 +56,8 @@ public class PaymentApi {
         String secretKey = "v4mYTJVM8M7pSUemgFTTqon3PopWekkD";
         String partnerCode = "MOMOEXFT20240911";
         String orderInfo = paymentRequest.getOrderInfo();
-        String redirectUrl = "http://localhost:5173/payment-success?doctor="+paymentRequest.getDoctorId() + "&work="+ paymentRequest.getWorkId() +"&specialty="+ paymentRequest.getSpecialtyId() +"&profile=" +paymentRequest.getProfileId() + "&email=" + paymentRequest.getDoctorEmail();
-        String ipnUrl = "http://localhost:5173/payment-success?doctor="+paymentRequest.getDoctorId() + "&work="+ paymentRequest.getWorkId() +"&specialty="+ paymentRequest.getSpecialtyId() +"&profile=" +paymentRequest.getProfileId()  + "&email=" + paymentRequest.getDoctorEmail();
+        String redirectUrl = "http://localhost:5173/payment-success?doctor="+paymentRequest.getDoctorId() + "&work="+ paymentRequest.getWorkId() +"&specialty="+ paymentRequest.getSpecialtyId() +"&profile=" +paymentRequest.getProfileId() + "&email=" + paymentRequest.getDoctorEmail() + "&bhyt=" + paymentRequest.isBHYT();
+        String ipnUrl = "http://localhost:5173/payment-success?doctor="+paymentRequest.getDoctorId() + "&work="+ paymentRequest.getWorkId() +"&specialty="+ paymentRequest.getSpecialtyId() +"&profile=" +paymentRequest.getProfileId()  + "&email=" + paymentRequest.getDoctorEmail() + "&bhyt=" + paymentRequest.isBHYT();
         String requestType = "captureWallet";
         BigDecimal amount = paymentRequest.getAmount();
         String orderId = String.valueOf(System.currentTimeMillis());

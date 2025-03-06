@@ -89,6 +89,7 @@ public class PatientFileController {
             patientFile.setCreatedAt(date.toInstant());
             patientFile.setDescription(patientFileDTO.getDescription());
             patientFile.setAppointment(appointment);
+            patientFile.setDiagnosis(patientFileDTO.getDiagnosis());
 //            patientFile.setVipappointment(vipappointment);
             PatientFile createdPatientFile = patientFilesService.createPatientFile(patientFile);
 
@@ -157,7 +158,10 @@ public ResponseEntity<PatientFile> createPatientFileVIPapt(
         patientFile.setDescription(patientFileDTO.getDescription());
         patientFile.setCreatedAt(date.toInstant());
         patientFile.setDoctor(doctor);
+        patientFile.setDiagnosis(patientFileDTO.getDiagnosis());
+
         patientFile.setVipappointment(vipappointment);
+
         PatientFile createdPatientFile = patientFilesService.createPatientFile(patientFile);
 
         // Xử lý tệp nếu có

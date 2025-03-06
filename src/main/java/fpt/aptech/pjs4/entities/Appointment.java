@@ -54,4 +54,7 @@ public class Appointment {
     @OneToMany(mappedBy = "appointment")
     private Set<Payment> payments = new LinkedHashSet<>();
 
+    @Column(name = "BHYT")
+    private Boolean bhyt;
+
 }
