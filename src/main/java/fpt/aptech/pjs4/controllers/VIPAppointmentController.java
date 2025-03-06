@@ -32,10 +32,11 @@ public class VIPAppointmentController {
     private final NotificationService notificationService;
 
     public VIPAppointmentController(AccountService accountService,
-                                 NotificationService notificationService) {
+                                    NotificationService notificationService) {
         this.accountService = accountService;
         this.notificationService = notificationService;
     }
+
     // Lấy danh sách tất cả lịch hẹn VIP
     @GetMapping
     public ResponseEntity<List<VipAppointment>> getAllVIPAppointments() {
@@ -49,11 +50,13 @@ public class VIPAppointmentController {
         VipAppointment appointment = vipAppointmentService.getVIPAppointmentById(id);
         return appointment != null ? ResponseEntity.ok(appointment) : ResponseEntity.notFound().build();
     }
+
     @GetMapping("/doctors/{id}")
     public ResponseEntity<List<VipAppointment>> getAppointmentByDoctorId(@PathVariable int id) {
         List<VipAppointment> doctors = vipAppointmentService.getDoctorByidDoctor(id);
         return ResponseEntity.ok(doctors);
     }
+
     @PutMapping("/status/{id}")
     public ResponseEntity<VipAppointment> updateAppointmentStatus(@PathVariable int id, @RequestBody Appointment appointment, @RequestParam String doctorEmail) {
         String status = appointment.getStatus();
@@ -66,6 +69,7 @@ public class VIPAppointmentController {
         VipAppointment updatedAppointment = vipAppointmentService.updateVipAppointmentStatusOnly(id, status);
         return ResponseEntity.ok(updatedAppointment);
     }
+
     // Tạo mới lịch hẹn VIP
     @PostMapping
     public ResponseEntity<VipAppointment> createVIPAppointment(@RequestBody VipAppointmentDTO vipAppointmentDTO) {
@@ -107,11 +111,13 @@ public class VIPAppointmentController {
         vipAppointmentService.deleteAppointment(id);
         return ResponseEntity.noContent().build();
     }
+
     @GetMapping("/patient/{id}")
     public ResponseEntity<List<VipAppointment>> getAppointmentByPatientId(@PathVariable int id) {
         List<VipAppointment> appointment = vipAppointmentService.getAllVipAppointmentsByPatient(id);
         return ResponseEntity.ok(appointment);
     }
+
     @PutMapping("/{id}/update-doctor")
     public ResponseEntity<VipAppointment> updateDoctor(
             @PathVariable Integer id,
@@ -120,6 +126,7 @@ public class VIPAppointmentController {
         VipAppointment updatedAppointment = vipAppointmentService.updateDoctor(id, doctorId);
         return ResponseEntity.ok(updatedAppointment);
     }
+
     @PutMapping("/{id}/update-time")
     public ResponseEntity<String> updateVipAppointment(
             @PathVariable Integer id,
@@ -135,8 +142,15 @@ public class VIPAppointmentController {
     }
 
     @GetMapping("/check")
-    public ResponseEntity<Boolean> checkWorkDate(@RequestParam LocalDate workDate,@RequestParam int doctorId) {
-        boolean exists = vipAppointmentService.isWorkDateBooked(workDate , doctorId);
+    public ResponseEntity<Boolean> checkWorkDate(
+            @RequestParam LocalDate workDate,
+            @RequestParam LocalTime bookTime,
+            @RequestParam LocalTime startTime,
+            @RequestParam LocalTime endTime,
+            @RequestParam int doctorId) {
+
+        boolean exists = vipAppointmentService.isWorkDateBooked(workDate, bookTime, startTime, endTime, doctorId);
         return ResponseEntity.ok(exists);
     }
+
 }

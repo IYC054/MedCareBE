@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,7 +25,15 @@ public interface VipAppointmentRepository extends JpaRepository<VipAppointment, 
             "WHERE ap.id = :appointmentId")
     Optional<AppointmentDetailDTO> findVipAppointmentDetailById(@Param("appointmentId") int appointmentId);
 
-    @Query("SELECT COUNT(a) > 0 FROM VipAppointment a WHERE a.workDate = :workDate AND a.doctor.id = :doctorId")
-    boolean existsByWorkDate(@Param("workDate") LocalDate workDate , @Param("doctorId") int doctorId);
+    @Query("SELECT COUNT(a) > 0 FROM VipAppointment a " +
+            "WHERE a.workDate = :workDate " +
+            "AND a.doctor.id = :doctorId " +
+            "AND :bookTime BETWEEN :startTime AND :endTime")
+    boolean existsByWorkDate(
+            @Param("workDate") LocalDate workDate,
+            @Param("doctorId") int doctorId,
+            @Param("bookTime") LocalTime bookTime,
+            @Param("startTime") LocalTime startTime,
+            @Param("endTime") LocalTime endTime);
 
 }

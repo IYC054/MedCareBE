@@ -72,6 +72,10 @@ public class DoctorWorkingHourController {
     public void deleteWorkingHours(@PathVariable int doctorId) {
         workingHourService.deleteWorkingHoursByDoctor(doctorId);
     }
+    @DeleteMapping("/{id}")
+    public void deleteWorkingHoursbyId(@PathVariable int id) {
+        workingHourService.delteWorkingHour(id);
+    }
 
 
 }

@@ -107,10 +107,10 @@ public class VIPAppointmentServiceImpl implements VIPAppointmentService {
 
         return "Cập nhật thành công!";
     }
-
     @Override
-    public boolean isWorkDateBooked(LocalDate workDate, int doctorId) {
-        return appointmentRepository.existsByWorkDate(workDate, doctorId);
+    public boolean isWorkDateBooked(LocalDate workDate, LocalTime bookTime, LocalTime startTime, LocalTime endTime, int doctorId) {
+        return appointmentRepository.existsByWorkDate(workDate, doctorId, bookTime, startTime, endTime);
     }
+
 
 }

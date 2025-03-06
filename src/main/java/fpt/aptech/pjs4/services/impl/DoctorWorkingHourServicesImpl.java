@@ -101,4 +101,9 @@ public class DoctorWorkingHourServicesImpl implements DoctorWorkingHourService {
     public void deleteWorkingHoursByDoctor(int doctorId) {
         doctorWorkingHourRepository.deleteByDoctorId(doctorId);
     }
+
+    @Override
+    public void delteWorkingHour(int id) {
+        doctorWorkingHourRepository.deleteById(id);
+    }
 }
